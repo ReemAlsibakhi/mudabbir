@@ -37,7 +37,7 @@ abstract final class AppTheme {
     surfaceTintColor:       Colors.transparent,
     elevation:              0,
     scrolledUnderElevation: 0,
-    centerTitle:            true,
+    centerTitle:            false,
     titleTextStyle:         AppTextStyles.title,
     systemOverlayStyle:     SystemUiOverlayStyle(
       statusBarColor:           Colors.transparent,

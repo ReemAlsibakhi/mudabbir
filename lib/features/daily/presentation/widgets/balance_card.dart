@@ -168,7 +168,7 @@ class _StatChip extends StatelessWidget {
         border:       Border.all(color: Colors.white.withOpacity(0.06)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start, // start = RIGHT in RTL
         children: [
           Text(label,
             style: const TextStyle(

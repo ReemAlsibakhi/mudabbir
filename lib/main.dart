@@ -17,22 +17,34 @@ class MudabbirApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
-    return MaterialApp.router(
-      title:                      'مدبّر',
-      debugShowCheckedModeBanner: false,
-      theme:                      AppTheme.dark,
-      routerConfig:               router,
-      locale:                     const Locale('ar', 'SA'),
-      supportedLocales: const [
-        Locale('ar', 'SA'),
-        Locale('ar', 'AE'),
-        Locale('ar', 'EG'),
-      ],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+
+    return Directionality(
+      // ── Force RTL at the ROOT — wraps MaterialApp itself
+      textDirection: TextDirection.rtl,
+      child: MaterialApp.router(
+        title:                      'مدبّر',
+        debugShowCheckedModeBanner: false,
+        theme:                      AppTheme.dark,
+        routerConfig:               router,
+
+        locale: const Locale('ar', 'SA'),
+        supportedLocales: const [
+          Locale('ar', 'SA'),
+          Locale('ar', 'AE'),
+          Locale('ar', 'EG'),
+        ],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+
+        // Secondary guarantee — ensures RTL even if locale fails
+        builder: (context, child) => Directionality(
+          textDirection: TextDirection.rtl,
+          child: child ?? const SizedBox.shrink(),
+        ),
+      ),
     );
   }
 }

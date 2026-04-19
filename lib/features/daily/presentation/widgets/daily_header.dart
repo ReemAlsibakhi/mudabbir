@@ -18,6 +18,7 @@ class DailyHeader extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 4, bottom: 12),
       child: Column(
+        // CrossAxisAlignment.start = RIGHT in RTL ✅
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -28,15 +29,23 @@ class DailyHeader extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 4),
-          RichText(
-            text: TextSpan(
-              style: AppTextStyles.headline1.copyWith(letterSpacing: -0.5),
+          // Use Text.rich with RTL-correct structure
+          Text.rich(
+            TextSpan(
               children: [
-                TextSpan(text: '$greeting، '),
+                TextSpan(
+                  text: '$greeting، ',
+                  style: AppTextStyles.headline1.copyWith(
+                    letterSpacing: -0.5,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
                 WidgetSpan(
+                  alignment: PlaceholderAlignment.baseline,
+                  baseline: TextBaseline.alphabetic,
                   child: ShaderMask(
                     shaderCallback: (bounds) => const LinearGradient(
-                      colors: [Color(0xFF38BDF8), Color(0xFF06D6A0)],
+                      colors: [Color(0xFF38BDF8), Color(0xFF34D399)],
                     ).createShader(bounds),
                     child: Text(
                       name,
@@ -49,6 +58,7 @@ class DailyHeader extends ConsumerWidget {
                 ),
               ],
             ),
+            textDirection: TextDirection.rtl,
           ),
           const SizedBox(height: 3),
           Text(

@@ -144,13 +144,13 @@ class _IncomeAppBar extends ConsumerWidget {
           ),
         ),
       IconButton(
-        icon: const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary),
+        icon: const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textSecondary, size: 16),
         onPressed: () {
           // previous month
         },
       ),
       IconButton(
-        icon: const Icon(Icons.chevron_left_rounded, color: AppColors.textSecondary),
+        icon: const Icon(Icons.arrow_back_ios_rounded, color: AppColors.textSecondary, size: 16),
         onPressed: () {
           // next month — guard: no future months
           final now = DateTime.now();

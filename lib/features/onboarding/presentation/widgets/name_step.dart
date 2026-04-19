@@ -63,7 +63,7 @@ class _State extends ConsumerState<NameStep> {
             children: [
               IconButton(
                 onPressed: notifier.prevStep,
-                icon: const Icon(Icons.arrow_forward_rounded, color: AppColors.textSecondary)),
+                icon: const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textSecondary)),
               const SizedBox(width: 8),
               Expanded(
                 child: GestureDetector(

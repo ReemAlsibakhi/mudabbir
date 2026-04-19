@@ -94,7 +94,7 @@ class _ReportsHeader extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: const Icon(Icons.chevron_right_rounded,
+                icon: const Icon(Icons.arrow_forward_ios_rounded,
                   color: AppColors.textSecondary),
                 onPressed: onPrev,
               ),
@@ -107,7 +107,7 @@ class _ReportsHeader extends StatelessWidget {
                 ],
               ),
               IconButton(
-                icon: const Icon(Icons.chevron_left_rounded,
+                icon: const Icon(Icons.arrow_back_ios_rounded,
                   color: AppColors.textSecondary),
                 onPressed: onNext,
               ),

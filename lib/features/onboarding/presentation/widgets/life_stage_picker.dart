@@ -83,7 +83,7 @@ class _StepNav extends StatelessWidget {
     children: [
       IconButton(
         onPressed: onBack,
-        icon: const Icon(Icons.arrow_forward_rounded, color: AppColors.textSecondary)),
+        icon: const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textSecondary)),
       const SizedBox(width: 8),
       Expanded(
         child: GestureDetector(
