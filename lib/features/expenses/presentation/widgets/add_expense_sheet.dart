@@ -101,7 +101,7 @@ class _State extends State<AddExpenseSheet> {
           TextFormField(
             controller:   _amountCtrl,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            textDirection: TextDirection.rtl,
+              textDirection: TextDirection.rtl,
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(r'[\d٠-٩.,٫]')),
             ],

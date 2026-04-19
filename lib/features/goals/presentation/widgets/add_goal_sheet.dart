@@ -184,7 +184,7 @@ class _State extends State<AddGoalSheet> {
               TextFormField(
                 controller:   _monthlyCtrl,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                textDirection: TextDirection.rtl,
+              textDirection: TextDirection.rtl,
                 onChanged:    (_) => setState(() {}),
                 decoration:   const InputDecoration(
                   labelText: 'مقدار الادخار الشهري', hintText: '0'),

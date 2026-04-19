@@ -132,7 +132,7 @@ class _State extends ConsumerState<GoalCard> {
                   child: TextField(
                     controller:   _amountCtrl,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    textDirection: TextDirection.rtl,
+              textDirection: TextDirection.rtl,
                     style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
                     decoration: InputDecoration(
                       hintText:        'إضافة مبلغ',

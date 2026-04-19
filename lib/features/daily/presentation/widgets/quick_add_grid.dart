@@ -136,6 +136,7 @@ class _State extends ConsumerState<_AmountInput> {
                 child: TextField(
                   controller:   _amountCtrl,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              textDirection: TextDirection.rtl,
                   autofocus:    true,
                   textDirection: TextDirection.rtl,
                   style: AppTextStyles.subtitle.copyWith(color: AppColors.textPrimary),

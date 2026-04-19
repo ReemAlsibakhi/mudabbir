@@ -170,7 +170,7 @@ class _IncomeField extends StatelessWidget {
         controller: controller,
         onChanged:  onChanged,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        textDirection: TextDirection.rtl,
+              textDirection: TextDirection.rtl,
         inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.,٠-٩٫]'))],
         style: AppTextStyles.body.copyWith(color: AppColors.textPrimary, fontSize: 16),
         decoration: InputDecoration(hintText: hint),

@@ -69,7 +69,7 @@ class _State extends State<AddFixedExpenseSheet> {
           TextFormField(
             controller: _amountCtrl,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            textDirection: TextDirection.rtl,
+              textDirection: TextDirection.rtl,
             validator: (v) => (v?.trim().isEmpty ?? true) ? 'المبلغ مطلوب' : null,
             decoration: const InputDecoration(labelText: 'المبلغ الشهري', hintText: '0'),
             style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
