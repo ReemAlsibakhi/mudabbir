@@ -18,12 +18,16 @@ class MudabbirApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
     return MaterialApp.router(
-      title:            'مدبّر',
+      title:                      'مدبّر',
       debugShowCheckedModeBanner: false,
-      theme:            AppTheme.dark,
-      routerConfig:     router,
-      locale:           const Locale('ar', 'SA'),
-      supportedLocales: const [Locale('ar','SA'), Locale('ar','AE'), Locale('ar','EG')],
+      theme:                      AppTheme.dark,
+      routerConfig:               router,
+      locale:                     const Locale('ar', 'SA'),
+      supportedLocales: const [
+        Locale('ar', 'SA'),
+        Locale('ar', 'AE'),
+        Locale('ar', 'EG'),
+      ],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
