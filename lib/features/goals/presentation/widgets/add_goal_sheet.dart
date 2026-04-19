@@ -5,252 +5,262 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../shared/ui/widgets/mud_gradient_button.dart';
-import '../providers/goals_notifier.dart';
 import '../../domain/entities/goal.dart';
 import '../../domain/usecases/add_goal_usecase.dart';
+import '../providers/goals_notifier.dart';
 
-class AddGoalSheet extends ConsumerStatefulWidget {
-  const AddGoalSheet({super.key});
+class AddGoalSheet extends StatefulWidget {
+  final WidgetRef ref;
+  const AddGoalSheet({super.key, required this.ref});
 
-  static Future<void> show(BuildContext ctx, WidgetRef? _) =>
+  static Future<void> show(BuildContext context, WidgetRef ref) =>
       showModalBottomSheet(
-        context: ctx, isScrollControlled: true,
-        builder: (_) => const AddGoalSheet(),
+        context:         context,
+        isScrollControlled: true,
+        builder:         (_) => AddGoalSheet(ref: ref),
       );
 
   @override
-  ConsumerState<AddGoalSheet> createState() => _State();
+  State<AddGoalSheet> createState() => _State();
 }
 
-class _State extends ConsumerState<AddGoalSheet> {
-  final _form       = GlobalKey<FormState>();
-  final _nameCtrl   = TextEditingController();
-  final _targetCtrl = TextEditingController();
-  final _savedCtrl  = TextEditingController();
-  final _moCtrl     = TextEditingController();
-  GoalType        _type    = GoalType.home;
-  GoalInputMode   _mode    = GoalInputMode.byDuration;
-  int             _months  = 12;
-  bool            _loading = false;
-  String?         _insight;
+class _State extends State<AddGoalSheet> {
+  final _formKey      = GlobalKey<FormState>();
+  final _nameCtrl     = TextEditingController();
+  final _targetCtrl   = TextEditingController();
+  final _savedCtrl    = TextEditingController();
+  final _monthlyCtrl  = TextEditingController();
+
+  GoalType        _type     = GoalType.home;
+  GoalInputMode   _mode     = GoalInputMode.byDuration;
+  int             _duration = 24;
+  bool            _loading  = false;
+  String?         _error;
+
+  // Live calculation
+  double get _target    => double.tryParse(_targetCtrl.text.replaceAll(',', '')) ?? 0;
+  double get _saved     => double.tryParse(_savedCtrl.text.replaceAll(',', '')) ?? 0;
+  double get _remaining => (_target - _saved).clamp(0, double.infinity);
+
+  double get _calcMonthly    => _duration > 0 && _remaining > 0 ? _remaining / _duration : 0;
+  int    get _calcMonths {
+    final mo = double.tryParse(_monthlyCtrl.text.replaceAll(',', '')) ?? 0;
+    return mo > 0 && _remaining > 0 ? (_remaining / mo).ceil() : 0;
+  }
 
   @override
   void dispose() {
     _nameCtrl.dispose(); _targetCtrl.dispose();
-    _savedCtrl.dispose(); _moCtrl.dispose();
+    _savedCtrl.dispose(); _monthlyCtrl.dispose();
     super.dispose();
   }
 
-  void _calcInsight() {
-    final target = double.tryParse(_targetCtrl.text.replaceAll(',', ''));
-    final saved  = double.tryParse(_savedCtrl.text.replaceAll(',', '')) ?? 0;
-    if (target == null || target <= 0) { setState(() => _insight = null); return; }
-    final rem = (target - saved).clamp(0, double.infinity);
-    if (_mode == GoalInputMode.byDuration) {
-      setState(() => _insight = _months > 0
-          ? 'تحتاج توفير ${(rem / _months).toStringAsFixed(0)} ريال شهرياً'
-          : null);
-    } else {
-      final mo = double.tryParse(_moCtrl.text.replaceAll(',', ''));
-      setState(() => _insight = mo != null && mo > 0
-          ? 'ستصل لهدفك في ${(rem / mo).ceil()} شهر'
-          : null);
-    }
-  }
-
   @override
-  Widget build(BuildContext context) {
-    final inset = MediaQuery.of(context).viewInsets.bottom;
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16, 8, 16, inset + 16),
-      child: Form(
-        key: _form,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(child: Container(
-                width: 36, height: 4, margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(color: AppColors.textTertiary, borderRadius: BorderRadius.circular(99)),
-              )),
-              Text('✨ هدف مالي جديد', style: AppTextStyles.title),
-              const SizedBox(height: 14),
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.only(
+      left: 16, right: 16, top: 8,
+      bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+    ),
+    child: Form(
+      key: _formKey,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(child: Text('✨ هدف مالي جديد', style: AppTextStyles.title)),
+            const SizedBox(height: 16),
 
-              // Type selector
-              _TypeSelector(selected: _type, onChanged: (t) => setState(() => _type = t)),
-              const SizedBox(height: 12),
-
-              TextFormField(
-                controller: _nameCtrl, textDirection: TextDirection.rtl,
-                validator: Validators.name,
-                style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
-                decoration: InputDecoration(
-                  labelText: 'اسم الهدف',
-                  hintText:  'مثال: ${_type.nameAr}',
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              Row(children: [
-                Expanded(child: TextFormField(
-                  controller: _targetCtrl, keyboardType: TextInputType.number,
-                  textDirection: TextDirection.rtl, validator: Validators.amount,
-                  onChanged: (_) => _calcInsight(),
-                  style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
-                  decoration: const InputDecoration(labelText: 'المبلغ المستهدف', hintText: '0'),
-                )),
-                const SizedBox(width: 10),
-                Expanded(child: TextFormField(
-                  controller: _savedCtrl, keyboardType: TextInputType.number,
-                  textDirection: TextDirection.rtl,
-                  onChanged: (_) => _calcInsight(),
-                  style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
-                  decoration: const InputDecoration(labelText: 'مدخر حالياً', hintText: '0'),
-                )),
-              ]),
-              const SizedBox(height: 12),
-
-              // Mode tabs
-              _ModeTab(mode: _mode, onChanged: (m) { setState(() => _mode = m); _calcInsight(); }),
-              const SizedBox(height: 12),
-
-              if (_mode == GoalInputMode.byDuration)
-                DropdownButtonFormField<int>(
-                  value: _months, dropdownColor: AppColors.surface2,
-                  decoration: const InputDecoration(labelText: 'المدة المطلوبة'),
-                  items: [6,12,18,24,36,48,60,84,120].map((m) => DropdownMenuItem(
-                    value: m,
-                    child: Text(_label(m), style: AppTextStyles.body.copyWith(color: AppColors.textPrimary)),
-                  )).toList(),
-                  onChanged: (v) { setState(() => _months = v ?? 12); _calcInsight(); },
-                )
-              else
-                TextFormField(
-                  controller: _moCtrl, keyboardType: TextInputType.number,
-                  textDirection: TextDirection.rtl,
-                  onChanged: (_) => _calcInsight(),
-                  style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
-                  decoration: const InputDecoration(labelText: 'الادخار الشهري', hintText: '0'),
-                ),
-
-              if (_insight != null) ...[
-                const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color:        AppColors.accent.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(10),
-                    border:       Border.all(color: AppColors.accent.withOpacity(0.15)),
+            // Goal type chips
+            Wrap(
+              spacing: 8, runSpacing: 8,
+              children: GoalType.values.map((t) {
+                final sel = _type == t;
+                return GestureDetector(
+                  onTap: () => setState(() => _type = t),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color:        sel ? AppColors.accent.withOpacity(0.15) : AppColors.surface2,
+                      borderRadius: BorderRadius.circular(10),
+                      border:       Border.all(
+                        color: sel ? AppColors.accent : AppColors.border, width: sel ? 1.5 : 1),
+                    ),
+                    child: Text('${t.icon} ${t.nameAr}',
+                      style: AppTextStyles.caption.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: sel ? AppColors.accentAlt : AppColors.textSecondary)),
                   ),
-                  child: Text(_insight!, style: AppTextStyles.body),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 14),
+
+            TextFormField(
+              controller: _nameCtrl, textDirection: TextDirection.rtl,
+              validator:  Validators.name,
+              decoration: const InputDecoration(
+                labelText: 'اسم الهدف',
+                hintText:  'مثال: منزل العائلة في الرياض'),
+              style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 12),
+
+            TextFormField(
+              controller:   _targetCtrl,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              textDirection: TextDirection.rtl,
+              validator:    Validators.amount,
+              onChanged:    (_) => setState(() {}),
+              decoration:   const InputDecoration(labelText: 'المبلغ المستهدف', hintText: '0'),
+              style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 12),
+
+            TextFormField(
+              controller:   _savedCtrl,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              textDirection: TextDirection.rtl,
+              onChanged:    (_) => setState(() {}),
+              decoration:   const InputDecoration(
+                labelText: 'المدخر حالياً', hintText: '0 (إذا لم يكن لديك مدخرات بعد)'),
+              style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 14),
+
+            // Mode selector
+            Container(
+              padding: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                color: AppColors.surface2, borderRadius: BorderRadius.circular(10)),
+              child: Row(
+                children: GoalInputMode.values.map((m) {
+                  final active = _mode == m;
+                  return Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _mode = m),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.symmetric(vertical: 9),
+                        decoration: BoxDecoration(
+                          color:        active ? AppColors.surface3 : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                          child: Text(
+                            m == GoalInputMode.byDuration ? 'حدد المدة' : 'حدد المبلغ الشهري',
+                            style: AppTextStyles.caption.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: active ? AppColors.accentAlt : AppColors.textTertiary),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            if (_mode == GoalInputMode.byDuration) ...[
+              DropdownButtonFormField<int>(
+                value: _duration, dropdownColor: AppColors.surface2,
+                onChanged: (v) => setState(() => _duration = v ?? 12),
+                decoration: const InputDecoration(labelText: 'المدة المطلوبة'),
+                items: [6,12,18,24,36,48,60,84,120,180,240].map((m) => DropdownMenuItem(
+                  value: m,
+                  child: Text(_monthLabel(m), style: AppTextStyles.body.copyWith(
+                    color: AppColors.textPrimary)),
+                )).toList(),
+              ),
+              if (_calcMonthly > 0) ...[
+                const SizedBox(height: 10),
+                _InsightBox(
+                  text: 'تحتاج توفير ${_calcMonthly.toStringAsFixed(0)} شهرياً خلال $_duration شهر',
                 ),
               ],
-              const SizedBox(height: 16),
-              MudGradientButton(label: 'إضافة الهدف', loading: _loading, onTap: _submit),
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ] else ...[
+              TextFormField(
+                controller:   _monthlyCtrl,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                textDirection: TextDirection.rtl,
+                onChanged:    (_) => setState(() {}),
+                decoration:   const InputDecoration(
+                  labelText: 'مقدار الادخار الشهري', hintText: '0'),
+                style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
+              ),
+              if (_calcMonths > 0) ...[
+                const SizedBox(height: 10),
+                _InsightBox(
+                  text: 'ستصل لهدفك في $_calcMonths شهر '
+                        '(${(_calcMonths / 12).toStringAsFixed(1)} سنة)',
+                ),
+              ],
             ],
-          ),
+
+            if (_error != null) ...[
+              const SizedBox(height: 8),
+              Text(_error!, style: AppTextStyles.caption.copyWith(color: AppColors.error)),
+            ],
+            const SizedBox(height: 16),
+
+            MudGradientButton(label: '✨ إضافة الهدف', onTap: _submit, loading: _loading),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
 
-  String _label(int m) {
+  String _monthLabel(int m) {
     if (m < 12)  return '$m أشهر';
-    if (m == 12) return 'سنة';
+    if (m == 12) return 'سنة واحدة';
     if (m == 24) return 'سنتان';
-    return '${m ~/ 12} سنوات';
+    if (m % 12 == 0) return '${m ~/ 12} سنوات';
+    return '$m شهراً';
   }
 
   Future<void> _submit() async {
-    if (!(_form.currentState?.validate() ?? false)) return;
+    setState(() => _error = null);
+    if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() => _loading = true);
 
-    final success = await ref.read(goalsNotifierProvider.notifier).addGoal(
+    final error = await widget.ref.read(goalsNotifierProvider.notifier).addGoal(
       AddGoalParams(
-        type:           _type,
-        name:           _nameCtrl.text,
-        targetRaw:      _targetCtrl.text,
-        savedRaw:       _savedCtrl.text,
-        mode:           _mode,
-        durationMonths: _mode == GoalInputMode.byDuration ? _months : null,
-        monthlyRaw:     _mode == GoalInputMode.byMonthly  ? _moCtrl.text : null,
+        type:             _type,
+        name:             _nameCtrl.text,
+        targetRaw:        _targetCtrl.text,
+        savedRaw:         _savedCtrl.text,
+        mode:             _mode,
+        durationMonths:   _mode == GoalInputMode.byDuration ? _duration : null,
+        monthlyAmountRaw: _mode == GoalInputMode.byMonthlyAmount ? _monthlyCtrl.text : null,
       ),
     );
 
     if (!mounted) return;
     setState(() => _loading = false);
-    if (success) { context.popScreen(); context.showSnack('✅ تمت إضافة الهدف', color: AppColors.success); }
+
+    if (error != null) {
+      setState(() => _error = error);
+    } else {
+      context.popScreen();
+      context.showSnack('✅ تمت إضافة الهدف', color: AppColors.success);
+    }
   }
 }
 
-class _TypeSelector extends StatelessWidget {
-  final GoalType type;
-  final ValueChanged<GoalType> onChanged;
-  const _TypeSelector({required this.type, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) => Wrap(
-    spacing: 8, runSpacing: 8,
-    children: GoalType.values.map((t) {
-      final sel = t == type;
-      return GestureDetector(
-        onTap: () => onChanged(t),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          decoration: BoxDecoration(
-            color:        sel ? AppColors.accent.withOpacity(0.15) : AppColors.surface2,
-            borderRadius: BorderRadius.circular(10),
-            border:       Border.all(color: sel ? AppColors.accent : AppColors.border, width: sel ? 1.5 : 1),
-          ),
-          child: Text('${t.icon} ${t.nameAr}', style: AppTextStyles.caption.copyWith(
-            color: sel ? AppColors.accentAlt : AppColors.textSecondary)),
-        ),
-      );
-    }).toList(),
-  );
-}
-
-class _ModeTab extends StatelessWidget {
-  final GoalInputMode mode;
-  final ValueChanged<GoalInputMode> onChanged;
-  const _ModeTab({required this.mode, required this.onChanged});
+class _InsightBox extends StatelessWidget {
+  final String text;
+  const _InsightBox({required this.text});
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(3),
-    decoration: BoxDecoration(color: AppColors.surface2, borderRadius: BorderRadius.circular(10)),
-    child: Row(children: [
-      _Btn(label: 'حدد المدة',          m: GoalInputMode.byDuration, sel: mode, onTap: onChanged),
-      _Btn(label: 'حدد المبلغ الشهري', m: GoalInputMode.byMonthly,  sel: mode, onTap: onChanged),
-    ]),
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color:        AppColors.accent.withOpacity(0.08),
+      borderRadius: BorderRadius.circular(10),
+      border:       Border.all(color: AppColors.accent.withOpacity(0.15)),
+    ),
+    child: Text(text, style: AppTextStyles.body),
   );
-}
-
-class _Btn extends StatelessWidget {
-  final String label; final GoalInputMode m, sel; final ValueChanged<GoalInputMode> onTap;
-  const _Btn({required this.label, required this.m, required this.sel, required this.onTap});
-  @override
-  Widget build(BuildContext context) {
-    final active = m == sel;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => onTap(m),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 9),
-          decoration: BoxDecoration(
-            color:        active ? AppColors.surface3 : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Center(child: Text(label, style: AppTextStyles.caption.copyWith(
-            color: active ? AppColors.accentAlt : AppColors.textTertiary,
-            fontWeight: active ? FontWeight.w700 : FontWeight.w400,
-          ))),
-        ),
-      ),
-    );
-  }
 }
