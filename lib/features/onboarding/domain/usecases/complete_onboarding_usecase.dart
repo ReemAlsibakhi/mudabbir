@@ -1,26 +1,30 @@
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/result.dart';
 import '../../../../core/utils/logger.dart';
-import '../entities/onboarding_data.dart';
+import '../entities/onboarding_profile.dart';
+import '../repositories/onboarding_repository.dart';
 
 final class CompleteOnboardingUseCase {
-  Future<Result<void>> call(OnboardingData data) async {
-    // ── Validate ────────────────────────────────────────
-    if (data.name.trim().isEmpty)   return const Fail(ValidationFailure('الاسم مطلوب'));
-    if (data.name.trim().length < 2) return const Fail(ValidationFailure('الاسم قصير جداً'));
-    if (data.name.trim().length > 30) return const Fail(ValidationFailure('الاسم طويل جداً'));
-    if (data.countryId.isEmpty)     return const Fail(ValidationFailure('اختر دولتك'));
+  final OnboardingRepository _repo;
+  CompleteOnboardingUseCase(this._repo);
 
-    return Result.guard(() async {
-      final prefs = await SharedPreferences.getInstance();
-      await Future.wait([
-        prefs.setString(AppConstants.keyUserName,   data.name.trim()),
-        prefs.setString(AppConstants.keyCountry,    data.countryId),
-        prefs.setString(AppConstants.keyLifeStage,  data.lifeStage.name),
-        prefs.setBool(AppConstants.keyOnboarded,    true),
-      ]);
-      AppLogger.info('CompleteOnboarding', 'Done for ${data.name}');
-    });
+  Future<Result<void>> call(OnboardingProfile p) async {
+    // Validate
+    if (p.name.trim().isEmpty)
+      return const Fail(ValidationFailure('الاسم مطلوب'));
+    if (p.name.trim().length > 30)
+      return const Fail(ValidationFailure('الاسم طويل جداً'));
+    if (p.countryId.isEmpty)
+      return const Fail(ValidationFailure('اختيار الدولة مطلوب'));
+
+    // Edge: negative income (shouldn't happen with UI, but guard anyway)
+    if (p.primaryIncome < 0 || p.secondaryIncome < 0 || p.extraIncome < 0)
+      return const Fail(ValidationFailure('الدخل لا يمكن أن يكون سالباً'));
+
+    // Edge: absurd income
+    if (p.totalIncome > 100_000_000)
+      return const Fail(ValidationFailure('الدخل يبدو مرتفعاً جداً'));
+
+    AppLogger.info('CompleteOnboarding', 'name=${p.name} country=${p.countryId} stage=${p.lifeStage}');
+    return _repo.save(p);
   }
 }

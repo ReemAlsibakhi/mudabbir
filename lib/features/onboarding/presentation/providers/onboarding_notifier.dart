@@ -1,130 +1,99 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:equatable/equatable.dart';
 import '../../../../core/constants/countries.dart';
 import '../../../../core/utils/logger.dart';
-import '../../domain/entities/onboarding_data.dart';
+import '../../data/repositories/onboarding_repository_impl.dart';
+import '../../domain/entities/onboarding_profile.dart';
+import '../../domain/repositories/onboarding_repository.dart';
 import '../../domain/usecases/complete_onboarding_usecase.dart';
+import 'onboarding_state.dart';
 
-// ─── State ────────────────────────────────────────────────
-final class OnboardingState extends Equatable {
-  final int       step;       // 0=promo 1=country 2=lifeStage 3=name
-  final String    countryId;
-  final LifeStage lifeStage;
-  final String    name;
-  final bool      isLoading;
-  final String?   error;
-
-  const OnboardingState({
-    this.step      = 0,
-    this.countryId = 'sa',
-    this.lifeStage = LifeStage.single,
-    this.name      = '',
-    this.isLoading = false,
-    this.error,
-  });
-
-  bool get canFinish => name.trim().length >= 2 && countryId.isNotEmpty;
-
-  OnboardingState copyWith({
-    int? step, String? countryId, LifeStage? lifeStage,
-    String? name, bool? isLoading, String? error, bool clearError = false,
-  }) => OnboardingState(
-    step:      step      ?? this.step,
-    countryId: countryId ?? this.countryId,
-    lifeStage: lifeStage ?? this.lifeStage,
-    name:      name      ?? this.name,
-    isLoading: isLoading ?? this.isLoading,
-    error:     clearError ? null : error ?? this.error,
-  );
-
-  @override
-  List<Object?> get props => [step, countryId, lifeStage, name, isLoading, error];
-}
-
-// ─── Provider ─────────────────────────────────────────────
-final onboardingProvider =
-    StateNotifierProvider.autoDispose<OnboardingNotifier, OnboardingState>(
-  (_) => OnboardingNotifier(),
+final onboardingRepoProvider = Provider<OnboardingRepository>(
+  (_) => OnboardingRepositoryImpl(),
 );
 
-// ─── Notifier ─────────────────────────────────────────────
+final isOnboardedProvider = Provider<bool>(
+  (ref) => ref.watch(onboardingRepoProvider).isOnboarded(),
+);
+
+final onboardingNotifierProvider =
+    StateNotifierProvider<OnboardingNotifier, OnboardingState>(
+  (ref) => OnboardingNotifier(ref.watch(onboardingRepoProvider)),
+);
+
 final class OnboardingNotifier extends StateNotifier<OnboardingState> {
   static const _tag = 'OnboardingNotifier';
+  final OnboardingRepository _repo;
 
-  OnboardingNotifier() : super(const OnboardingState()) {
-    _autoDetectCountry();
-  }
+  OnboardingNotifier(this._repo)
+      : super(OnboardingState(
+          draft: OnboardingProfile(
+            name:      '',
+            countryId: _detectCountry(),
+            lifeStage: LifeStage.single,
+          ),
+        ));
 
-  void _autoDetectCountry() {
-    try {
-      // Try detecting from device locale
-      // In real app: use Platform.localeName
-      AppLogger.debug(_tag, 'Auto-detecting country from locale');
-    } catch (e) {
-      AppLogger.warn(_tag, 'Country auto-detect failed: $e');
-      // Silently keep default 'sa'
-    }
-  }
+  // ── Navigation ────────────────────────────────────────
 
   void nextStep() {
-    // Edge: don't go beyond last step
-    if (state.step >= 3) return;
-    if (!mounted) return;
-    state = state.copyWith(step: state.step + 1);
+    final next = OnboardingStep.values[state.step.index + 1];
+    state = state.copyWith(step: next, clearError: true);
   }
 
   void prevStep() {
-    if (state.step <= 0) return;
-    if (!mounted) return;
-    state = state.copyWith(step: state.step - 1, clearError: true);
+    if (state.step.index == 0) return;
+    final prev = OnboardingStep.values[state.step.index - 1];
+    state = state.copyWith(step: prev, clearError: true);
   }
 
-  void selectCountry(String id) {
-    // Edge: validate country exists
-    final exists = kCountries.any((c) => c.id == id);
-    if (!exists) {
-      AppLogger.warn(_tag, 'Unknown country id: $id');
-      return;
-    }
-    state = state.copyWith(countryId: id);
-  }
+  // ── Updates ───────────────────────────────────────────
 
-  void selectLifeStage(LifeStage stage) {
-    state = state.copyWith(lifeStage: stage);
-  }
+  void selectCountry(String id) =>
+      state = state.copyWith(draft: state.draft.copyWith(countryId: id));
 
-  void setName(String name) {
-    // Edge: trim + limit length
-    state = state.copyWith(
-      name:       name.substring(0, name.length.clamp(0, 30)),
-      clearError: true,
-    );
-  }
+  void selectLifeStage(LifeStage stage) =>
+      state = state.copyWith(draft: state.draft.copyWith(lifeStage: stage));
 
-  Future<bool> finish() async {
-    if (!state.canFinish) {
-      state = state.copyWith(error: 'أدخل اسمك أولاً');
-      return false;
-    }
+  void setName(String name) =>
+      state = state.copyWith(draft: state.draft.copyWith(name: name));
+
+  void setIncome({double? primary, double? secondary, double? extra}) =>
+      state = state.copyWith(draft: state.draft.copyWith(
+        primaryIncome:   primary?.clamp(0, double.infinity),
+        secondaryIncome: secondary?.clamp(0, double.infinity),
+        extraIncome:     extra?.clamp(0, double.infinity),
+      ));
+
+  // ── Complete ──────────────────────────────────────────
+
+  Future<bool> complete() async {
+    state = state.copyWith(isSaving: true, clearError: true);
+
+    final result = await CompleteOnboardingUseCase(_repo).call(state.draft);
     if (!mounted) return false;
-    state = state.copyWith(isLoading: true, clearError: true);
 
-    final result = await CompleteOnboardingUseCase().call(
-      OnboardingData(
-        name:      state.name.trim(),
-        countryId: state.countryId,
-        lifeStage: state.lifeStage,
-      ),
-    );
-
-    if (!mounted) return false;
     if (result.isFailure) {
-      state = state.copyWith(isLoading: false, error: result.failureOrNull!.message);
+      AppLogger.warn(_tag, 'Complete failed: ${result.failureOrNull}');
+      state = state.copyWith(
+        isSaving: false,
+        error:    result.failureOrNull!.message,
+      );
       return false;
     }
-    state = state.copyWith(isLoading: false, clearError: true);
+
+    state = state.copyWith(step: OnboardingStep.done, isSaving: false, clearError: true);
+    AppLogger.info(_tag, 'Onboarding complete ✅');
     return true;
   }
 
-  void clearError() { if (mounted) state = state.copyWith(clearError: true); }
+  // ── Auto-detect country from device locale ─────────────
+  static String _detectCountry() {
+    try {
+      // Use platform locale to detect country
+      // In real app: PlatformDispatcher.instance.locale
+      return 'sa'; // default Saudi Arabia
+    } catch (_) {
+      return 'sa';
+    }
+  }
 }
