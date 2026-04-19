@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'core/constants/app_constants.dart';
 import 'core/utils/logger.dart';
+import 'features/notifications/notification_service.dart';
 import 'shared/data/models/expense_model.dart';
 import 'shared/data/models/fixed_expense_model.dart';
 import 'shared/data/models/goal_model.dart';
@@ -11,9 +12,13 @@ import 'shared/data/models/user_model.dart';
 
 abstract final class Bootstrap {
   static Future<void> init() async {
-    AppLogger.info('Bootstrap', 'Initializing...');
-    await Future.wait([_initHive(), _initSystemUI()]);
+    AppLogger.info('Bootstrap', 'Initializing مدبّر...');
+    await Future.wait([
+      _initHive(),
+      _initSystemUI(),
+    ]);
     tz.initializeTimeZones();
+    await NotificationService.init();
     AppLogger.info('Bootstrap', 'Ready ✅');
   }
 
@@ -28,8 +33,8 @@ abstract final class Bootstrap {
       Hive.openBox<ExpenseModel>(AppConstants.dailyExpensesBox),
       Hive.openBox<FixedExpenseModel>(AppConstants.fixedExpensesBox),
       Hive.openBox<GoalModel>(AppConstants.goalsBox),
-      Hive.openBox(AppConstants.settingsBox),
-      Hive.openBox(AppConstants.incomeBox),
+      Hive.openBox(AppConstants.settingsBox),   // plain box (streak + settings)
+      Hive.openBox(AppConstants.incomeBox),     // plain box (income Map)
     ]);
   }
 
