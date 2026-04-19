@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_text_styles.dart';
+import '../../../core/router/app_router.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 class MainShell extends StatelessWidget {
   final Widget child;
   const MainShell({super.key, required this.child});
 
   static const _tabs = [
-    (path: '/home',     icon: '🌙', label: 'اليوم'),
-    (path: '/income',   icon: '💰', label: 'الدخل'),
-    (path: '/expenses', icon: '💸', label: 'المصروف'),
-    (path: '/goals',    icon: '🎯', label: 'الأهداف'),
-    (path: '/reports',  icon: '📈', label: 'التقارير'),
-    (path: '/settings', icon: '⚙️', label: 'إعدادات'),
+    (path: AppRoutes.home,     icon: '🌙', label: 'اليوم'),
+    (path: AppRoutes.income,   icon: '💰', label: 'الدخل'),
+    (path: AppRoutes.expenses, icon: '💸', label: 'المصروف'),
+    (path: AppRoutes.goals,    icon: '🎯', label: 'الأهداف'),
+    (path: AppRoutes.reports,  icon: '📈', label: 'تقارير'),
+    (path: AppRoutes.settings, icon: '⚙️', label: 'إعدادات'),
   ];
 
   @override
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
-
     return Scaffold(
       body: child,
       bottomNavigationBar: Container(
@@ -32,7 +32,8 @@ class MainShell extends StatelessWidget {
             height: 58,
             child: Row(
               children: _tabs.map((t) {
-                final active = location == t.path;
+                final active = location == t.path ||
+                    (location == '/' && t.path == AppRoutes.home);
                 return Expanded(
                   child: GestureDetector(
                     onTap: () => context.go(t.path),
@@ -42,11 +43,10 @@ class MainShell extends StatelessWidget {
                       children: [
                         Text(t.icon, style: const TextStyle(fontSize: 17)),
                         const SizedBox(height: 2),
-                        Text(t.label,
-                          style: AppTextStyles.label.copyWith(
-                            color: active ? AppColors.accentAlt : AppColors.textTertiary,
-                            letterSpacing: 0,
-                          )),
+                        Text(t.label, style: AppTextStyles.label.copyWith(
+                          color: active ? AppColors.accentAlt : AppColors.textTertiary,
+                          letterSpacing: 0,
+                        )),
                       ],
                     ),
                   ),

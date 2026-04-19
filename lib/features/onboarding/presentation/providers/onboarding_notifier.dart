@@ -97,3 +97,6 @@ final class OnboardingNotifier extends StateNotifier<OnboardingState> {
     }
   }
 }
+
+// Re-export repo provider for use in settings
+// ignore_for_file: duplicate_export

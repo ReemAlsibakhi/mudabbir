@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../providers/onboarding_notifier.dart';
@@ -17,6 +19,13 @@ class OnboardingFlow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(onboardingNotifierProvider);
 
+    // Listen for completion → navigate to home
+    ref.listen(onboardingNotifierProvider, (_, next) {
+      if (next.step == OnboardingStep.done && context.mounted) {
+        context.go(AppRoutes.home);
+      }
+    });
+
     return Scaffold(
       body: SafeArea(
         child: AnimatedSwitcher(
@@ -30,31 +39,29 @@ class OnboardingFlow extends ConsumerWidget {
               child: child,
             ),
           ),
-          child: _buildStep(state, ref),
+          child: _stepWidget(state, ref),
         ),
       ),
     );
   }
 
-  Widget _buildStep(OnboardingState state, WidgetRef ref) {
+  Widget _stepWidget(OnboardingState state, WidgetRef ref) {
     final notifier = ref.read(onboardingNotifierProvider.notifier);
     return switch (state.step) {
-      OnboardingStep.promo      => PromoSlide(onNext: notifier.nextStep, key: const ValueKey('promo')),
-      OnboardingStep.country    => CountryPickerStep(key: const ValueKey('country')),
-      OnboardingStep.lifeStage  => LifeStagePicker(key: const ValueKey('stage')),
-      OnboardingStep.name       => NameStep(key: const ValueKey('name')),
-      OnboardingStep.budget     => BudgetSetupStep(key: const ValueKey('budget')),
-      OnboardingStep.done       => const _DoneStep(key: ValueKey('done')),
+      OnboardingStep.promo      => PromoSlide(onNext: notifier.nextStep,       key: const ValueKey('promo')),
+      OnboardingStep.country    => CountryPickerStep(                           key: const ValueKey('country')),
+      OnboardingStep.lifeStage  => LifeStagePicker(                            key: const ValueKey('stage')),
+      OnboardingStep.name       => NameStep(                                   key: const ValueKey('name')),
+      OnboardingStep.budget     => BudgetSetupStep(                            key: const ValueKey('budget')),
+      OnboardingStep.done       => const _LoadingStep(                         key: ValueKey('done')),
     };
   }
 }
 
-// ── Done step (replaced by router navigation) ─────────────
-class _DoneStep extends StatelessWidget {
-  const _DoneStep({super.key});
-
+class _LoadingStep extends StatelessWidget {
+  const _LoadingStep({super.key});
   @override
   Widget build(BuildContext context) => const Center(
-    child: CircularProgressIndicator(color: AppColors.accent),
+    child: CircularProgressIndicator(color: AppColors.accentAlt),
   );
 }
