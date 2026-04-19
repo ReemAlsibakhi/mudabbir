@@ -9,6 +9,7 @@ class MudCard extends StatelessWidget {
   final VoidCallback?       onTap;
   final EdgeInsetsGeometry? margin;
   final double              radius;
+  final Border?             border;
 
   const MudCard({
     super.key,
@@ -18,6 +19,7 @@ class MudCard extends StatelessWidget {
     this.onTap,
     this.margin,
     this.radius = 16,
+    this.border,
   });
 
   @override
@@ -29,7 +31,7 @@ class MudCard extends StatelessWidget {
       decoration: BoxDecoration(
         color:        color ?? AppColors.surface1,
         borderRadius: BorderRadius.circular(radius),
-        border:       Border.all(color: AppColors.border),
+        border:       border ?? Border.all(color: AppColors.border),
       ),
       child: child,
     ),
@@ -43,6 +45,9 @@ class MudSectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(bottom: 10, top: 2),
-    child: Text(text.toUpperCase(), style: AppTextStyles.label),
+    child: Text(
+      text.toUpperCase(),
+      style: AppTextStyles.label,
+    ),
   );
 }

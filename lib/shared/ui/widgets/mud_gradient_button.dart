@@ -8,14 +8,16 @@ class MudGradientButton extends StatelessWidget {
   final bool         loading;
   final double?      width;
   final bool         enabled;
+  final String?      prefixEmoji;
 
   const MudGradientButton({
     super.key,
     required this.label,
     required this.onTap,
-    this.loading = false,
+    this.loading     = false,
     this.width,
-    this.enabled = true,
+    this.enabled     = true,
+    this.prefixEmoji,
   });
 
   @override
@@ -23,29 +25,37 @@ class MudGradientButton extends StatelessWidget {
     final active = enabled && !loading;
     return GestureDetector(
       onTap: active ? onTap : null,
-      child: AnimatedOpacity(
-        opacity: active ? 1.0 : 0.6,
-        duration: const Duration(milliseconds: 200),
-        child: Container(
-          width: width ?? double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          decoration: BoxDecoration(
-            gradient:     active ? AppColors.primary : null,
-            color:        active ? null : AppColors.surface3,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow:    active ? [BoxShadow(
-              color: AppColors.accent.withOpacity(0.25),
-              blurRadius: 12, offset: const Offset(0, 4),
-            )] : null,
-          ),
-          child: Center(
-            child: loading
-                ? const SizedBox(
-                    width: 20, height: 20,
-                    child: CircularProgressIndicator(
-                      color: Colors.white, strokeWidth: 2))
-                : Text(label, style: AppTextStyles.button),
-          ),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        width:   width ?? double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        decoration: BoxDecoration(
+          gradient:     active ? AppColors.primary : null,
+          color:        active ? null : AppColors.surface3,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow:    active ? [BoxShadow(
+            color:      AppColors.accent.withOpacity(0.3),
+            blurRadius: 16,
+            offset:     const Offset(0, 4),
+          )] : null,
+        ),
+        child: Center(
+          child: loading
+              ? const SizedBox(
+                  width: 20, height: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white, strokeWidth: 2))
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (prefixEmoji != null) ...[
+                      Text(prefixEmoji!,
+                        style: const TextStyle(fontSize: 16)),
+                      const SizedBox(width: 8),
+                    ],
+                    Text(label, style: AppTextStyles.button),
+                  ],
+                ),
         ),
       ),
     );

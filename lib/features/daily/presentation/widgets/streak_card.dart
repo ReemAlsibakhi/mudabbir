@@ -10,46 +10,101 @@ class StreakCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final streak = ref.watch(streakProvider);
+    if (streak.count == 0) return const _EmptyStreak();
+    return _ActiveStreak(streak: streak);
+  }
+}
 
+class _ActiveStreak extends StatelessWidget {
+  final streak;
+  const _ActiveStreak({required this.streak});
+
+  @override
+  Widget build(BuildContext context) {
+    final badge = streak.badgeLabel;
     return Container(
-      margin:  const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          AppColors.warning.withOpacity(0.12),
-          AppColors.orange.withOpacity(0.06),
-        ]),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.warning.withOpacity(0.22)),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end:   Alignment.bottomRight,
+          colors: [Color(0xFF1C1500), Color(0xFF110D00)],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.gold.withOpacity(0.2)),
       ),
       child: Row(
         children: [
-          _FlameIcon(isAtRisk: streak.isAtRisk),
+          // Flame icon box
+          Container(
+            width: 44, height: 44,
+            decoration: BoxDecoration(
+              color:        AppColors.gold.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(13),
+              border:       Border.all(color: AppColors.gold.withOpacity(0.15)),
+            ),
+            child: const Center(
+              child: Text('🔥', style: TextStyle(fontSize: 22)),
+            ),
+          ),
           const SizedBox(width: 12),
+          // Info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(children: [
-                  Text('${streak.count}',
-                    style: AppTextStyles.headline2.copyWith(color: AppColors.warning)),
-                  const SizedBox(width: 6),
-                  Text('يوم متواصل', style: AppTextStyles.body),
-                ]),
-                Text(streak.statusMessage, style: AppTextStyles.caption),
-                if (streak.bestCount > 0 && streak.bestCount != streak.count)
-                  Text('أفضل سلسلة: ${streak.bestCount} يوم',
-                    style: AppTextStyles.label),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '${streak.count}',
+                        style: const TextStyle(
+                          fontFamily: 'Cairo', fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFFFCD34D),
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '  يوم متواصل',
+                        style: TextStyle(
+                          fontFamily: 'Cairo', fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.goldLight.withOpacity(0.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  streak.statusMessage,
+                  style: TextStyle(
+                    fontFamily: 'Cairo', fontSize: 11,
+                    color: AppColors.gold.withOpacity(0.55),
+                  ),
+                ),
               ],
             ),
           ),
-          if (streak.badgeLabel != null)
+          // Badge
+          if (badge != null)
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
               decoration: BoxDecoration(
-                color: AppColors.warning, borderRadius: BorderRadius.circular(99)),
-              child: Text(streak.badgeLabel!,
-                style: AppTextStyles.label.copyWith(color: Colors.white)),
+                color:        AppColors.gold.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(9),
+                border:       Border.all(color: AppColors.gold.withOpacity(0.2)),
+              ),
+              child: Text(
+                badge,
+                style: const TextStyle(
+                  fontFamily: 'Cairo', fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFFFCD34D),
+                ),
+              ),
             ),
         ],
       ),
@@ -57,25 +112,28 @@ class StreakCard extends ConsumerWidget {
   }
 }
 
-class _FlameIcon extends StatefulWidget {
-  final bool isAtRisk;
-  const _FlameIcon({required this.isAtRisk});
-  @override State<_FlameIcon> createState() => _FlameState();
-}
-class _FlameState extends State<_FlameIcon> with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-  late final Animation<double>   _anim;
-  @override void initState() {
-    super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 800))
-      ..repeat(reverse: true);
-    _anim = Tween(begin: 0.9, end: 1.1).animate(
-      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
-  }
-  @override void dispose() { _ctrl.dispose(); super.dispose(); }
-  @override Widget build(BuildContext context) => ScaleTransition(
-    scale: _anim,
-    child: Text(widget.isAtRisk ? '⚠️' : '🔥',
-      style: const TextStyle(fontSize: 30)),
+class _EmptyStreak extends StatelessWidget {
+  const _EmptyStreak();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    margin: const EdgeInsets.only(bottom: 12),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: BoxDecoration(
+      color:        AppColors.surface2,
+      borderRadius: BorderRadius.circular(14),
+      border:       Border.all(color: AppColors.border),
+    ),
+    child: Row(
+      children: [
+        const Text('🔥', style: TextStyle(fontSize: 20)),
+        const SizedBox(width: 10),
+        Text(
+          'ابدأ سلسلتك اليوم!',
+          style: AppTextStyles.body.copyWith(
+            color: AppColors.textTertiary, fontSize: 13),
+        ),
+      ],
+    ),
   );
 }
