@@ -1,7 +1,3 @@
-// ═══════════════════════════════════════════════════════════
-// Expense Entity — Pure Dart, no framework dependencies
-// ═══════════════════════════════════════════════════════════
-
 import 'package:equatable/equatable.dart';
 
 final class Expense extends Equatable {
@@ -23,20 +19,7 @@ final class Expense extends Equatable {
     required this.createdAt,
   });
 
-  Expense copyWith({
-    String?   name,
-    double?   amount,
-    String?   date,
-    String?   monthKey,
-  }) => Expense(
-    id:         id,
-    categoryId: categoryId,
-    name:       name       ?? this.name,
-    amount:     amount     ?? this.amount,
-    date:       date       ?? this.date,
-    monthKey:   monthKey   ?? this.monthKey,
-    createdAt:  createdAt,
-  );
+  bool get isValid => amount > 0 && categoryId.isNotEmpty && date.isNotEmpty;
 
   @override
   List<Object?> get props => [id, categoryId, name, amount, date, monthKey];
@@ -55,9 +38,20 @@ final class FixedExpense extends Equatable {
     required this.categoryId,
     required this.name,
     required this.amount,
-    this.active        = true,
+    this.active = true,
     this.dueDayOfMonth,
   });
+
+  /// Days until next payment — returns null if dueDayOfMonth not set
+  int? daysUntilDue() {
+    if (dueDayOfMonth == null) return null;
+    final now  = DateTime.now();
+    final due  = DateTime(now.year, now.month, dueDayOfMonth!);
+    final next = due.isBefore(now)
+        ? DateTime(now.year, now.month + 1, dueDayOfMonth!)
+        : due;
+    return next.difference(now).inDays;
+  }
 
   @override
   List<Object?> get props => [id, categoryId, name, amount, active, dueDayOfMonth];
