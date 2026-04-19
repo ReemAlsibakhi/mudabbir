@@ -1,15 +1,11 @@
 import 'package:intl/intl.dart';
 
 extension DoubleExt on double {
-  /// 12345.6 → "12,345" 
-  String toAr() => NumberFormat('#,##0.##', 'ar').format(this);
-
-  /// مع العملة: "12,345 ريال"
-  String toCurrency(String currency) => '${toAr()} $currency';
-
-  /// نسبة: 0.45 → "45.0%"
-  String toPercent([int decimals = 1]) =>
-      '${(this * 100).toStringAsFixed(decimals)}%';
+  String fmt()                    => NumberFormat('#,##0.##', 'ar').format(this);
+  String withCurrency(String cur) => '${fmt()} $cur';
+  String asPercent([int d = 1])   => '${toStringAsFixed(d)}%';
+  bool   get isPositive           => this > 0;
+  bool   get isNegative           => this < 0;
 }
 
 extension DoubleNullExt on double? {

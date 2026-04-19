@@ -1,29 +1,18 @@
 extension DateTimeExt on DateTime {
-  /// "2025-04"
-  String get monthKey =>
-      '$year-${month.toString().padLeft(2, '0')}';
+  String get monthKey => '$year-${month.toString().padLeft(2, '0')}';
+  String get dateKey  => '$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
 
-  /// "2025-04-18"
-  String get dateKey =>
-      '$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
-
-  /// أبريل 2025
   String get monthAr {
-    const months = [
-      'يناير','فبراير','مارس','أبريل','مايو','يونيو',
-      'يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر',
-    ];
-    return '${months[month - 1]} $year';
+    const m = ['يناير','فبراير','مارس','أبريل','مايو','يونيو',
+                'يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    return '${m[month - 1]} $year';
   }
 
-  /// الخميس 18 أبريل
   String get dayFullAr {
-    const days = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-    const months = [
-      'يناير','فبراير','مارس','أبريل','مايو','يونيو',
-      'يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر',
-    ];
-    return '${days[weekday % 7]} $day ${months[month - 1]}';
+    const d = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+    const m = ['يناير','فبراير','مارس','أبريل','مايو','يونيو',
+                'يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    return '${d[weekday % 7]} $day ${m[month - 1]}';
   }
 
   bool get isToday {
@@ -31,7 +20,11 @@ extension DateTimeExt on DateTime {
     return year == n.year && month == n.month && day == n.day;
   }
 
-  DateTime get startOfMonth => DateTime(year, month, 1);
+  DateTime get startOfMonth => DateTime(year, month);
   DateTime get endOfMonth   => DateTime(year, month + 1, 0);
-  int get daysLeftInMonth   => endOfMonth.day - day;
+  int  get daysLeftInMonth  => endOfMonth.day - day;
+  double get monthProgress  => day / endOfMonth.day;
+
+  DateTime prevMonth() => month == 1 ? DateTime(year - 1, 12) : DateTime(year, month - 1);
+  DateTime nextMonth() => month == 12 ? DateTime(year + 1, 1) : DateTime(year, month + 1);
 }
