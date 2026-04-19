@@ -181,7 +181,7 @@ class _IncomeField extends StatelessWidget {
           final n = double.tryParse(
             v.trim()
              .replaceAll(',', '')
-             .replaceAll(RegExp(r'[٠-٩]'), (m) => (m.codeUnitAt(0) - 0x0660).toString()),
+             .replaceAllMapped(RegExp(r'[٠-٩]'), (m) => (m.group(0)!.codeUnitAt(0) - 0x0660).toString()),
           );
           if (n == null)  return 'أدخل رقماً صحيحاً';
           if (n < 0)      return 'لا يمكن أن يكون سالباً';

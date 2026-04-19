@@ -10,6 +10,7 @@ import '../../../../shared/ui/widgets/mud_insight_box.dart';
 import '../../../../shared/ui/widgets/mud_progress_bar.dart';
 import '../../../../shared/ui/widgets/mud_stat_card.dart';
 import '../../../expenses/presentation/providers/expenses_notifier.dart';
+import '../../../expenses/presentation/providers/expenses_state.dart';
 import '../providers/reports_provider.dart';
 
 class MonthlyReportTab extends ConsumerWidget {
