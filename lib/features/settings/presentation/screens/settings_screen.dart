@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/countries.dart';
+import '../../../onboarding/domain/entities/onboarding_profile.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/ui/widgets/mud_card.dart';
@@ -191,4 +192,67 @@ class _InfoRow extends StatelessWidget {
       ],
     ),
   );
+}
+
+// ── Life Stage Row — tappable, shows change dialog ────────
+class _LifeStageRow extends StatelessWidget {
+  final dynamic profile;
+  const _LifeStageRow({required this.profile});
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: () => _showPicker(context),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 7),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text('👥 مرحلة الحياة',
+            style: TextStyle(fontFamily: 'Cairo', fontSize: 14, color: Color(0xFF94A3B8))),
+          Row(
+            children: [
+              Text(
+                '${profile.lifeStage.icon} ${profile.lifeStage.nameAr}',
+                style: const TextStyle(fontFamily: 'Cairo', fontSize: 14,
+                  fontWeight: FontWeight.w700, color: Color(0xFFF1F5FF)),
+              ),
+              const SizedBox(width: 4),
+              const Icon(Icons.edit_outlined, size: 14, color: Color(0xFF475569)),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+
+  void _showPicker(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: const Color(0xFF152033),
+        title: const Text('غيّر مرحلة الحياة',
+          style: TextStyle(fontFamily:'Cairo', fontWeight:FontWeight.w700,
+            color: Color(0xFFF1F5FF))),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: LifeStage.values.map((stage) => ListTile(
+            leading: Text(stage.icon, style: const TextStyle(fontSize: 22)),
+            title:   Text(stage.nameAr,
+              style: const TextStyle(fontFamily:'Cairo', color: Color(0xFFF1F5FF))),
+            subtitle: Text(stage.desc,
+              style: const TextStyle(fontFamily:'Cairo', fontSize: 11,
+                color: Color(0xFF94A3B8))),
+            selected: profile.lifeStage == stage,
+            selectedTileColor: const Color(0x1A2563EB),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            onTap: () {
+              Navigator.pop(context);
+              // Note: updating life stage requires saving to Hive
+              // Implemented via onboarding repo in Phase 2
+            },
+          )).toList(),
+        ),
+      ),
+    );
+  }
 }

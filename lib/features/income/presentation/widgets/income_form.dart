@@ -1,36 +1,26 @@
-// ═══════════════════════════════════════════════════════════
-// IncomeForm — Handles all input edge cases
-// ═══════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/ui/widgets/mud_card.dart';
 import '../../../../shared/ui/widgets/mud_gradient_button.dart';
+import '../../../onboarding/domain/entities/onboarding_profile.dart';
+import '../../../onboarding/presentation/providers/onboarding_notifier.dart';
 import '../../domain/entities/income.dart';
 
-typedef OnSaveCallback = void Function(
-  String primary,
-  String secondary,
-  String extra,
-);
+typedef OnSaveCallback = void Function(String primary, String secondary, String extra);
 
-class IncomeForm extends StatefulWidget {
+class IncomeForm extends ConsumerStatefulWidget {
   final Income         income;
   final OnSaveCallback onSave;
-
-  const IncomeForm({
-    super.key,
-    required this.income,
-    required this.onSave,
-  });
+  const IncomeForm({super.key, required this.income, required this.onSave});
 
   @override
-  State<IncomeForm> createState() => _IncomeFormState();
+  ConsumerState<IncomeForm> createState() => _State();
 }
 
-class _IncomeFormState extends State<IncomeForm> {
+class _State extends ConsumerState<IncomeForm> {
   final _formKey       = GlobalKey<FormState>();
   final _primaryCtrl   = TextEditingController();
   final _secondaryCtrl = TextEditingController();
@@ -40,30 +30,25 @@ class _IncomeFormState extends State<IncomeForm> {
   @override
   void initState() {
     super.initState();
-    _loadFromIncome(widget.income);
-    _primaryCtrl.addListener(_markDirty);
-    _secondaryCtrl.addListener(_markDirty);
-    _extraCtrl.addListener(_markDirty);
+    _load(widget.income);
+    for (final c in [_primaryCtrl, _secondaryCtrl, _extraCtrl]) {
+      c.addListener(() { if (!_isDirty) setState(() => _isDirty = true); });
+    }
   }
 
-  // Edge: income changes externally (month switched)
   @override
   void didUpdateWidget(IncomeForm old) {
     super.didUpdateWidget(old);
     if (old.income.monthKey != widget.income.monthKey) {
-      _loadFromIncome(widget.income);
+      _load(widget.income);
       setState(() => _isDirty = false);
     }
   }
 
-  void _loadFromIncome(Income i) {
+  void _load(Income i) {
     _primaryCtrl.text   = i.primary   > 0 ? i.primary.toStringAsFixed(0)   : '';
     _secondaryCtrl.text = i.secondary > 0 ? i.secondary.toStringAsFixed(0) : '';
     _extraCtrl.text     = i.extra     > 0 ? i.extra.toStringAsFixed(0)     : '';
-  }
-
-  void _markDirty() {
-    if (!_isDirty) setState(() => _isDirty = true);
   }
 
   @override
@@ -75,90 +60,122 @@ class _IncomeFormState extends State<IncomeForm> {
   }
 
   @override
-  Widget build(BuildContext context) => MudCard(
-    child: Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const MudSectionLabel('إدخال الدخل الشهري'),
+  Widget build(BuildContext context) {
+    // ── Read life stage from stored profile ──────────────
+    final profile    = ref.watch(onboardingRepoProvider).getSaved();
+    final lifeStage  = profile?.lifeStage ?? LifeStage.single;
+    final hasPartner = lifeStage.hasPartner;  // married or family only
 
-          _IncomeField(
-            label:      '👨 ${widget.income.monthKey.isNotEmpty ? "الدخل الأساسي" : "راتبك الشهري"}',
-            controller: _primaryCtrl,
-            hint:       'مثال: 8000',
-            autofocus:  true,
-          ),
-          const SizedBox(height: 12),
+    // ── Label adapts to life stage ────────────────────────
+    final primaryLabel = switch (lifeStage) {
+      LifeStage.single   => '👨 راتبك الشهري',
+      LifeStage.engaged  => '👨 راتبك الشهري',
+      LifeStage.married  => '👨 دخل الزوج',
+      LifeStage.family   => '👨 دخل الزوج (رب الأسرة)',
+    };
 
-          _IncomeField(
-            label:      '👩 دخل الشريك (اختياري)',
-            controller: _secondaryCtrl,
-            hint:       '0',
-          ),
-          const SizedBox(height: 12),
+    final partnerLabel = switch (lifeStage) {
+      LifeStage.married => '👩 دخل الزوجة (اختياري)',
+      LifeStage.family  => '👩 دخل الزوجة (اختياري)',
+      _                 => '',
+    };
 
-          _IncomeField(
-            label:      '💼 دخل إضافي (مكافآت، إيجارات، عمل حر...)',
-            controller: _extraCtrl,
-            hint:       '0',
-          ),
-          const SizedBox(height: 16),
+    // ── Saving tip adapts to life stage ───────────────────
+    final savingTip = switch (lifeStage) {
+      LifeStage.single  => '💡 نصيحة للأعزب: وفّر 30% الآن قبل الالتزامات',
+      LifeStage.engaged => '💡 نصيحة للمخطوب: ابدأ صندوق الزفاف — الأيام تمر سريعاً',
+      LifeStage.married => '💡 نصيحة للمتزوجين: اتفقا على ميزانية مشتركة كل بداية شهر',
+      LifeStage.family  => '💡 نصيحة للأسرة: صندوق طوارئ 6 أشهر = أولوية قصوى',
+    };
 
-          MudGradientButton(
-            label:   _isDirty ? '💾 حفظ الدخل' : '✅ محفوظ',
-            onTap:   _isDirty ? _submit : () {},
-            loading: false,
-          ),
+    return MudCard(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const MudSectionLabel('إدخال الدخل الشهري'),
 
-          // Edge: unsaved changes warning
-          if (_isDirty)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                '⚠️ لديك تغييرات غير محفوظة',
-                style: AppTextStyles.caption.copyWith(color: AppColors.warning),
-                textAlign: TextAlign.center,
-              ),
+            // ── Primary income ────────────────────────────
+            _IncomeField(label: primaryLabel, controller: _primaryCtrl,
+              hint: 'مثال: 8000', autofocus: true),
+            const SizedBox(height: 12),
+
+            // ── Partner income — married/family ONLY ──────
+            if (hasPartner) ...[
+              _IncomeField(label: partnerLabel, controller: _secondaryCtrl, hint: '0'),
+              const SizedBox(height: 12),
+            ],
+
+            // ── Extra income — everyone ───────────────────
+            _IncomeField(
+              label: '💼 دخل إضافي (مكافآت، عمل حر، إيجارات...)',
+              controller: _extraCtrl, hint: '0',
             ),
-        ],
+            const SizedBox(height: 14),
+
+            // ── Save button ───────────────────────────────
+            MudGradientButton(
+              label:   _isDirty ? '💾 حفظ الدخل' : '✅ محفوظ',
+              onTap:   _submit,
+              enabled: _isDirty,
+            ),
+
+            // ── Unsaved warning ───────────────────────────
+            if (_isDirty)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Center(
+                  child: Text('⚠️ لديك تغييرات غير محفوظة',
+                    style: AppTextStyles.caption.copyWith(color: AppColors.warning)),
+                ),
+              ),
+
+            // ── Life-stage-specific tip ───────────────────
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color:        AppColors.accent.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(11),
+                border:       Border.all(color: AppColors.accent.withOpacity(0.12)),
+              ),
+              child: Text(savingTip,
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.accentAlt.withOpacity(0.85), height: 1.6)),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   void _submit() {
-    // Edge: form might not be valid
     if (!(_formKey.currentState?.validate() ?? false)) return;
-
     widget.onSave(
       _primaryCtrl.text.trim(),
       _secondaryCtrl.text.trim(),
       _extraCtrl.text.trim(),
     );
-
     setState(() => _isDirty = false);
   }
 }
 
-// ─── Field ─────────────────────────────────────────────────
 class _IncomeField extends StatelessWidget {
-  final String                  label;
-  final TextEditingController   controller;
-  final String                  hint;
-  final bool                    autofocus;
-
+  final String label, hint;
+  final TextEditingController controller;
+  final bool autofocus;
   const _IncomeField({
-    required this.label,
-    required this.controller,
-    required this.hint,
-    this.autofocus = false,
+    required this.label, required this.controller,
+    required this.hint, this.autofocus = false,
   });
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(label, style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600)),
+      Text(label,
+        style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600, fontSize: 13)),
       const SizedBox(height: 6),
       TextFormField(
         controller:   controller,
@@ -166,26 +183,19 @@ class _IncomeField extends StatelessWidget {
         textDirection: TextDirection.rtl,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         inputFormatters: [
-          // Allow digits, dot, comma, Arabic-Indic digits
-          FilteringTextInputFormatter.allow(RegExp(r'[\d٠-٩.,]')),
+          FilteringTextInputFormatter.allow(RegExp(r'[\d٠-٩.,٫]')),
         ],
         style: AppTextStyles.body.copyWith(
-          color: AppColors.textPrimary,
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
+          color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.w600),
         decoration: InputDecoration(hintText: hint),
-        // Edge: empty = valid (means zero income)
         validator: (v) {
           if (v == null || v.trim().isEmpty) return null; // optional
-          final n = double.tryParse(
-            v.trim()
-             .replaceAll(',', '')
-             .replaceAllMapped(RegExp(r'[٠-٩]'), (m) => (m.group(0)!.codeUnitAt(0) - 0x0660).toString()),
-          );
+          final n = double.tryParse(v.trim().replaceAll(',','')
+            .replaceAllMapped(RegExp(r'[٠-٩]'),
+              (m) => (m.group(0)!.codeUnitAt(0) - 0x0660).toString()));
           if (n == null)  return 'أدخل رقماً صحيحاً';
           if (n < 0)      return 'لا يمكن أن يكون سالباً';
-          if (n > 1e9)    return 'الرقم كبير جداً';
+          if (n > 1e8)    return 'الرقم كبير جداً';
           return null;
         },
       ),
