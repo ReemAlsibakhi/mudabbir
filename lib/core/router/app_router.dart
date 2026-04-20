@@ -1,7 +1,3 @@
-// ═══════════════════════════════════════════════════════════
-// AppRouter — GoRouter with typed routes + redirect guard
-// ═══════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,90 +11,47 @@ import '../../features/reports/presentation/screens/reports_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../shared/ui/widgets/main_shell.dart';
 
-// ── Route paths ───────────────────────────────────────────
 abstract final class AppRoutes {
   static const String onboarding = '/onboarding';
   static const String home       = '/home';
-  static const String income     = '/income';
   static const String expenses   = '/expenses';
   static const String goals      = '/goals';
   static const String reports    = '/reports';
+  // Secondary — accessed from header, not nav bar
+  static const String income     = '/income';
   static const String settings   = '/settings';
 }
 
-// ── Router provider ───────────────────────────────────────
 final appRouterProvider = Provider<GoRouter>((ref) {
   final isOnboarded = ref.watch(isOnboardedProvider);
-
   return GoRouter(
     initialLocation: isOnboarded ? AppRoutes.home : AppRoutes.onboarding,
-    debugLogDiagnostics: false,
-
-    redirect: (ctx, state) {
+    redirect: (_, state) {
       final onboarded   = ref.read(isOnboardedProvider);
       final onOnboarding = state.matchedLocation == AppRoutes.onboarding;
-
-      // Edge: not onboarded but trying to access main app → redirect
       if (!onboarded && !onOnboarding) return AppRoutes.onboarding;
-
-      // Edge: already onboarded but on onboarding page → redirect to home
-      if (onboarded && onOnboarding) return AppRoutes.home;
-
-      return null; // no redirect needed
+      if (onboarded  &&  onOnboarding) return AppRoutes.home;
+      return null;
     },
-
     errorBuilder: (_, state) => Scaffold(
-      backgroundColor: const Color(0xFF080E1A),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('⚠️', style: TextStyle(fontSize: 48)),
-            const SizedBox(height: 12),
-            Text('خطأ: ${state.error}',
-              style: const TextStyle(fontFamily: 'Cairo', color: Colors.white70)),
-          ],
-        ),
-      ),
+      backgroundColor: const Color(0xFF050A14),
+      body: Center(child: Text('${state.error}',
+        style: const TextStyle(fontFamily:'Cairo', color:Colors.white70))),
     ),
-
     routes: [
-      // ── Onboarding (no shell) ──────────────────────────
-      GoRoute(
-        path:    AppRoutes.onboarding,
-        builder: (_, __) => const OnboardingFlow(),
-      ),
-
-      // ── Main app (with bottom nav shell) ──────────────
+      GoRoute(path: AppRoutes.onboarding, builder: (_,__) => const OnboardingFlow()),
       ShellRoute(
         builder: (_, __, child) => MainShell(child: child),
         routes: [
-          GoRoute(
-            path:    AppRoutes.home,
-            builder: (_, __) => const DailyScreen(),
-          ),
-          GoRoute(
-            path:    AppRoutes.income,
-            builder: (_, __) => IncomeScreen(month: DateTime.now()),
-          ),
-          GoRoute(
-            path:    AppRoutes.expenses,
-            builder: (_, __) => ExpensesScreen(month: DateTime.now()),
-          ),
-          GoRoute(
-            path:    AppRoutes.goals,
-            builder: (_, __) => const GoalsScreen(),
-          ),
-          GoRoute(
-            path:    AppRoutes.reports,
-            builder: (_, __) => const ReportsScreen(),
-          ),
-          GoRoute(
-            path:    AppRoutes.settings,
-            builder: (_, __) => const SettingsScreen(),
-          ),
+          GoRoute(path: AppRoutes.home,     builder: (_,__) => const DailyScreen()),
+          GoRoute(path: AppRoutes.expenses, builder: (_,__) => ExpensesScreen(month: DateTime.now())),
+          GoRoute(path: AppRoutes.goals,    builder: (_,__) => const GoalsScreen()),
+          GoRoute(path: AppRoutes.reports,  builder: (_,__) => const ReportsScreen()),
         ],
       ),
+      // Secondary routes — no shell
+      GoRoute(path: AppRoutes.income,   builder: (_,__) => IncomeScreen(month: DateTime.now())),
+      GoRoute(path: AppRoutes.settings, builder: (_,__) => const SettingsScreen()),
     ],
   );
 });
