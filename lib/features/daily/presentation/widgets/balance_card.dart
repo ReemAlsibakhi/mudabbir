@@ -5,6 +5,8 @@ import '../../../../core/extensions/double_ext.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../expenses/presentation/providers/expenses_notifier.dart';
+import '../../../expenses/presentation/providers/expenses_state.dart';
+import '../../../income/presentation/providers/income_state.dart';
 import '../../../income/presentation/providers/income_notifier.dart';
 import '../../../onboarding/data/repositories/onboarding_repository_impl.dart';
 

@@ -12,64 +12,54 @@ class DailyHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile  = ref.watch(onboardingRepoProvider).getSaved();
-    final name     = profile?.name ?? '';
+    final name     = profile?.name.isNotEmpty == true ? profile!.name : '';
     final greeting = _greeting(date.hour);
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 4, bottom: 12),
-      child: Column(
-        // CrossAxisAlignment.start = RIGHT in RTL ✅
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            date.dayFullAr,
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.textSecondary.withOpacity(0.7),
-              letterSpacing: 0.3,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          date.dayFullAr,
+          style: AppTextStyles.caption.copyWith(
+            color: AppColors.textSecondary.withOpacity(0.65),
+            fontSize: 11,
           ),
-          const SizedBox(height: 4),
-          // Use Text.rich with RTL-correct structure
-          Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: '$greeting، ',
-                  style: AppTextStyles.headline1.copyWith(
-                    letterSpacing: -0.5,
-                    color: AppColors.textPrimary,
+        ),
+        const SizedBox(height: 4),
+        // Simple approach: two Text widgets side by side in a Wrap
+        Wrap(
+          children: [
+            Text(
+              '$greeting، ',
+              style: AppTextStyles.headline2.copyWith(
+                color: AppColors.textPrimary,
+                fontSize: 20,
+              ),
+            ),
+            if (name.isNotEmpty)
+              ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [Color(0xFF38BDF8), Color(0xFF34D399)],
+                ).createShader(bounds),
+                child: Text(
+                  name,
+                  style: AppTextStyles.headline2.copyWith(
+                    color: Colors.white,
+                    fontSize: 20,
                   ),
                 ),
-                WidgetSpan(
-                  alignment: PlaceholderAlignment.baseline,
-                  baseline: TextBaseline.alphabetic,
-                  child: ShaderMask(
-                    shaderCallback: (bounds) => const LinearGradient(
-                      colors: [Color(0xFF38BDF8), Color(0xFF34D399)],
-                    ).createShader(bounds),
-                    child: Text(
-                      name,
-                      style: AppTextStyles.headline1.copyWith(
-                        color: Colors.white,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            textDirection: TextDirection.rtl,
+              ),
+          ],
+        ),
+        const SizedBox(height: 2),
+        Text(
+          'سجّل مصاريفك في 30 ثانية 👇',
+          style: AppTextStyles.caption.copyWith(
+            color: AppColors.textSecondary.withOpacity(0.55),
+            fontSize: 12,
           ),
-          const SizedBox(height: 3),
-          Text(
-            'سجّل مصاريفك في 30 ثانية 👇',
-            style: AppTextStyles.body.copyWith(
-              color: AppColors.textSecondary.withOpacity(0.6),
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
