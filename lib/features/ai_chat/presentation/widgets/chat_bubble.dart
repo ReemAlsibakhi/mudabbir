@@ -18,57 +18,81 @@ class ChatBubble extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isUser) ...[
-            // Bot avatar
-            Container(
-              width: 28, height: 28,
-              decoration: BoxDecoration(
-                gradient:     AppColors.primary,
-                borderRadius: BorderRadius.circular(9),
-              ),
-              child: const Center(child: Text('🤖', style: TextStyle(fontSize: 13))),
-            ),
-            const SizedBox(width: 7),
+            _Avatar(),
+            const SizedBox(width: 8),
           ],
-
-          // Bubble
           Flexible(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
               decoration: BoxDecoration(
-                color:        isUser ? AppColors.accent : AppColors.surface2,
+                gradient: isUser ? null : AppColors.primaryDeep,
+                color:    isUser ? AppColors.surface2 : null,
                 borderRadius: BorderRadius.only(
                   topRight:    const Radius.circular(16),
                   topLeft:     const Radius.circular(16),
-                  bottomRight: isUser ? Radius.zero : const Radius.circular(16),
-                  bottomLeft:  isUser ? const Radius.circular(16) : Radius.zero,
+                  bottomRight: Radius.circular(isUser ? 4 : 16),
+                  bottomLeft:  Radius.circular(isUser ? 16 : 4),
                 ),
-                border: isUser ? null : Border.all(color: AppColors.border),
+                border: Border.all(
+                  color: isUser
+                      ? AppColors.border
+                      : AppColors.accent.withOpacity(0.2)),
               ),
-              child: message.isSending
-                  ? _ThinkingDots()
-                  : Text(
-                      message.text,
+              child: message.isLoading
+                  ? _LoadingDots()
+                  : message.hasError
+                  ? Text(message.content,
+                      style: AppTextStyles.body.copyWith(color: AppColors.error))
+                  : Text(message.content,
                       style: AppTextStyles.body.copyWith(
-                        color:  isUser ? Colors.white : AppColors.textPrimary,
-                        height: 1.6,
-                      ),
-                    ),
+                        color: AppColors.textPrimary, height: 1.6)),
             ),
           ),
-
-          if (isUser) const SizedBox(width: 7),
+          if (isUser) ...[
+            const SizedBox(width: 8),
+            _UserAvatar(),
+          ],
         ],
       ),
     );
   }
 }
 
-class _ThinkingDots extends StatefulWidget {
+class _Avatar extends StatelessWidget {
   @override
-  State<_ThinkingDots> createState() => _ThinkingState();
+  Widget build(BuildContext context) => Container(
+    width: 30, height: 30,
+    decoration: BoxDecoration(
+      gradient:     AppColors.primary,
+      borderRadius: BorderRadius.circular(9),
+    ),
+    child: const Center(
+      child: Text('🤖', style: TextStyle(fontSize: 15)),
+    ),
+  );
 }
 
-class _ThinkingState extends State<_ThinkingDots>
+class _UserAvatar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 30, height: 30,
+    decoration: BoxDecoration(
+      color:        AppColors.surface3,
+      borderRadius: BorderRadius.circular(9),
+      border:       Border.all(color: AppColors.border),
+    ),
+    child: const Center(
+      child: Text('👤', style: TextStyle(fontSize: 15)),
+    ),
+  );
+}
+
+class _LoadingDots extends StatefulWidget {
+  @override
+  State<_LoadingDots> createState() => _DotsState();
+}
+
+class _DotsState extends State<_LoadingDots>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
 
@@ -84,27 +108,25 @@ class _ThinkingState extends State<_ThinkingDots>
   void dispose() { _ctrl.dispose(); super.dispose(); }
 
   @override
-  Widget build(BuildContext context) => AnimatedBuilder(
-    animation: _ctrl,
-    builder: (_, __) {
-      final v = _ctrl.value;
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(3, (i) {
-          final phase = (v + i * 0.3) % 1.0;
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 3),
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: List.generate(3, (i) => AnimatedBuilder(
+      animation: _ctrl,
+      builder: (_, __) {
+        final offset = ((_ctrl.value * 3) - i).clamp(0.0, 1.0);
+        final opacity = (0.3 + (0.7 * (offset < 0.5 ? offset * 2 : (1 - offset) * 2))).clamp(0.3, 1.0);
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2),
+          child: Opacity(
+            opacity: opacity,
             child: Container(
-              width: 7, height: 7,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.textSecondary.withOpacity(
-                  0.3 + 0.7 * (phase < 0.5 ? phase * 2 : (1 - phase) * 2)),
-              ),
+              width: 6, height: 6,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle, color: AppColors.accentAlt),
             ),
-          );
-        }),
-      );
-    },
+          ),
+        );
+      },
+    )),
   );
 }

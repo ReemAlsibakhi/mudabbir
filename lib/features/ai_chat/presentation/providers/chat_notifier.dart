@@ -1,166 +1,127 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:equatable/equatable.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../expenses/data/repositories/expense_repository_impl.dart';
-import '../../../goals/data/repositories/goal_repository_impl.dart';
+import '../../../expenses/presentation/providers/expenses_notifier.dart';
 import '../../../income/data/repositories/income_repository_impl.dart';
+import '../../../income/presentation/providers/income_notifier.dart';
 import '../../../onboarding/data/repositories/onboarding_repository_impl.dart';
+import '../../../onboarding/presentation/providers/onboarding_notifier.dart';
 import '../../data/repositories/chat_repository_impl.dart';
+import '../../data/services/claude_api_service.dart';
 import '../../domain/entities/chat_message.dart';
-import '../../domain/usecases/send_chat_message_usecase.dart';
-
-// ── State ──────────────────────────────────────────────────
-final class ChatState extends Equatable {
-  final List<ChatMessage> messages;
-  final bool              isLoading;
-  final String?           error;
-  final bool              hasApiKey;
-
-  const ChatState({
-    this.messages  = const [],
-    this.isLoading = false,
-    this.error,
-    this.hasApiKey = false,
-  });
-
-  bool get isEmpty    => messages.isEmpty;
-  bool get hasError   => error != null;
-
-  ChatState copyWith({
-    List<ChatMessage>? messages,
-    bool?              isLoading,
-    String?            error,
-    bool?              hasApiKey,
-    bool               clearError = false,
-  }) => ChatState(
-    messages:  messages   ?? this.messages,
-    isLoading: isLoading  ?? this.isLoading,
-    error:     clearError ? null : error ?? this.error,
-    hasApiKey: hasApiKey  ?? this.hasApiKey,
-  );
-
-  @override
-  List<Object?> get props => [messages, isLoading, error, hasApiKey];
-}
+import '../../domain/repositories/chat_repository.dart';
 
 // ── Provider ───────────────────────────────────────────────
-final chatApiKeyProvider = StateProvider<String>((ref) => '');
+final chatApiKeyProvider = StateProvider<String>((_) => '');
+
+final chatRepoProvider = Provider<ChatRepository>((ref) {
+  final apiKey = ref.watch(chatApiKeyProvider);
+  return ChatRepositoryImpl(ClaudeApiService(apiKey));
+});
 
 final chatNotifierProvider =
-    StateNotifierProvider.autoDispose<ChatNotifier, ChatState>(
-  (ref) => ChatNotifier(ref),
+    StateNotifierProvider.autoDispose<ChatNotifier, List<ChatMessage>>(
+  (ref) => ChatNotifier(
+    repo:            ref.watch(chatRepoProvider),
+    incomeRepo:      IncomeRepositoryImpl(),
+    expenseRepo:     ExpenseRepositoryImpl(),
+    onboardingRepo:  OnboardingRepositoryImpl(),
+  ),
 );
 
 // ── Notifier ───────────────────────────────────────────────
-final class ChatNotifier extends StateNotifier<ChatState> {
+final class ChatNotifier extends StateNotifier<List<ChatMessage>> {
   static const _tag = 'ChatNotifier';
-  final Ref _ref;
 
-  ChatNotifier(this._ref) : super(const ChatState()) {
-    _init();
+  final ChatRepository _repo;
+  final dynamic        _incomeRepo;
+  final dynamic        _expenseRepo;
+  final dynamic        _onboardingRepo;
+
+  ChatNotifier({
+    required ChatRepository _repo,
+    required dynamic        incomeRepo,
+    required dynamic        expenseRepo,
+    required dynamic        onboardingRepo,
+  }) : _repo           = _repo,
+       _incomeRepo     = incomeRepo,
+       _expenseRepo    = expenseRepo,
+       _onboardingRepo = onboardingRepo,
+       super([]) {
+    _loadHistory();
   }
 
-  void _init() {
-    // Add welcome message
-    final notifier = _ref.read(onboardingRepoProvider);
-    final profile  = notifier.getSaved();
-    final name     = profile?.name ?? 'صديقي';
-
-    state = state.copyWith(messages: [
-      ChatMessage(
-        id:        'welcome',
-        role:      MessageRole.assistant,
-        text:      'مرحباً يا $name 👋\n\nأنا مدبّر، مساعدك المالي الذكي. '
-                   'اسألني عن أي شيء يخص ميزانيتك — تحليل المصاريف، '
-                   'نصائح الادخار، أو التخطيط لأهدافك.',
-        createdAt: DateTime.now(),
-      ),
-    ]);
+  void _loadHistory() {
+    try {
+      final history = _repo.loadHistory();
+      if (history.isNotEmpty) state = history;
+    } catch (e) {
+      AppLogger.error(_tag, 'load history error', e);
+    }
   }
 
-  Future<void> sendMessage(String text) async {
-    if (text.trim().isEmpty || state.isLoading) return;
+  // ── Send message ──────────────────────────────────────────
+  Future<void> send(String text) async {
     if (!mounted) return;
+    if (text.trim().isEmpty) return;
 
     // Add user message
     final userMsg = ChatMessage.user(text);
-    state = state.copyWith(
-      messages:   [...state.messages, userMsg],
-      isLoading:  true,
-      clearError: true,
-    );
+    state = [...state, userMsg];
 
-    // Add thinking bubble
-    final thinking = ChatMessage.thinking();
-    state = state.copyWith(
-      messages: [...state.messages, thinking],
-    );
+    // Add loading bubble
+    final loadingMsg = ChatMessage.loading();
+    state = [...state, loadingMsg];
 
-    final apiKey = _ref.read(chatApiKeyProvider);
-    if (apiKey.isEmpty) {
-      if (!mounted) return;
-      _removeThinking();
-      state = state.copyWith(
-        isLoading: false,
-        error:     'يحتاج مفتاح API — أضفه في الإعدادات',
-      );
-      return;
-    }
+    // Build financial context from real data
+    final context = _buildContext();
 
-    // Build use case
-    final useCase = SendChatMessageUseCase(
-      chatRepo:       ChatRepositoryImpl(apiKey: apiKey),
-      incomeRepo:     IncomeRepositoryImpl(),
-      expenseRepo:    ExpenseRepositoryImpl(),
-      goalRepo:       GoalRepositoryImpl(),
-      onboardingRepo: OnboardingRepositoryImpl(),
-    );
-
-    final result = await useCase.call(
-      SendChatMessageParams(
-        message: text,
-        history: state.messages
-            .where((m) => m.id != 'thinking' && m.id != 'welcome')
-            .toList(),
-      ),
+    // Call Claude
+    final result = await _repo.send(
+      history:         state.where((m) => m.id != 'loading').toList(),
+      userMessage:     text,
+      financialContext: context,
     );
 
     if (!mounted) return;
-    _removeThinking();
 
-    result
-      ..onSuccess((reply) async {
-        final assistantMsg = ChatMessage(
-          id:        DateTime.now().millisecondsSinceEpoch.toString(),
-          role:      MessageRole.assistant,
-          text:      reply,
-          createdAt: DateTime.now(),
-        );
-        state = state.copyWith(
-          messages:  [...state.messages, assistantMsg],
-          isLoading: false,
-          clearError: true,
-        );
-      })
-      ..onFailure((f) {
-        AppLogger.warn(_tag, 'Chat failed: ${f.message}');
-        state = state.copyWith(
-          isLoading: false,
-          error:     f.message,
-        );
-      });
+    // Replace loading with real response
+    final msgs = state.where((m) => m.id != 'loading').toList();
+    if (result.isSuccess) {
+      state = [...msgs, result.valueOrNull!];
+      await _repo.saveHistory(state);
+    } else {
+      final errMsg = result.failureOrNull?.message ?? 'حدث خطأ، حاول مرة أخرى';
+      state = [...msgs, ChatMessage.error(errMsg)];
+    }
   }
 
-  void _removeThinking() {
-    state = state.copyWith(
-      messages: state.messages.where((m) => m.id != 'thinking').toList(),
-    );
-  }
+  // ── Build context from user's real financial data ─────────
+  String _buildContext() {
+    try {
+      final now       = DateTime.now();
+      final monthKey  = '${now.year}-${now.month.toString().padLeft(2,'0')}';
+      final profile   = _onboardingRepo.getSaved();
+      final income    = _incomeRepo.getByMonth(monthKey);
+      final expenses  = _expenseRepo.totalByMonth(monthKey);
+      final fixed     = _expenseRepo.totalFixed();
 
-  void clearError() => state = state.copyWith(clearError: true);
+      return '''
+- الاسم: ${profile?.name ?? 'المستخدم'}
+- مرحلة الحياة: ${profile?.lifeStage.nameAr ?? 'غير محدد'}
+- الدخل الشهري: ${income.total.toStringAsFixed(0)} ريال
+- المصروف المتغير: ${expenses.toStringAsFixed(0)} ريال
+- المصروف الثابت: ${fixed.toStringAsFixed(0)} ريال
+- الفائض: ${(income.total - expenses - fixed).toStringAsFixed(0)} ريال
+- الشهر: $monthKey
+''';
+    } catch (e) {
+      return 'بيانات المستخدم غير متاحة';
+    }
+  }
 
   void clearHistory() {
-    state = const ChatState();
-    _init();
+    state = [];
+    _repo.clearHistory();
   }
 }
