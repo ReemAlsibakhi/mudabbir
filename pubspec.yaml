@@ -38,6 +38,9 @@ dependencies:
   # PHASE 2
   # ══════════════════════════════════════════════════════
 
+  # File system access
+  path_provider: ^2.1.4
+
   # AI Chat (Claude API)
   http: ^1.2.0
 

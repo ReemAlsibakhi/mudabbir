@@ -11,28 +11,25 @@ class ChatInput extends StatefulWidget {
 }
 
 class _State extends State<ChatInput> {
-  final _ctrl      = TextEditingController();
-  final _focus     = FocusNode();
-  bool  _hasText   = false;
+  final _ctrl  = TextEditingController();
+  bool  _ready = false;
 
   @override
   void initState() {
     super.initState();
     _ctrl.addListener(() {
-      final has = _ctrl.text.trim().isNotEmpty;
-      if (has != _hasText) setState(() => _hasText = has);
+      final ok = _ctrl.text.trim().isNotEmpty;
+      if (ok != _ready) setState(() => _ready = ok);
     });
   }
 
   @override
-  void dispose() { _ctrl.dispose(); _focus.dispose(); super.dispose(); }
+  void dispose() { _ctrl.dispose(); super.dispose(); }
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: EdgeInsets.fromLTRB(
-      12, 8, 12,
-      MediaQuery.of(context).viewInsets.bottom + 12,
-    ),
+    padding: EdgeInsets.fromLTRB(12, 8, 12,
+      MediaQuery.of(context).viewInsets.bottom + 12),
     decoration: BoxDecoration(
       color:  AppColors.surface1,
       border: Border(top: BorderSide(color: AppColors.border, width: 0.5)),
@@ -42,11 +39,12 @@ class _State extends State<ChatInput> {
         Expanded(
           child: TextField(
             controller:    _ctrl,
-            focusNode:     _focus,
             textDirection: TextDirection.rtl,
             maxLines:      4,
             minLines:      1,
-            style:         AppTextStyles.body.copyWith(color: AppColors.textPrimary),
+            style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
+            textInputAction: TextInputAction.send,
+            onSubmitted:     (_) => _send(),
             decoration: InputDecoration(
               hintText:       'اسأل عن ميزانيتك...',
               border:         OutlineInputBorder(
@@ -57,8 +55,6 @@ class _State extends State<ChatInput> {
               fillColor:      AppColors.surface2,
               contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             ),
-            textInputAction: TextInputAction.send,
-            onSubmitted:     (_) => _send(),
           ),
         ),
         const SizedBox(width: 8),
@@ -66,17 +62,15 @@ class _State extends State<ChatInput> {
           duration: const Duration(milliseconds: 200),
           width: 44, height: 44,
           decoration: BoxDecoration(
-            gradient:     _hasText ? AppColors.primary : null,
-            color:        _hasText ? null : AppColors.surface2,
+            gradient:     _ready ? AppColors.primary : null,
+            color:        _ready ? null : AppColors.surface2,
             borderRadius: BorderRadius.circular(13),
           ),
           child: IconButton(
-            onPressed: _hasText ? _send : null,
-            icon: Icon(
-              Icons.send_rounded,
-              color: _hasText ? Colors.white : AppColors.textTertiary,
-              size: 20,
-            ),
+            onPressed: _ready ? _send : null,
+            icon: Icon(Icons.send_rounded,
+              color: _ready ? Colors.white : AppColors.textTertiary,
+              size:  20),
           ),
         ),
       ],
@@ -84,9 +78,9 @@ class _State extends State<ChatInput> {
   );
 
   void _send() {
-    final text = _ctrl.text.trim();
-    if (text.isEmpty) return;
+    final t = _ctrl.text.trim();
+    if (t.isEmpty) return;
     _ctrl.clear();
-    widget.onSend(text);
+    widget.onSend(t);
   }
 }

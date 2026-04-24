@@ -9,30 +9,26 @@ class SuggestedQuestions extends ConsumerWidget {
   final ValueChanged<String> onTap;
   const SuggestedQuestions({super.key, required this.onTap});
 
-  static List<String> _questions(LifeStage stage) => switch (stage) {
-    LifeStage.single => [
+  static const _questions = {
+    LifeStage.single: [
       'كيف أوزع راتبي بذكاء؟',
-      'كم أحتاج لصندوق الطوارئ؟',
+      'كم أحتاج في صندوق الطوارئ؟',
       'ما أفضل هدف ادخار لي الآن؟',
-      'كيف أبدأ في الاستثمار؟',
     ],
-    LifeStage.engaged => [
+    LifeStage.engaged: [
       'كيف نخطط لميزانية الزفاف؟',
-      'ما المبلغ المناسب للشبكة؟',
       'كيف نبدأ حياتنا المالية صح؟',
       'كم نحتاج قبل الزواج؟',
     ],
-    LifeStage.married => [
+    LifeStage.married: [
       'كيف نوزع الدخل المشترك؟',
       'هل وضعنا المالي جيد هذا الشهر؟',
-      'ما أكبر بند مصروف يمكن تقليله؟',
       'كيف نوفر أكثر كزوجين؟',
     ],
-    LifeStage.family => [
+    LifeStage.family: [
       'كيف نوفر لتعليم الأطفال؟',
       'هل ميزانية الأسرة متوازنة؟',
       'ما المبلغ الكافي لصندوق الطوارئ؟',
-      'كيف نقلل مصاريف المطاعم؟',
     ],
   };
 
@@ -40,10 +36,10 @@ class SuggestedQuestions extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(onboardingRepoProvider).getSaved();
     final stage   = profile?.lifeStage ?? LifeStage.single;
-    final qs      = _questions(stage);
+    final qs      = _questions[stage] ?? _questions[LifeStage.single]!;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -54,7 +50,7 @@ class SuggestedQuestions extends ConsumerWidget {
             children: qs.map((q) => GestureDetector(
               onTap: () => onTap(q),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                 decoration: BoxDecoration(
                   color:        AppColors.surface2,
                   borderRadius: BorderRadius.circular(20),

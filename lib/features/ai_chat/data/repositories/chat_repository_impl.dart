@@ -10,6 +10,13 @@ import '../services/claude_api_service.dart';
 final class ChatRepositoryImpl implements ChatRepository {
   static const _tag     = 'ChatRepo';
   static const _histKey = 'chat_history';
+  static const _systemPrompt = '''
+أنت مدبّر — مستشار مالي ذكي للعائلات العربية.
+تتحدث العربية الفصحى البسيطة، إجاباتك قصيرة ومباشرة (3-5 جمل).
+تستخدم أرقام المستخدم الفعلية في ردودك.
+لا تكرر نفس النصيحة. إذا لم تعرف، قل ذلك بوضوح.
+ركّز على الإجراءات العملية القابلة للتطبيق فوراً.
+''';
 
   final ClaudeApiService _api;
   ChatRepositoryImpl(this._api);
@@ -19,13 +26,15 @@ final class ChatRepositoryImpl implements ChatRepository {
   @override
   Future<Result<ChatMessage>> send({
     required List<ChatMessage> history,
-    required String userMessage,
-    required String financialContext,
+    required String            userMessage,
+    required String            financialContext,
   }) async {
-    final result = await _api.sendMessage(
+    final fullPrompt = '$_systemPrompt\nبيانات المستخدم المالية:\n$financialContext';
+
+    final result = await _api.send(
       history:      history,
       userMessage:  userMessage,
-      systemPrompt: _buildSystemPrompt(financialContext),
+      systemPrompt: fullPrompt,
     );
 
     return result.map((text) => ChatMessage(
@@ -36,35 +45,22 @@ final class ChatRepositoryImpl implements ChatRepository {
     ));
   }
 
-  // ── System prompt with financial context ────────────────
-  String _buildSystemPrompt(String financialContext) => '''
-أنت مستشار مالي ذكي في تطبيق "مدبّر" للعائلات العربية.
-تتحدث العربية الفصحى البسيطة المفهومة.
-
-السياق المالي للمستخدم:
-$financialContext
-
-قواعدك:
-1. إجاباتك قصيرة ومباشرة (3-5 جمل كحد أقصى)
-2. لا تعطي أرقاماً محددة بدون بيانات المستخدم
-3. نصائحك عملية وقابلة للتطبيق فوراً
-4. استخدم أرقام المستخدم الحقيقية في ردودك
-5. لا تكرر نفس النصيحة مرتين
-6. إذا لم تعرف، قل "لا أملك معلومات كافية"
-''';
-
   @override
   Future<void> saveHistory(List<ChatMessage> messages) async {
     try {
-      final json = messages.map((m) => {
-        'id': m.id, 'role': m.role.name,
-        'content': m.content,
+      // Keep only last 50 messages to avoid bloat
+      final toSave = messages.length > 50
+          ? messages.sublist(messages.length - 50)
+          : messages;
+      final json = toSave.map((m) => {
+        'id':        m.id,
+        'role':      m.role.name,
+        'content':   m.content,
         'createdAt': m.createdAt.toIso8601String(),
-        'status': m.status.name,
       }).toList();
       await _box.put(_histKey, jsonEncode(json));
     } catch (e) {
-      AppLogger.error(_tag, 'saveHistory error', e);
+      AppLogger.error(_tag, 'saveHistory', e);
     }
   }
 
@@ -74,22 +70,30 @@ $financialContext
       final raw = _box.get(_histKey);
       if (raw == null) return [];
       final list = jsonDecode(raw as String) as List;
-      return list.map((m) => ChatMessage(
-        id:        m['id'] as String,
-        role:      MessageRole.values.firstWhere((r) => r.name == m['role'],
-                     orElse: () => MessageRole.user),
-        content:   m['content'] as String? ?? '',
-        createdAt: DateTime.tryParse(m['createdAt'] ?? '') ?? DateTime.now(),
-        status:    MessageStatus.done,
-      )).toList();
-    } catch (e) {
-      AppLogger.error(_tag, 'loadHistory error', e);
+      return list.map((m) {
+        // Edge: malformed entry → skip
+        final role = MessageRole.values.firstWhere(
+          (r) => r.name == (m['role'] as String? ?? ''),
+          orElse: () => MessageRole.user,
+        );
+        return ChatMessage(
+          id:        m['id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString(),
+          role:      role,
+          content:   (m['content'] as String?) ?? '',
+          createdAt: DateTime.tryParse(m['createdAt'] as String? ?? '') ?? DateTime.now(),
+          status:    MessageStatus.done,
+        );
+      }).where((m) => m.content.isNotEmpty).toList();
+    } catch (e, st) {
+      AppLogger.error(_tag, 'loadHistory', e, st);
       return [];
     }
   }
 
   @override
   Future<void> clearHistory() async {
-    await _box.delete(_histKey);
+    try { await _box.delete(_histKey); } catch (e) {
+      AppLogger.error(_tag, 'clearHistory', e);
+    }
   }
 }
