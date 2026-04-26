@@ -145,12 +145,8 @@ final class ChatNotifier extends StateNotifier<ChatState> {
     if (!mounted) return;
 
     if (result.isSuccess) {
-      final assistantMsg = ChatMessage(
-        id:        DateTime.now().millisecondsSinceEpoch.toString(),
-        role:      MessageRole.assistant,
-        content:   result.valueOrNull!,
-        createdAt: DateTime.now(),
-      );
+      // result.valueOrNull is already a ChatMessage from the repo
+      final assistantMsg = result.valueOrNull!;
       state = state.copyWith(
         messages: [...state.messages, assistantMsg],
         isTyping: false,
