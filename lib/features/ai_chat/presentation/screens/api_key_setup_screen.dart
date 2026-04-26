@@ -74,7 +74,7 @@ class _State extends ConsumerState<ApiKeySetupScreen> {
             TextField(
               controller:   _ctrl,
               obscureText:  _obscure,
-              textDirection: TextDirection.ltr, // API key is LTR
+              textDirection: TextDirection.ltr, // intentional: API keys are always LTR format
               style: AppTextStyles.body.copyWith(
                 color:      AppColors.textPrimary,
                 fontFamily: 'monospace',
