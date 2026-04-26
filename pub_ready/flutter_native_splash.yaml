@@ -1,0 +1,11 @@
+# Run: dart run flutter_native_splash:create
+flutter_native_splash:
+  color:              "#050A14"
+  image:              assets/icons/splash_logo.png
+  android:            true
+  ios:                true
+  android_12:
+    image:            assets/icons/splash_logo.png
+    color:            "#050A14"
+    icon_background_color: "#050A14"
+  fullscreen:         true
