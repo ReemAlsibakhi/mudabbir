@@ -23,26 +23,30 @@ final class LocationRepositoryImpl {
       }
 
       if (permission == LocationPermission.deniedForever)
-        return const Fail(PermissionFailure('الإذن مرفوض بشكل دائم — افتح الإعدادات'));
+        return const Fail(
+            PermissionFailure('الإذن مرفوض بشكل دائم — افتح الإعدادات'));
 
       return const Success(true);
     } catch (e, st) {
-      AppLogger.error(_tag, 'requestPermission error', e, st);
+      AppLogger.error(_tag, 'requestPermission', e, st);
       return Fail(UnexpectedFailure(e.toString()));
     }
   }
 
   // ── Get current position ──────────────────────────────
+  // geolocator ^12: getCurrentPosition accepts desiredAccuracy only
+  // timeLimit was removed in ^10+ — use timeout on the Future instead
   Future<Result<Position>> getCurrentPosition() async {
     try {
-      // geolocator ^12: use desiredAccuracy directly (no locationSettings wrapper)
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
-        timeLimit:       const Duration(seconds: 10),
+      ).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () => throw Exception('انتهت مهلة تحديد الموقع'),
       );
       return Success(position);
     } catch (e, st) {
-      AppLogger.error(_tag, 'getCurrentPosition error', e, st);
+      AppLogger.error(_tag, 'getCurrentPosition', e, st);
       return Fail(UnexpectedFailure(e.toString()));
     }
   }
@@ -60,31 +64,30 @@ final class LocationRepositoryImpl {
           : place.street ?? place.locality ?? 'موقع غير معروف';
       return Success(name);
     } catch (e) {
-      AppLogger.error(_tag, 'getPlaceName error', e);
+      AppLogger.error(_tag, 'getPlaceName', e);
       return const Fail(UnexpectedFailure('خطأ في تحديد المكان'));
     }
   }
 
-  // ── Detect location type from place name ─────────────
+  // ── Detect type from place name ───────────────────────
   LocationType detectType(String placeName) {
-    final name = placeName.toLowerCase();
-    if (name.contains('carrefour') || name.contains('لولو') ||
-        name.contains('hypermarket') || name.contains('بقالة') ||
-        name.contains('supermarket') || name.contains('danube') ||
-        name.contains('panda'))
+    final n = placeName.toLowerCase();
+    if (n.contains('carrefour') || n.contains('لولو') ||
+        n.contains('hypermarket') || n.contains('بقالة') ||
+        n.contains('panda')       || n.contains('danube'))
       return LocationType.supermarket;
-    if (name.contains('restaurant') || name.contains('مطعم') ||
-        name.contains('kfc') || name.contains('mcdonalds') ||
-        name.contains('cafe') || name.contains('كافيه'))
+    if (n.contains('restaurant')  || n.contains('مطعم') ||
+        n.contains('kfc')         || n.contains('mcdonalds') ||
+        n.contains('cafe')        || n.contains('كافيه'))
       return LocationType.restaurant;
-    if (name.contains('mall') || name.contains('مول') ||
-        name.contains('plaza') || name.contains('plaza'))
+    if (n.contains('mall')        || n.contains('مول') ||
+        n.contains('plaza'))
       return LocationType.mall;
-    if (name.contains('pharmacy') || name.contains('صيدلية') ||
-        name.contains('nahdi') || name.contains('النهدي'))
+    if (n.contains('pharmacy')    || n.contains('صيدلية') ||
+        n.contains('nahdi')       || n.contains('النهدي'))
       return LocationType.pharmacy;
-    if (name.contains('petro') || name.contains('aramco') ||
-        name.contains('محطة') || name.contains('shell'))
+    if (n.contains('petro')       || n.contains('محطة') ||
+        n.contains('aramco')      || n.contains('shell'))
       return LocationType.fuel;
     return LocationType.mall;
   }
