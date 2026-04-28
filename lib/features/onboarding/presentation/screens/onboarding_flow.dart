@@ -30,7 +30,10 @@ class OnboardingFlow extends ConsumerWidget {
       }
     });
 
-    return Scaffold(
+    return PopScope(
+      // Prevent system back on onboarding — use in-app navigation
+      canPop: false,
+      child: Scaffold(
       body: SafeArea(
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 350),
@@ -46,7 +49,7 @@ class OnboardingFlow extends ConsumerWidget {
           child: _stepWidget(state, ref),
         ),
       ),
-    );
+    ));
   }
 
   Widget _stepWidget(OnboardingState state, WidgetRef ref) {

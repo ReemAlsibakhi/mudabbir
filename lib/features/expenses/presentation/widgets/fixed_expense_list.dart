@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/categories.dart';
 import '../../../../core/extensions/double_ext.dart';
@@ -28,11 +29,52 @@ class FixedExpenseList extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
       children: [
-        ...items.map((e) => _FixedItem(
-          expense:  e,
-          onDelete: () => ref
+        ...items.map((e) => Dismissible(
+          key:       Key(e.id),
+          direction: DismissDirection.startToEnd,
+          background: Container(
+            margin:     const EdgeInsets.symmetric(vertical: 4),
+            padding:    const EdgeInsets.only(right: 16),
+            decoration: BoxDecoration(
+              color:        AppColors.error.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(13)),
+            alignment: Alignment.centerRight,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(Icons.delete_outline_rounded, color: AppColors.error, size: 20),
+                const SizedBox(width: 8),
+                Text('حذف', style: TextStyle(fontFamily:'Cairo', color: AppColors.error)),
+                const SizedBox(width: 12),
+              ],
+            ),
+          ),
+          confirmDismiss: (_) async {
+            HapticFeedback.mediumImpact();
+            return await showDialog<bool>(
+              context: context,
+              builder: (_) => AlertDialog(
+                backgroundColor: AppColors.surface2,
+                title:   const Text('حذف الثابت', style: TextStyle(fontFamily:'Cairo')),
+                content: const Text('هل تريد حذف هذا المصروف الثابت؟', style: TextStyle(fontFamily:'Cairo')),
+                actions: [
+                  TextButton(onPressed: () => Navigator.pop(context, false),
+                    child: const Text('إلغاء', style: TextStyle(fontFamily:'Cairo'))),
+                  TextButton(onPressed: () => Navigator.pop(context, true),
+                    child: const Text('حذف', style: TextStyle(fontFamily:'Cairo', color: AppColors.error))),
+                ],
+              ),
+            ) ?? false;
+          },
+          onDismissed: (_) => ref
               .read(expensesNotifierProvider(monthKey).notifier)
               .deleteFixedExpense(e.id),
+          child: _FixedItem(
+            expense:  e,
+            onDelete: () => ref
+                .read(expensesNotifierProvider(monthKey).notifier)
+                .deleteFixedExpense(e.id),
+          ),
         )),
         // Total
         Container(
