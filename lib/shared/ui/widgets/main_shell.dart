@@ -20,81 +20,62 @@ class MainShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final location     = GoRouterState.of(context).matchedLocation;
     final isChatActive = location == AppRoutes.chat;
-    final bottomPad    = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
-      // ✅ body extends behind our custom nav bar
-      extendBody: true,
-      body: child,
-      bottomNavigationBar: _NavBar(
-        location:   location,
-        bottomPad:  bottomPad,
-        isChatActive: isChatActive,
-      ),
+      backgroundColor:              AppColors.bg,
+      // ✅ extendBody: false — body does NOT go behind BottomAppBar
+      extendBody:                   false,
+      body:                         child,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar:          _NavBar(location: location),
+      floatingActionButton:         _CenterFAB(isChatActive: isChatActive),
     );
   }
 }
 
-// ── Custom Nav Bar — no BottomAppBar, no internal padding ─
+// ── Bottom Nav ────────────────────────────────────────────
 class _NavBar extends StatelessWidget {
   final String location;
-  final double bottomPad;
-  final bool   isChatActive;
-
-  const _NavBar({
-    required this.location,
-    required this.bottomPad,
-    required this.isChatActive,
-  });
+  const _NavBar({required this.location});
 
   @override
-  Widget build(BuildContext context) {
-    const navH = 58.0; // nav row height
-    final fabW = 64.0; // FAB zone width
-
-    return Container(
-      // No margin — fills full width
-      decoration: BoxDecoration(
-        color:  AppColors.surface1,
-        border: Border(
-          top: BorderSide(color: AppColors.border, width: 0.5)),
+  Widget build(BuildContext context) => BottomAppBar(
+    color:           AppColors.surface1,
+    elevation:       0,
+    notchMargin:     8,
+    shape:           const CircularNotchedRectangle(),
+    // ✅ NO height parameter — let SafeArea determine total height
+    padding:         EdgeInsets.zero,
+    child: SafeArea(
+      // ✅ SafeArea wraps ONLY the bottom
+      // Adds home-indicator / chin padding automatically
+      // Works correctly on every device: notch iPhones, flat Androids, etc.
+      top:  false,
+      left: false,
+      right: false,
+      child: SizedBox(
+        // ✅ Fixed 60px for the visible nav items only
+        height: 60,
+        child: Row(
+          children: [
+            _NavItem(tab: MainShell._tabs[0],
+              isActive: location == MainShell._tabs[0].path),
+            _NavItem(tab: MainShell._tabs[1],
+              isActive: location == MainShell._tabs[1].path),
+            const Spacer(),
+            const Spacer(),
+            _NavItem(tab: MainShell._tabs[2],
+              isActive: location == MainShell._tabs[2].path),
+            _NavItem(tab: MainShell._tabs[3],
+              isActive: location == MainShell._tabs[3].path),
+          ],
+        ),
       ),
-      // Total height = nav + device bottom padding
-      height: navH + bottomPad,
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          // ── Tab row ──────────────────────────────────
-          SizedBox(
-            height: navH,
-            child: Row(
-              children: [
-                _NavItem(tab: MainShell._tabs[0],
-                  isActive: location == MainShell._tabs[0].path),
-                _NavItem(tab: MainShell._tabs[1],
-                  isActive: location == MainShell._tabs[1].path),
-                // Center gap for FAB
-                SizedBox(width: fabW),
-                _NavItem(tab: MainShell._tabs[2],
-                  isActive: location == MainShell._tabs[2].path),
-                _NavItem(tab: MainShell._tabs[3],
-                  isActive: location == MainShell._tabs[3].path),
-              ],
-            ),
-          ),
-          // ── Central FAB ───────────────────────────────
-          Positioned(
-            top: -20, // rises above nav bar
-            child: _CenterFAB(isChatActive: isChatActive),
-          ),
-        ],
-      ),
-    );
-  }
+    ),
+  );
 }
 
-// ── Nav Item ──────────────────────────────────────────────
+// ── Nav Item ─────────────────────────────────────────────
 class _NavItem extends StatelessWidget {
   final ({String path, String icon, String label}) tab;
   final bool isActive;
@@ -110,43 +91,36 @@ class _NavItem extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize:      MainAxisSize.min,
         children: [
-          const SizedBox(height: 8),
           AnimatedScale(
             scale:    isActive ? 1.12 : 1.0,
-            duration: const Duration(milliseconds: 180),
-            child: Text(tab.icon,
-              style: const TextStyle(fontSize: 21)),
+            duration: const Duration(milliseconds: 200),
+            child: Text(tab.icon, style: const TextStyle(fontSize: 22)),
           ),
           const SizedBox(height: 2),
           Text(tab.label, style: TextStyle(
             fontFamily: 'Cairo',
-            fontSize:   11,
+            fontSize:   12,
             fontWeight: FontWeight.w700,
-            color:      isActive
-                ? AppColors.accentAlt
-                : AppColors.textTertiary,
+            color:      isActive ? AppColors.accentAlt : AppColors.textTertiary,
           )),
-          const SizedBox(height: 3),
-          // Active indicator
+          const SizedBox(height: 2),
           AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width:  isActive ? 16 : 0,
-            height: 2.5,
+            duration: const Duration(milliseconds: 220),
+            width:  isActive ? 18 : 0,
+            height: 3,
             decoration: BoxDecoration(
               gradient:     isActive ? AppColors.primary : null,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(height: 4),
         ],
       ),
     ),
   );
 }
 
-// ── Central FAB ───────────────────────────────────────────
+// ── FAB ──────────────────────────────────────────────────
 class _CenterFAB extends StatelessWidget {
   final bool isChatActive;
   const _CenterFAB({required this.isChatActive});
@@ -158,20 +132,20 @@ class _CenterFAB extends StatelessWidget {
       context.go(isChatActive ? AppRoutes.home : AppRoutes.chat);
     },
     child: AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      width: 54, height: 54,
+      duration: const Duration(milliseconds: 300),
+      width: 56, height: 56,
       decoration: BoxDecoration(
         gradient: isChatActive
             ? const LinearGradient(
                 colors: [Color(0xFF8B5CF6), Color(0xFF6D28D9)])
             : AppColors.primary,
-        borderRadius: BorderRadius.circular(17),
+        borderRadius: BorderRadius.circular(18),
         boxShadow: [BoxShadow(
           color:      (isChatActive
               ? const Color(0xFF8B5CF6)
               : AppColors.accent).withOpacity(0.4),
-          blurRadius: 18,
-          offset:     const Offset(0, 5),
+          blurRadius: 20,
+          offset:     const Offset(0, 6),
         )],
       ),
       child: Center(
