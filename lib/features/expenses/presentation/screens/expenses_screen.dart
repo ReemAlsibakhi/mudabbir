@@ -24,25 +24,24 @@ class ExpensesScreen extends ConsumerStatefulWidget {
 class _State extends ConsumerState<ExpensesScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabs;
+  late DateTime _month;
 
   @override
   void initState() {
     super.initState();
-    _tabs = TabController(length: 2, vsync: this);
+    _month = widget.month;
+    _tabs  = TabController(length: 2, vsync: this)
+      ..addListener(() => setState(() {})); // rebuild FAB label on tab change
   }
 
   @override
-  void dispose() {
-    _tabs.dispose();
-    super.dispose();
-  }
+  void dispose() { _tabs.dispose(); super.dispose(); }
 
   @override
   Widget build(BuildContext context) {
-    final monthKey = widget.month.monthKey;
+    final monthKey = _month.monthKey;
     final state    = ref.watch(expensesNotifierProvider(monthKey));
 
-    // Listen for errors → show snackbar
     ref.listen(expensesNotifierProvider(monthKey), (_, next) {
       if (next is ExpensesLoaded && next.errorMessage != null) {
         context.showSnack(next.errorMessage!, color: AppColors.error);
@@ -51,63 +50,113 @@ class _State extends ConsumerState<ExpensesScreen>
     });
 
     return Scaffold(
+      backgroundColor: AppColors.bg,
       body: SafeArea(
         child: Column(
           children: [
-            _Header(month: widget.month, tabs: _tabs),
+            _Header(
+              month:  _month,
+              tabs:   _tabs,
+              onPrev: () => setState(() => _month = _month.prevMonth()),
+              onNext: () {
+                final now = DateTime.now();
+                if (_month.year == now.year && _month.month >= now.month) return;
+                setState(() => _month = _month.nextMonth());
+              },
+            ),
             Expanded(
               child: switch (state) {
                 ExpensesLoading() => const MudLoadingView(),
                 ExpensesError(:final message) =>
                     MudErrorView(message: message, onRetry: () {}),
                 ExpensesLoaded() => _Content(
-                  state:    state,
-                  month:    widget.month,
-                  tabs:     _tabs,
-                ),
+                  state: state, month: _month, tabs: _tabs),
               },
             ),
           ],
         ),
       ),
-      floatingActionButton: _AddButton(month: widget.month, tabs: _tabs),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: AppColors.accent,
+        onPressed: () {
+          if (_tabs.index == 0) {
+            AddFixedExpenseSheet.show(context, _month.monthKey, ref);
+          } else {
+            AddExpenseSheet.show(context, _month, ref);
+          }
+        },
+        icon:  const Icon(Icons.add_rounded, color: Colors.white),
+        label: Text(
+          _tabs.index == 0 ? 'إضافة ثابت' : 'إضافة مصروف',
+          style: AppTextStyles.button.copyWith(fontSize: 13)),
+      ),
     );
   }
 }
 
-// ── Header ─────────────────────────────────────────────────
+// ── Header with month navigation ──────────────────────────
 class _Header extends StatelessWidget {
-  final DateTime       month;
-  final TabController  tabs;
-  const _Header({required this.month, required this.tabs});
+  final DateTime      month;
+  final TabController tabs;
+  final VoidCallback  onPrev, onNext;
+
+  const _Header({
+    required this.month, required this.tabs,
+    required this.onPrev, required this.onNext,
+  });
 
   @override
   Widget build(BuildContext context) => Container(
     color: AppColors.surface1,
     child: Column(
       children: [
+        // Title + month navigation
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          padding: const EdgeInsets.fromLTRB(8, 12, 8, 6),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('💸 المصروف', style: AppTextStyles.headline2),
-              Text(month.monthAr,
-                style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary)),
+              // ✅ Month prev button
+              IconButton(
+                icon: const Icon(Icons.chevron_right_rounded,
+                  color: AppColors.textSecondary),
+                tooltip: 'الشهر السابق',
+                onPressed: onPrev,
+              ),
+              Expanded(
+                child: Center(
+                  child: Column(
+                    children: [
+                      Text('💸 المصروف', style: AppTextStyles.title),
+                      Text(month.monthAr,
+                        style: AppTextStyles.caption.copyWith(
+                          color: AppColors.accentAlt)),
+                    ],
+                  ),
+                ),
+              ),
+              // ✅ Month next button
+              IconButton(
+                icon: const Icon(Icons.chevron_left_rounded,
+                  color: AppColors.textSecondary),
+                tooltip: 'الشهر التالي',
+                onPressed: onNext,
+              ),
             ],
           ),
         ),
+        // Tabs
         TabBar(
           controller: tabs,
           tabs: const [
             Tab(text: '📅 ثابت شهري'),
             Tab(text: '📆 متغير يومي'),
           ],
-          labelStyle:         AppTextStyles.bodyBold,
-          unselectedLabelStyle: AppTextStyles.body,
-          labelColor:         AppColors.accentAlt,
+          labelStyle:           AppTextStyles.bodyBold.copyWith(fontSize: 13),
+          unselectedLabelStyle: AppTextStyles.body.copyWith(fontSize: 13),
+          labelColor:           AppColors.accentAlt,
           unselectedLabelColor: AppColors.textTertiary,
-          indicatorColor:     AppColors.accentAlt,
+          indicatorColor:       AppColors.accentAlt,
+          indicatorSize:        TabBarIndicatorSize.tab,
         ),
       ],
     ),
@@ -119,6 +168,7 @@ class _Content extends StatelessWidget {
   final ExpensesLoaded state;
   final DateTime       month;
   final TabController  tabs;
+
   const _Content({required this.state, required this.month, required this.tabs});
 
   @override
@@ -132,44 +182,11 @@ class _Content extends StatelessWidget {
         child: TabBarView(
           controller: tabs,
           children: [
-            FixedExpenseList(
-              items:    state.fixedExpenses,
-              monthKey: month.monthKey,
-            ),
-            ExpenseList(
-              items:    state.expenses,
-              monthKey: month.monthKey,
-            ),
+            FixedExpenseList(items: state.fixedExpenses, monthKey: month.monthKey),
+            ExpenseList(items: state.expenses, monthKey: month.monthKey),
           ],
         ),
       ),
     ],
   );
-}
-
-// ── FAB ────────────────────────────────────────────────────
-class _AddButton extends ConsumerWidget {
-  final DateTime      month;
-  final TabController tabs;
-  const _AddButton({required this.month, required this.tabs});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isFixed = tabs.index == 0;
-    return FloatingActionButton.extended(
-      backgroundColor: AppColors.accent,
-      onPressed: () {
-        if (isFixed) {
-          AddFixedExpenseSheet.show(context, month.monthKey, ref);
-        } else {
-          AddExpenseSheet.show(context, month, ref);
-        }
-      },
-      icon: const Icon(Icons.add, color: Colors.white),
-      label: Text(
-        isFixed ? 'إضافة ثابت' : 'إضافة مصروف',
-        style: AppTextStyles.button.copyWith(fontSize: 13),
-      ),
-    );
-  }
 }
