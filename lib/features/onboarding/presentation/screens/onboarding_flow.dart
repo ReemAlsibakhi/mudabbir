@@ -19,10 +19,14 @@ class OnboardingFlow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(onboardingNotifierProvider);
 
-    // Listen for completion → navigate to home
+    // Listen for completion → GoRouter redirect handles navigation automatically
+    // via RouterNotifier.notifyListeners() → refreshListenable on GoRouter
+    // This is a safety net in case redirect doesn't fire fast enough
     ref.listen(onboardingNotifierProvider, (_, next) {
       if (next.step == OnboardingStep.done && context.mounted) {
-        context.go(AppRoutes.home);
+        Future.microtask(() {
+          if (context.mounted) context.go(AppRoutes.home);
+        });
       }
     });
 

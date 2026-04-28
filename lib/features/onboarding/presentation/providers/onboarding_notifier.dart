@@ -11,8 +11,10 @@ final onboardingRepoProvider = Provider<OnboardingRepository>(
   (_) => OnboardingRepositoryImpl(),
 );
 
+// ✅ Always reads fresh from Hive — never cached
+// Used by anything outside the router that needs onboarding status
 final isOnboardedProvider = Provider<bool>(
-  (ref) => ref.watch(onboardingRepoProvider).isOnboarded(),
+  (ref) => OnboardingRepositoryImpl().isOnboarded(),
 );
 
 final onboardingNotifierProvider =
