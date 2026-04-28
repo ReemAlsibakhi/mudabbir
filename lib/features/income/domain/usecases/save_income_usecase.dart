@@ -3,6 +3,7 @@
 // ═══════════════════════════════════════════════════════════
 
 import 'package:equatable/equatable.dart';
+
 import '../../../../core/errors/result.dart';
 import '../../../../core/utils/logger.dart';
 import '../entities/income.dart';
@@ -10,7 +11,7 @@ import '../repositories/income_repository.dart';
 
 final class SaveIncomeParams extends Equatable {
   final String monthKey;
-  final String primaryRaw;    // raw string from text field
+  final String primaryRaw; // raw string from text field
   final String secondaryRaw;
   final String extraRaw;
 
@@ -18,7 +19,7 @@ final class SaveIncomeParams extends Equatable {
     required this.monthKey,
     required this.primaryRaw,
     this.secondaryRaw = '',
-    this.extraRaw     = '',
+    this.extraRaw = '',
   });
 
   @override
@@ -39,33 +40,36 @@ final class SaveIncomeUseCase {
     }
 
     // ── 2. Parse amounts (edge: empty, letters, negative) ──
-    final primary   = _parseAmount(p.primaryRaw,   'الدخل الأساسي');
+    final primary = _parseAmount(p.primaryRaw, 'الدخل الأساسي');
     final secondary = _parseAmount(p.secondaryRaw, 'دخل الشريك');
-    final extra     = _parseAmount(p.extraRaw,     'الدخل الإضافي');
+    final extra = _parseAmount(p.extraRaw, 'الدخل الإضافي');
 
-    if (primary.isFailure)   return Fail(primary.failureOrNull!);
+    if (primary.isFailure) return Fail(primary.failureOrNull!);
     if (secondary.isFailure) return Fail(secondary.failureOrNull!);
-    if (extra.isFailure)     return Fail(extra.failureOrNull!);
+    if (extra.isFailure) return Fail(extra.failureOrNull!);
 
     // ── 3. Business rules ─────────────────────────────
-    final total = primary.valueOrNull! + secondary.valueOrNull! + extra.valueOrNull!;
+    final total =
+        primary.valueOrNull! + secondary.valueOrNull! + extra.valueOrNull!;
 
     // Edge: all zeros — allowed (user might clear income)
     // Edge: unrealistically high income
-    if (total > 10_000_000) {
-      return const Fail(ValidationFailure('إجمالي الدخل يبدو مرتفعاً جداً — تحقق من الأرقام'));
+    if (total > 10000000) {
+      return const Fail(ValidationFailure(
+          'إجمالي الدخل يبدو مرتفعاً جداً — تحقق من الأرقام'));
     }
 
     // ── 4. Build & save ───────────────────────────────
     final income = Income(
-      monthKey:  p.monthKey,
-      primary:   primary.valueOrNull!,
+      monthKey: p.monthKey,
+      primary: primary.valueOrNull!,
       secondary: secondary.valueOrNull!,
-      extra:     extra.valueOrNull!,
+      extra: extra.valueOrNull!,
       updatedAt: DateTime.now(),
     );
 
-    AppLogger.info('SaveIncomeUseCase', 'Saving income for ${p.monthKey}: total=$total');
+    AppLogger.info(
+        'SaveIncomeUseCase', 'Saving income for ${p.monthKey}: total=$total');
     final saveResult = await _repo.save(income);
 
     return saveResult.isSuccess
@@ -102,11 +106,16 @@ final class SaveIncomeUseCase {
 
   /// Convert Arabic-Indic digits to ASCII digits
   String _normalizeDigits(String s) => s
-      .replaceAll('٠', '0').replaceAll('١', '1')
-      .replaceAll('٢', '2').replaceAll('٣', '3')
-      .replaceAll('٤', '4').replaceAll('٥', '5')
-      .replaceAll('٦', '6').replaceAll('٧', '7')
-      .replaceAll('٨', '8').replaceAll('٩', '9')
+      .replaceAll('٠', '0')
+      .replaceAll('١', '1')
+      .replaceAll('٢', '2')
+      .replaceAll('٣', '3')
+      .replaceAll('٤', '4')
+      .replaceAll('٥', '5')
+      .replaceAll('٦', '6')
+      .replaceAll('٧', '7')
+      .replaceAll('٨', '8')
+      .replaceAll('٩', '9')
       .replaceAll('٫', '.') // Arabic decimal separator
       .replaceAll(',', ''); // thousands separator
 }

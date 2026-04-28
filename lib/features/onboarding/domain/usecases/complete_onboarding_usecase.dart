@@ -21,10 +21,11 @@ final class CompleteOnboardingUseCase {
       return const Fail(ValidationFailure('الدخل لا يمكن أن يكون سالباً'));
 
     // Edge: absurd income
-    if (p.totalIncome > 100_000_000)
+    if (p.totalIncome > 100000000)
       return const Fail(ValidationFailure('الدخل يبدو مرتفعاً جداً'));
 
-    AppLogger.info('CompleteOnboarding', 'name=${p.name} country=${p.countryId} stage=${p.lifeStage}');
+    AppLogger.info('CompleteOnboarding',
+        'name=${p.name} country=${p.countryId} stage=${p.lifeStage}');
     return _repo.save(p);
   }
 }
