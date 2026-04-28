@@ -19,7 +19,7 @@ final class Subscription extends Equatable {
   // ── Feature gates ─────────────────────────────────────
   // Free plan limits
   bool get canAddGoal        => true;  // unlimited in free too
-  bool get canUseAiChat      => isPremium;
+  bool get canUseAiChat      => true;  // AI Chat is free for all users
   bool get canUseGPS         => isPremium;
   bool get canExportPDF      => isPremium;
   int  get maxFixedExpenses  => isPremium ? 999 : 5;

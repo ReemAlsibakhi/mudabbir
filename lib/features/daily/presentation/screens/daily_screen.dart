@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/router/app_router.dart';
 import '../../../../core/extensions/context_ext.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -38,6 +40,14 @@ class DailyScreen extends ConsumerWidget {
                     Expanded(child: DailyHeader(date: now)),
                     const SizedBox(width: 8),
                     // Action icons — right side in RTL = left visually
+                    // AI Chat icon
+                    _HeaderIcon(
+                      icon:    Icons.smart_toy_outlined,
+                      tooltip: 'المستشار الذكي',
+                      color:   AppColors.purple,
+                      onTap:   () => context.go(AppRoutes.chat),
+                    ),
+                    const SizedBox(width: 6),
                     _HeaderIcon(
                       icon:    Icons.account_balance_wallet_outlined,
                       tooltip: 'الدخل الشهري',

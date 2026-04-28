@@ -87,18 +87,21 @@ class SettingsScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const MudSectionLabel('المستشار الذكي'),
+                  const MudSectionLabel('المستشار الذكي 🆓'),
                   _SettingsTile(
                     icon: '🤖', title: 'Claude API Key',
-                    subtitle: hasApiKey ? '✅ مضبوط — المستشار جاهز' : '❌ لم يُضبط بعد',
+                    subtitle: hasApiKey
+                      ? '✅ مضبوط — المستشار جاهز للاستخدام'
+                      : '⚠️ أدخل مفتاحك المجاني للبدء',
+                    accent: !hasApiKey,
                     onTap: () => Navigator.push(context,
                       MaterialPageRoute(builder: (_) => const ApiKeySetupScreen())),
                   ),
-                  if (hasApiKey)
-                    _SettingsTile(
-                      icon: '💬', title: 'فتح المستشار الذكي',
-                      onTap: () => context.go(AppRoutes.chat),
-                    ),
+                  _SettingsTile(
+                    icon: '💬', title: 'فتح المستشار الذكي',
+                    subtitle: hasApiKey ? null : 'يتطلب إدخال المفتاح أولاً',
+                    onTap: () => context.go(AppRoutes.chat),
+                  ),
                 ],
               ),
             ),
