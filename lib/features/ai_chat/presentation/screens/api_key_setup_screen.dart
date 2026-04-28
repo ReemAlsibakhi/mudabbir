@@ -35,6 +35,11 @@ class _State extends ConsumerState<ApiKeySetupScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        // ✅ Always show back button
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: Text('مفتاح Claude API', style: AppTextStyles.title),
       ),
       body: SingleChildScrollView(

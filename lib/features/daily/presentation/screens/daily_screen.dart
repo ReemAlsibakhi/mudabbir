@@ -46,7 +46,12 @@ class DailyScreen extends ConsumerWidget {
                       icon:    Icons.account_balance_wallet_outlined,
                       tooltip: 'الدخل الشهري',
                       color:   AppColors.accentAlt,
-                      onTap:   () => context.go(AppRoutes.income),
+                      onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => IncomeScreen(month: DateTime.now()),
+                      ),
+                    ),
                     ),
                     const SizedBox(width: 8),
                     // ── Settings icon ────────────────────
@@ -54,7 +59,12 @@ class DailyScreen extends ConsumerWidget {
                       icon:    Icons.settings_outlined,
                       tooltip: 'الإعدادات',
                       color:   AppColors.textTertiary,
-                      onTap:   () => context.go(AppRoutes.settings),
+                      onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const SettingsScreen(),
+                      ),
+                    ),
                     ),
                   ],
                 ),

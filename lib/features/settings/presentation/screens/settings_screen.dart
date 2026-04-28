@@ -26,15 +26,17 @@ class SettingsScreen extends ConsumerWidget {
     final country      = profile != null ? getCountryById(profile.countryId) : kCountries.first;
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('⚙️ الإعدادات', style: AppTextStyles.title),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Text('⚙️ الإعدادات', style: AppTextStyles.headline2),
-            ),
 
             // ── Profile ─────────────────────────────────────────
             if (profile != null)

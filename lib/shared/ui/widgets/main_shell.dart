@@ -9,7 +9,6 @@ class MainShell extends StatelessWidget {
   final Widget child;
   const MainShell({super.key, required this.child});
 
-  // 4 tabs — chat accessed via FAB
   static const _tabs = [
     (path: AppRoutes.home,     icon: '🌙', label: 'اليوم'),
     (path: AppRoutes.expenses, icon: '💸', label: 'مصروف'),
@@ -19,7 +18,7 @@ class MainShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final location  = GoRouterState.of(context).matchedLocation;
+    final location     = GoRouterState.of(context).matchedLocation;
     final isChatActive = location == AppRoutes.chat;
 
     return Scaffold(
@@ -31,6 +30,7 @@ class MainShell extends StatelessWidget {
   }
 }
 
+// ── Bottom Nav ────────────────────────────────────────────
 class _NavBar extends StatelessWidget {
   final String location;
   const _NavBar({required this.location});
@@ -45,12 +45,20 @@ class _NavBar extends StatelessWidget {
     height:      64,
     child: Row(
       children: [
-        _NavItem(tab: MainShell._tabs[0], isActive: location == MainShell._tabs[0].path),
-        _NavItem(tab: MainShell._tabs[1], isActive: location == MainShell._tabs[1].path),
+        _NavItem(
+          tab:      MainShell._tabs[0],
+          isActive: location == MainShell._tabs[0].path),
+        _NavItem(
+          tab:      MainShell._tabs[1],
+          isActive: location == MainShell._tabs[1].path),
         const Spacer(),
         const Spacer(),
-        _NavItem(tab: MainShell._tabs[2], isActive: location == MainShell._tabs[2].path),
-        _NavItem(tab: MainShell._tabs[3], isActive: location == MainShell._tabs[3].path),
+        _NavItem(
+          tab:      MainShell._tabs[2],
+          isActive: location == MainShell._tabs[2].path),
+        _NavItem(
+          tab:      MainShell._tabs[3],
+          isActive: location == MainShell._tabs[3].path),
       ],
     ),
   );
@@ -79,8 +87,12 @@ class _NavItem extends StatelessWidget {
           ),
           const SizedBox(height: 3),
           Text(tab.label, style: TextStyle(
-            fontFamily: 'Cairo', fontSize: 12, fontWeight: FontWeight.w700,
-            color: isActive ? AppColors.accentAlt : AppColors.textTertiary,
+            fontFamily:    'Cairo',
+            fontSize:      12,
+            fontWeight:    FontWeight.w700,
+            color:         isActive
+                ? AppColors.accentAlt
+                : AppColors.textTertiary,
           )),
           const SizedBox(height: 3),
           AnimatedContainer(
@@ -88,7 +100,7 @@ class _NavItem extends StatelessWidget {
             width:  isActive ? 18 : 0,
             height: 3,
             decoration: BoxDecoration(
-              gradient: isActive ? AppColors.primary : null,
+              gradient:     isActive ? AppColors.primary : null,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -98,7 +110,7 @@ class _NavItem extends StatelessWidget {
   );
 }
 
-// ── Central FAB — toggles between Add and AI Chat ──────────
+// ── FAB — opens AI Chat OR closes it ──────────────────────
 class _CenterFAB extends StatelessWidget {
   final bool isChatActive;
   const _CenterFAB({required this.isChatActive});
@@ -108,6 +120,7 @@ class _CenterFAB extends StatelessWidget {
     onTap: () {
       HapticFeedback.mediumImpact();
       if (isChatActive) {
+        // ✅ Close chat → back to home
         context.go(AppRoutes.home);
       } else {
         context.go(AppRoutes.chat);
@@ -118,19 +131,26 @@ class _CenterFAB extends StatelessWidget {
       width: 58, height: 58,
       decoration: BoxDecoration(
         gradient: isChatActive
-            ? const LinearGradient(colors: [Color(0xFF8B5CF6), Color(0xFF6D28D9)])
+            ? const LinearGradient(
+                colors: [Color(0xFF8B5CF6), Color(0xFF6D28D9)])
             : AppColors.primary,
         borderRadius: BorderRadius.circular(18),
         boxShadow: [BoxShadow(
-          color:      (isChatActive ? const Color(0xFF8B5CF6) : AppColors.accent)
-              .withOpacity(0.4),
-          blurRadius: 20, offset: const Offset(0, 6),
+          color:      (isChatActive
+              ? const Color(0xFF8B5CF6)
+              : AppColors.accent).withOpacity(0.4),
+          blurRadius: 20,
+          offset:     const Offset(0, 6),
         )],
       ),
       child: Center(
-        child: Text(
-          isChatActive ? '✕' : '🤖',
-          style: const TextStyle(fontSize: 22),
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          child: Text(
+            isChatActive ? '✕' : '🤖',
+            key:   ValueKey(isChatActive),
+            style: const TextStyle(fontSize: 22),
+          ),
         ),
       ),
     ),

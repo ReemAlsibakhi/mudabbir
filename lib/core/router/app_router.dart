@@ -13,21 +13,20 @@ import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../shared/ui/widgets/main_shell.dart';
 
 abstract final class AppRoutes {
-  // ── Phase 1 ──────────────────────────────────────────────
   static const String onboarding = '/onboarding';
   static const String home       = '/home';
   static const String expenses   = '/expenses';
   static const String goals      = '/goals';
   static const String reports    = '/reports';
+  // ── Secondary: push over shell (have back button) ──────
   static const String income     = '/income';
   static const String settings   = '/settings';
-
-  // ── Phase 2 ──────────────────────────────────────────────
   static const String chat       = '/chat';
 }
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final isOnboarded = ref.watch(isOnboardedProvider);
+
   return GoRouter(
     initialLocation: isOnboarded ? AppRoutes.home : AppRoutes.onboarding,
     redirect: (_, state) {
@@ -43,34 +42,50 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         style: const TextStyle(fontFamily:'Cairo', color: Colors.white70))),
     ),
     routes: [
-      // Onboarding
-      GoRoute(path: AppRoutes.onboarding,
-        builder: (_,__) => const OnboardingFlow()),
+      // Onboarding — no shell, no back
+      GoRoute(
+        path: AppRoutes.onboarding,
+        builder: (_,__) => const OnboardingFlow(),
+      ),
 
-      // Main app with bottom nav
+      // ── Main shell — 4 tabs + FAB ─────────────────────
       ShellRoute(
         builder: (_, __, child) => MainShell(child: child),
         routes: [
-          GoRoute(path: AppRoutes.home,
-            builder: (_,__) => const DailyScreen()),
-          GoRoute(path: AppRoutes.expenses,
-            builder: (_,__) => ExpensesScreen(month: DateTime.now())),
-          GoRoute(path: AppRoutes.goals,
-            builder: (_,__) => const GoalsScreen()),
-          GoRoute(path: AppRoutes.reports,
-            builder: (_,__) => const ReportsScreen()),
+          GoRoute(
+            path: AppRoutes.home,
+            builder: (_,__) => const DailyScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.expenses,
+            builder: (_,__) => ExpensesScreen(month: DateTime.now()),
+          ),
+          GoRoute(
+            path: AppRoutes.goals,
+            builder: (_,__) => const GoalsScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.reports,
+            builder: (_,__) => const ReportsScreen(),
+          ),
+          // ✅ Chat inside shell — FAB becomes ✕ to close
+          GoRoute(
+            path: AppRoutes.chat,
+            builder: (_,__) => const ChatScreen(),
+          ),
         ],
       ),
 
-      // Secondary routes (no bottom nav)
-      GoRoute(path: AppRoutes.income,
-        builder: (_,__) => IncomeScreen(month: DateTime.now())),
-      GoRoute(path: AppRoutes.settings,
-        builder: (_,__) => const SettingsScreen()),
-
-      // Phase 2: AI Chat
-      GoRoute(path: AppRoutes.chat,
-        builder: (_,__) => const ChatScreen()),
+      // ── Secondary routes — pushed on top of shell ─────
+      // These have their own AppBar + back button
+      GoRoute(
+        path: AppRoutes.income,
+        builder: (_,__) => IncomeScreen(month: DateTime.now()),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        builder: (_,__) => const SettingsScreen(),
+      ),
     ],
   );
 });

@@ -1,7 +1,3 @@
-// ═══════════════════════════════════════════════════════════
-// IncomeScreen — UI only, delegates everything to notifier
-// ═══════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extensions/context_ext.dart';
@@ -13,22 +9,57 @@ import '../providers/income_state.dart';
 import '../widgets/income_form.dart';
 import '../widgets/income_summary_card.dart';
 import '../widgets/income_savings_tip.dart';
-import '../../domain/entities/income.dart';
 
-class IncomeScreen extends ConsumerWidget {
+class IncomeScreen extends ConsumerStatefulWidget {
   final DateTime month;
   const IncomeScreen({super.key, required this.month});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(incomeNotifierProvider(month.monthKey));
+  ConsumerState<IncomeScreen> createState() => _State();
+}
+
+class _State extends ConsumerState<IncomeScreen> {
+  late DateTime _month;
+
+  @override
+  void initState() {
+    super.initState();
+    _month = widget.month;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(incomeNotifierProvider(_month.monthKey));
+
+    ref.listen(incomeNotifierProvider(_month.monthKey), (_, next) {
+      if (!mounted) return;
+      if (next is IncomeLoaded && next.saveError != null) {
+        context.showSnack(next.saveError!, color: AppColors.error);
+        ref.read(incomeNotifierProvider(_month.monthKey).notifier).clearError();
+      }
+      if (next is IncomeLoaded && next.saveSuccess) {
+        context.showSnack('✅ تم حفظ الدخل', color: AppColors.success);
+      }
+    });
 
     return Scaffold(
       body: SafeArea(
         child: switch (state) {
-          IncomeLoading()      => const _LoadingView(),
-          IncomeError(:final message) => _ErrorView(message: message),
-          IncomeLoaded()       => _IncomeContent(state: state, month: month),
+          IncomeLoading()                => const _LoadingView(),
+          IncomeError(:final message)    => _ErrorView(message: message),
+          IncomeLoaded()                 => _IncomeContent(
+              state: state,
+              month: _month,
+              onPrev: () => setState(() => _month = _month.prevMonth()),
+              onNext: () {
+                final now = DateTime.now();
+                if (_month.year == now.year && _month.month >= now.month) return;
+                setState(() => _month = _month.nextMonth());
+              },
+              onSave: (p, s, e) => ref
+                  .read(incomeNotifierProvider(_month.monthKey).notifier)
+                  .save(primaryRaw: p, secondaryRaw: s, extraRaw: e),
+            ),
         },
       ),
     );
@@ -58,13 +89,11 @@ class _ErrorView extends StatelessWidget {
         children: [
           const Text('⚠️', style: TextStyle(fontSize: 48)),
           const SizedBox(height: 12),
-          Text(message,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.body),
+          Text(message, textAlign: TextAlign.center, style: AppTextStyles.body),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: () => context.popScreen(),
-            child: const Text('حسناً'),
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('رجوع'),
           ),
         ],
       ),
@@ -72,90 +101,75 @@ class _ErrorView extends StatelessWidget {
   );
 }
 
-// ─── Loaded ────────────────────────────────────────────────
-class _IncomeContent extends ConsumerWidget {
+// ─── Content ───────────────────────────────────────────────
+class _IncomeContent extends StatelessWidget {
   final IncomeLoaded state;
-  final DateTime month;
-  const _IncomeContent({required this.state, required this.month});
+  final DateTime     month;
+  final VoidCallback onPrev, onNext;
+  final void Function(String, String, String) onSave;
+
+  const _IncomeContent({
+    required this.state,  required this.month,
+    required this.onPrev, required this.onNext,
+    required this.onSave,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Show error banner if exists
-    ref.listen(
-      incomeNotifierProvider(month.monthKey),
-      (_, next) {
-        if (next is IncomeLoaded && next.saveError != null) {
-          context.showSnack(next.saveError!, color: AppColors.error);
-          ref.read(incomeNotifierProvider(month.monthKey).notifier).clearError();
-        }
-        if (next is IncomeLoaded && next.saveSuccess) {
-          context.showSnack('✅ تم حفظ الدخل', color: AppColors.success);
-        }
-      },
-    );
-
-    return CustomScrollView(
-      slivers: [
-        _IncomeAppBar(month: month, isSaving: state.isSaving),
-        SliverPadding(
-          padding: const EdgeInsets.all(16),
-          sliver: SliverList(
-            delegate: SliverChildListDelegate([
-              IncomeForm(
-                income: state.income,
-                onSave: (p, s, e) => ref
-                    .read(incomeNotifierProvider(month.monthKey).notifier)
-                    .save(primaryRaw: p, secondaryRaw: s, extraRaw: e),
+  Widget build(BuildContext context) => CustomScrollView(
+    slivers: [
+      // ── AppBar with BACK button ──────────────────────
+      SliverAppBar(
+        pinned:      true,
+        // ✅ Leading = back button (goes to previous screen)
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Column(
+          children: [
+            Text('💰 الدخل الشهري', style: AppTextStyles.title),
+            Text(month.monthAr,
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.textSecondary)),
+          ],
+        ),
+        actions: [
+          // ✅ Month navigation — prev/next
+          IconButton(
+            icon: const Icon(Icons.chevron_right_rounded,
+              color: AppColors.textSecondary),
+            tooltip: 'الشهر السابق',
+            onPressed: onPrev,
+          ),
+          IconButton(
+            icon: const Icon(Icons.chevron_left_rounded,
+              color: AppColors.textSecondary),
+            tooltip: 'الشهر التالي',
+            onPressed: onNext,
+          ),
+          if (state.isSaving)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: SizedBox(
+                width: 18, height: 18,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2, color: AppColors.accentAlt),
               ),
-              const SizedBox(height: 8),
-              IncomeSummaryCard(income: state.income),
-              const SizedBox(height: 8),
-              IncomeSavingsTip(income: state.income),
-            ]),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _IncomeAppBar extends ConsumerWidget {
-  final DateTime month;
-  final bool     isSaving;
-  const _IncomeAppBar({required this.month, required this.isSaving});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) => SliverAppBar(
-    pinned: true,
-    title: Column(
-      children: [
-        Text('💰 الدخل الشهري', style: AppTextStyles.title),
-        Text(month.monthAr,
-          style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary)),
-      ],
-    ),
-    actions: [
-      if (isSaving)
-        const Padding(
-          padding: EdgeInsets.all(16),
-          child: SizedBox(
-            width: 18, height: 18,
-            child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accentAlt),
-          ),
-        ),
-      IconButton(
-        icon: const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textSecondary, size: 16),
-        onPressed: () {
-          // previous month
-        },
+            ),
+        ],
       ),
-      IconButton(
-        icon: const Icon(Icons.arrow_back_ios_rounded, color: AppColors.textSecondary, size: 16),
-        onPressed: () {
-          // next month — guard: no future months
-          final now = DateTime.now();
-          if (month.year > now.year || (month.year == now.year && month.month >= now.month)) return;
-        },
+      SliverPadding(
+        padding: const EdgeInsets.all(16),
+        sliver: SliverList(
+          delegate: SliverChildListDelegate([
+            IncomeForm(income: state.income, onSave: onSave),
+            const SizedBox(height: 8),
+            IncomeSummaryCard(income: state.income),
+            const SizedBox(height: 8),
+            IncomeSavingsTip(income: state.income),
+            const SizedBox(height: 32),
+          ]),
+        ),
       ),
     ],
   );
