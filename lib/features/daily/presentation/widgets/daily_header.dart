@@ -12,51 +12,62 @@ class DailyHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile  = ref.watch(onboardingRepoProvider).getSaved();
-    final name     = profile?.name.isNotEmpty == true ? profile!.name : '';
+    final name     = profile?.name.trim() ?? '';
     final greeting = _greeting(date.hour);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
+        // Date line
         Text(
           date.dayFullAr,
           style: AppTextStyles.caption.copyWith(
-            color: AppColors.textSecondary.withOpacity(0.65),
+            color:    AppColors.textSecondary.withOpacity(0.65),
             fontSize: 11,
           ),
         ),
-        const SizedBox(height: 4),
-        // Simple approach: two Text widgets side by side in a Wrap
-        Wrap(
-          children: [
-            Text(
-              '$greeting، ',
-              style: AppTextStyles.headline2.copyWith(
-                color: AppColors.textPrimary,
-                fontSize: 20,
+        const SizedBox(height: 3),
+        // Greeting + name — both forced RTL so English name stays on correct side
+        RichText(
+          textDirection: TextDirection.rtl,
+          text: TextSpan(
+            style: AppTextStyles.headline2.copyWith(fontSize: 19),
+            children: [
+              TextSpan(
+                text:  '$greeting، ',
+                style: const TextStyle(color: AppColors.textPrimary),
               ),
-            ),
-            if (name.isNotEmpty)
-              ShaderMask(
-                shaderCallback: (bounds) => const LinearGradient(
-                  colors: [Color(0xFF38BDF8), Color(0xFF34D399)],
-                ).createShader(bounds),
-                child: Text(
-                  name,
-                  style: AppTextStyles.headline2.copyWith(
-                    color: Colors.white,
-                    fontSize: 20,
+              if (name.isNotEmpty)
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.baseline,
+                  baseline:  TextBaseline.alphabetic,
+                  child: ShaderMask(
+                    shaderCallback: (b) => const LinearGradient(
+                      colors: [Color(0xFF38BDF8), Color(0xFF34D399)],
+                    ).createShader(b),
+                    child: Text(
+                      name,
+                      // Force same direction as parent so name
+                      // stays visually connected to greeting
+                      textDirection: TextDirection.rtl,
+                      style: AppTextStyles.headline2.copyWith(
+                        fontSize: 19,
+                        color:    Colors.white,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: 1),
+        // Subtitle
         Text(
           'سجّل مصاريفك في 30 ثانية 👇',
           style: AppTextStyles.caption.copyWith(
-            color: AppColors.textSecondary.withOpacity(0.55),
-            fontSize: 12,
+            color:    AppColors.textSecondary.withOpacity(0.55),
+            fontSize: 11,
           ),
         ),
       ],

@@ -20,6 +20,11 @@ abstract final class AppTheme {
     elevatedButtonTheme:       _button,
     textTheme:                 _textTheme,
     dividerTheme:              const DividerThemeData(color: AppColors.border, space: 1),
+    bottomAppBarTheme:          const BottomAppBarTheme(
+      color:     AppColors.surface1,
+      elevation: 0,
+      surfaceTintColor: Colors.transparent,
+    ),
     snackBarTheme:             _snackBar,
     bottomSheetTheme:          _bottomSheet,
     dialogTheme:               _dialog,

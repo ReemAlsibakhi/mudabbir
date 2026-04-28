@@ -96,6 +96,7 @@ class _ReportsHeader extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.arrow_forward_ios_rounded,
                   color: AppColors.textSecondary),
+                tooltip: 'الشهر السابق',
                 onPressed: onPrev,
               ),
               Column(
@@ -109,6 +110,7 @@ class _ReportsHeader extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.arrow_back_ios_rounded,
                   color: AppColors.textSecondary),
+                tooltip: 'الشهر التالي',
                 onPressed: onNext,
               ),
             ],
