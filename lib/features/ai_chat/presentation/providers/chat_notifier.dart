@@ -1,18 +1,21 @@
-import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../expenses/data/repositories/expense_repository_impl.dart';
+import '../../../expenses/domain/repositories/expense_repository.dart';
+import '../../../goals/data/repositories/goal_repository_impl.dart';
+import '../../../goals/domain/repositories/goal_repository.dart';
+import '../../../income/data/repositories/income_repository_impl.dart';
+import '../../../income/domain/repositories/income_repository.dart';
+import '../../../onboarding/data/repositories/onboarding_repository_impl.dart';
+import '../../../onboarding/domain/repositories/onboarding_repository.dart';
 import '../../data/repositories/chat_repository_impl.dart';
 import '../../data/services/claude_api_service.dart';
 import '../../domain/entities/chat_message.dart';
 import '../../domain/repositories/chat_repository.dart';
-import '../../../expenses/data/repositories/expense_repository_impl.dart';
-import '../../../goals/data/repositories/goal_repository_impl.dart';
-import '../../../income/data/repositories/income_repository_impl.dart';
-import '../../../onboarding/data/repositories/onboarding_repository_impl.dart';
 
-// ── API key stored in settings box ────────────────────────
+// ── API key ───────────────────────────────────────────────
 final apiKeyProvider = StateNotifierProvider<ApiKeyNotifier, String>(
   (_) => ApiKeyNotifier(),
 );
@@ -23,9 +26,7 @@ final class ApiKeyNotifier extends StateNotifier<String> {
 
   ApiKeyNotifier() : super('') { _load(); }
 
-  void _load() {
-    state = _box.get(_key, defaultValue: '') as String;
-  }
+  void _load() => state = _box.get(_key, defaultValue: '') as String;
 
   Future<void> set(String key) async {
     state = key.trim();
@@ -39,6 +40,12 @@ final class ApiKeyNotifier extends StateNotifier<String> {
 
   bool get hasKey => state.isNotEmpty;
 }
+
+// ── Typed repo providers — avoids manual instantiation ────
+final _chatIncomeRepoProvider  = Provider<IncomeRepository> ((_) => IncomeRepositoryImpl());
+final _chatExpenseRepoProvider = Provider<ExpenseRepository>((_) => ExpenseRepositoryImpl());
+final _chatGoalRepoProvider    = Provider<GoalRepository>   ((_) => GoalRepositoryImpl());
+final _chatOnboardRepoProvider = Provider<OnboardingRepository>((_) => OnboardingRepositoryImpl());
 
 // ── Chat repo provider ────────────────────────────────────
 final chatRepoProvider = Provider<ChatRepository>((ref) {
@@ -70,33 +77,34 @@ final class ChatState {
   );
 }
 
-// ── Notifier ──────────────────────────────────────────────
+// ── Notifier (typed interfaces, no dynamic) ───────────────
 final chatNotifierProvider =
     StateNotifierProvider.autoDispose<ChatNotifier, ChatState>(
   (ref) => ChatNotifier(
     repo:           ref.watch(chatRepoProvider),
-    incomeRepo:     IncomeRepositoryImpl(),
-    expenseRepo:    ExpenseRepositoryImpl(),
-    goalRepo:       GoalRepositoryImpl(),
-    onboardingRepo: OnboardingRepositoryImpl(),
+    incomeRepo:     ref.watch(_chatIncomeRepoProvider),
+    expenseRepo:    ref.watch(_chatExpenseRepoProvider),
+    goalRepo:       ref.watch(_chatGoalRepoProvider),
+    onboardingRepo: ref.watch(_chatOnboardRepoProvider),
   ),
 );
 
 final class ChatNotifier extends StateNotifier<ChatState> {
   static const _tag = 'ChatNotifier';
 
+  // ✅ Typed interfaces — no dynamic
   final ChatRepository        _repo;
-  final IncomeRepositoryImpl  _incomeRepo;
-  final ExpenseRepositoryImpl _expenseRepo;
-  final GoalRepositoryImpl    _goalRepo;
-  final OnboardingRepositoryImpl _onboardingRepo;
+  final IncomeRepository      _incomeRepo;
+  final ExpenseRepository     _expenseRepo;
+  final GoalRepository        _goalRepo;
+  final OnboardingRepository  _onboardingRepo;
 
   ChatNotifier({
-    required ChatRepository        repo,
-    required IncomeRepositoryImpl  incomeRepo,
-    required ExpenseRepositoryImpl expenseRepo,
-    required GoalRepositoryImpl    goalRepo,
-    required OnboardingRepositoryImpl onboardingRepo,
+    required ChatRepository       repo,
+    required IncomeRepository     incomeRepo,
+    required ExpenseRepository    expenseRepo,
+    required GoalRepository       goalRepo,
+    required OnboardingRepository onboardingRepo,
   })  : _repo           = repo,
         _incomeRepo     = incomeRepo,
         _expenseRepo    = expenseRepo,
@@ -108,61 +116,49 @@ final class ChatNotifier extends StateNotifier<ChatState> {
 
   void _loadHistory() {
     try {
-      final history = _repo.loadHistory();
-      if (history.isNotEmpty) state = state.copyWith(messages: history);
+      final h = _repo.loadHistory();
+      if (h.isNotEmpty) state = state.copyWith(messages: h);
     } catch (e) {
       AppLogger.error(_tag, 'load history', e);
     }
   }
 
-  // ── Send ──────────────────────────────────────────────────
   Future<void> send(String text) async {
     if (!mounted) return;
     final trimmed = text.trim();
     if (trimmed.isEmpty) return;
 
-    // Add user message
     final userMsg = ChatMessage.user(trimmed);
     state = state.copyWith(
-      messages: [...state.messages, userMsg],
-      isTyping: true,
+      messages:   [...state.messages, userMsg],
+      isTyping:   true,
       clearError: true,
     );
-
-    // Save user message
     await _repo.saveHistory(state.messages);
 
-    // Build financial context from real Hive data
-    final context = _buildFinancialContext();
-
-    // Call Claude
     final result = await _repo.send(
-      history:          _historyWithoutLoading(),
+      history:          _historyOnly(),
       userMessage:      trimmed,
-      financialContext: context,
+      financialContext: _buildContext(),
     );
 
     if (!mounted) return;
-
     if (result.isSuccess) {
-      // result.valueOrNull is already a ChatMessage from the repo
-      final assistantMsg = result.valueOrNull!;
       state = state.copyWith(
-        messages: [...state.messages, assistantMsg],
+        messages: [...state.messages, result.valueOrNull!],
         isTyping: false,
       );
       await _repo.saveHistory(state.messages);
     } else {
-      final errText = result.failureOrNull?.message ?? 'حدث خطأ';
+      final err = result.failureOrNull?.message ?? 'حدث خطأ';
       state = state.copyWith(
-        messages: [...state.messages, ChatMessage.error(errText)],
+        messages: [...state.messages, ChatMessage.error(err)],
         isTyping: false,
-        error:    errText,
+        error:    err,
       );
     }
   }
 
-  // ── Clear ─────────────────────────────────────────────────
   void clearHistory() {
     state = const ChatState();
     _repo.clearHistory();
@@ -170,12 +166,10 @@ final class ChatNotifier extends StateNotifier<ChatState> {
 
   void clearError() => state = state.copyWith(clearError: true);
 
-  // ── Helpers ───────────────────────────────────────────────
-
-  List<ChatMessage> _historyWithoutLoading() =>
+  List<ChatMessage> _historyOnly() =>
       state.messages.where((m) => !m.isLoading).toList();
 
-  String _buildFinancialContext() {
+  String _buildContext() {
     try {
       final now      = DateTime.now();
       final monthKey = '${now.year}-${now.month.toString().padLeft(2,'0')}';
@@ -189,15 +183,15 @@ final class ChatNotifier extends StateNotifier<ChatState> {
       return [
         'الاسم: ${profile?.name ?? "المستخدم"}',
         'مرحلة الحياة: ${profile?.lifeStage.nameAr ?? "غير محدد"}',
-        'الدخل الشهري: ${income.total.toStringAsFixed(0)} ريال',
-        'المصاريف المتغيرة: ${varExp.toStringAsFixed(0)} ريال',
-        'المصاريف الثابتة: ${fixedExp.toStringAsFixed(0)} ريال',
-        'الفائض: ${balance.toStringAsFixed(0)} ريال',
-        'عدد الأهداف النشطة: ${goals.where((g) => !g.isCompleted).length}',
+        'الدخل الشهري: ${income.total.toStringAsFixed(0)}',
+        'المصاريف المتغيرة: ${varExp.toStringAsFixed(0)}',
+        'المصاريف الثابتة: ${fixedExp.toStringAsFixed(0)}',
+        'الفائض: ${balance.toStringAsFixed(0)}',
+        'الأهداف النشطة: ${goals.where((g) => !g.isCompleted).length}',
         'الشهر: $monthKey',
       ].join('\n');
     } catch (e) {
-      AppLogger.error(_tag, 'context build error', e);
+      AppLogger.error(_tag, 'context error', e);
       return 'بيانات غير متاحة';
     }
   }
