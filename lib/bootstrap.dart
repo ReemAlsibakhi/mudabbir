@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'core/constants/app_constants.dart';
+import 'core/utils/hive_migrator.dart';
 import 'core/utils/logger.dart';
 import 'features/notifications/notification_service.dart';
 import 'shared/data/models/expense_model.dart';

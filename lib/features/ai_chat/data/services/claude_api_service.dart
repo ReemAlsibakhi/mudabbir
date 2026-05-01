@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/errors/result.dart';
 import '../../../../core/utils/logger.dart';
 import '../../domain/entities/chat_message.dart';
@@ -21,11 +22,11 @@ final class ClaudeApiService {
   }) async {
     // Edge: empty message
     if (userMessage.trim().isEmpty)
-      return const Fail(ValidationFailure('الرسالة فارغة'));
+      return const Fail(ValidationFailure(AppStrings.emptyMessage));
 
     // Edge: missing API key
     if (_apiKey.isEmpty)
-      return const Fail(ValidationFailure('مفتاح API غير مضبوط'));
+      return const Fail(ValidationFailure(AppStrings.apiKeyMissing));
 
     try {
       final messages = [
@@ -64,31 +65,31 @@ final class ClaudeApiService {
       // Edge: unexpected response shape
       final content = body['content'];
       if (content == null || content is! List || content.isEmpty)
-        return const Fail(UnexpectedFailure('رد غير متوقع من الخادم'));
+        return const Fail(UnexpectedFailure(AppStrings.unexpectedShape));
 
       final text = content[0]['text'] as String? ?? '';
       if (text.trim().isEmpty)
-        return const Fail(UnexpectedFailure('استلمنا رداً فارغاً'));
+        return const Fail(UnexpectedFailure(AppStrings.emptyResponse));
 
       return Success(text.trim());
 
     } on http.ClientException catch (e) {
       AppLogger.error(_tag, 'Network error', e);
-      return const Fail(UnexpectedFailure('تعذّر الاتصال بالإنترنت — تحقق من الشبكة'));
+      return const Fail(UnexpectedFailure(AppStrings.networkError));
     } catch (e, st) {
       AppLogger.error(_tag, 'Unexpected error', e, st);
       // Edge: timeout
       if (e.toString().contains('TimeoutException'))
-        return const Fail(UnexpectedFailure('انتهت مهلة الاتصال — حاول مرة أخرى'));
+        return const Fail(UnexpectedFailure(AppStrings.timeoutError));
       return Fail(UnexpectedFailure(e.toString()));
     }
   }
 
   String _arabicError(int code, String msg) => switch (code) {
-    401  => 'مفتاح API غير صالح — تحقق من الإعدادات',
-    429  => 'تم تجاوز حد الطلبات — انتظر دقيقة وحاول مجدداً',
-    500  => 'خطأ في خادم Claude — حاول لاحقاً',
-    503  => 'الخدمة غير متاحة مؤقتاً',
+    401  => AppStrings.apiKeyInvalid,
+    429  => AppStrings.rateLimitError,
+    500  => AppStrings.serverError,
+    503  => AppStrings.serviceUnavail,
     _    => msg,
   };
 

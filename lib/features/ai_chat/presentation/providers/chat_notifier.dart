@@ -2,12 +2,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/utils/logger.dart';
-import '../../../expenses/data/repositories/expense_repository_impl.dart';
 import '../../../expenses/domain/repositories/expense_repository.dart';
-import '../../../goals/data/repositories/goal_repository_impl.dart';
+import '../../../expenses/presentation/providers/expenses_notifier.dart';
 import '../../../goals/domain/repositories/goal_repository.dart';
-import '../../../income/data/repositories/income_repository_impl.dart';
+import '../../../goals/presentation/providers/goals_notifier.dart';
 import '../../../income/domain/repositories/income_repository.dart';
+import '../../../income/presentation/providers/income_notifier.dart';
 import '../../../onboarding/data/repositories/onboarding_repository_impl.dart';
 import '../../../onboarding/domain/repositories/onboarding_repository.dart';
 import '../../data/repositories/chat_repository_impl.dart';
@@ -41,11 +41,6 @@ final class ApiKeyNotifier extends StateNotifier<String> {
   bool get hasKey => state.isNotEmpty;
 }
 
-// ── Typed repo providers — avoids manual instantiation ────
-final _chatIncomeRepoProvider  = Provider<IncomeRepository> ((_) => IncomeRepositoryImpl());
-final _chatExpenseRepoProvider = Provider<ExpenseRepository>((_) => ExpenseRepositoryImpl());
-final _chatGoalRepoProvider    = Provider<GoalRepository>   ((_) => GoalRepositoryImpl());
-final _chatOnboardRepoProvider = Provider<OnboardingRepository>((_) => OnboardingRepositoryImpl());
 
 // ── Chat repo provider ────────────────────────────────────
 final chatRepoProvider = Provider<ChatRepository>((ref) {
@@ -82,10 +77,10 @@ final chatNotifierProvider =
     StateNotifierProvider.autoDispose<ChatNotifier, ChatState>(
   (ref) => ChatNotifier(
     repo:           ref.watch(chatRepoProvider),
-    incomeRepo:     ref.watch(_chatIncomeRepoProvider),
-    expenseRepo:    ref.watch(_chatExpenseRepoProvider),
-    goalRepo:       ref.watch(_chatGoalRepoProvider),
-    onboardingRepo: ref.watch(_chatOnboardRepoProvider),
+    incomeRepo:     ref.watch(incomeRepoProvider),   // ← shared from income feature
+    expenseRepo:    ref.watch(expenseRepoProvider),  // ← shared from expenses feature
+    goalRepo:       ref.watch(goalRepoProvider),     // ← shared from goals feature
+    onboardingRepo: OnboardingRepositoryImpl(),
   ),
 );
 
