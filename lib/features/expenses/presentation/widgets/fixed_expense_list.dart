@@ -150,7 +150,7 @@ class _FixedItem extends StatelessWidget {
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
-                          daysUntilDue! == 0 ? 'اليوم' : 'بعد $daysUntilDue أيام',
+                          daysUntilDue! == 0 ? AppStrings.today : '${AppStrings.due} $daysUntilDue ${AppStrings.days}',
                           style: AppTextStyles.caption.copyWith(color: AppColors.warning),
                         ),
                       ),

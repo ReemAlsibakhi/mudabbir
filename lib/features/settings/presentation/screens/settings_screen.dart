@@ -48,7 +48,7 @@ class SettingsScreen extends ConsumerWidget {
                     const MudSectionLabel(AppStrings.profile),
                     _ProfileHeader(profile: profile, country: country, sub: sub),
                     const Divider(color: AppColors.border, height: 20),
-                    _InfoRow(label: '🌍 الدولة',       value: '${country.flag} ${country.nameAr}'),
+                    _InfoRow(label: AppStrings.countryLabel, value: '\${country.flag} \${country.nameAr}'),
                     _InfoRow(label: AppStrings.currencyLabel,       value: country.currency),
                     _LifeStageRow(profile: profile),
                   ],

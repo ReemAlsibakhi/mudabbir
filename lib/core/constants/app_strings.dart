@@ -691,4 +691,9 @@ abstract final class AppStrings {
   static const String promoTitle2      = 'حقق أهدافك\nالمالية أسرع';
   static const String promoTitle3      = 'بياناتك خاصة\n100%% على هاتفك';
 
+  // ── Fixed expense list ─────────────────────────────────
+  static const String due           = 'بعد';
+  static const String days          = 'أيام';
+  static const String countryLabel  = '🌍 الدولة';
+
 }
