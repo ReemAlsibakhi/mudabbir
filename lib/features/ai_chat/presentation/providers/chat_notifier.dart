@@ -8,8 +8,8 @@ import '../../../goals/domain/repositories/goal_repository.dart';
 import '../../../goals/presentation/providers/goals_notifier.dart';
 import '../../../income/domain/repositories/income_repository.dart';
 import '../../../income/presentation/providers/income_notifier.dart';
-import '../../../onboarding/data/repositories/onboarding_repository_impl.dart';
 import '../../../onboarding/domain/repositories/onboarding_repository.dart';
+import '../../../onboarding/presentation/providers/onboarding_notifier.dart';
 import '../../data/repositories/chat_repository_impl.dart';
 import '../../data/services/claude_api_service.dart';
 import '../../domain/entities/chat_message.dart';
@@ -80,7 +80,7 @@ final chatNotifierProvider =
     incomeRepo:     ref.watch(incomeRepoProvider),   // ← shared from income feature
     expenseRepo:    ref.watch(expenseRepoProvider),  // ← shared from expenses feature
     goalRepo:       ref.watch(goalRepoProvider),     // ← shared from goals feature
-    onboardingRepo: OnboardingRepositoryImpl(),
+    onboardingRepo: ref.watch(onboardingRepoProvider), // ← shared
   ),
 );
 

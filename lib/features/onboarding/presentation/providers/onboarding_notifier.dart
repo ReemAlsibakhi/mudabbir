@@ -7,35 +7,47 @@ import '../../domain/repositories/onboarding_repository.dart';
 import '../../domain/usecases/complete_onboarding_usecase.dart';
 import 'onboarding_state.dart';
 
+// ── Shared providers ─────────────────────────────────────
 final onboardingRepoProvider = Provider<OnboardingRepository>(
   (_) => OnboardingRepositoryImpl(),
 );
 
-// ✅ Always reads fresh from Hive — never cached
-// Used by anything outside the router that needs onboarding status
+// ✅ Injected UseCase
+final completeOnboardingUseCaseProvider = Provider<CompleteOnboardingUseCase>(
+  (ref) => CompleteOnboardingUseCase(ref.watch(onboardingRepoProvider)),
+);
+
+// Router guard — reads fresh from Hive on every check
 final isOnboardedProvider = Provider<bool>(
-  (ref) => OnboardingRepositoryImpl().isOnboarded(),
+  (ref) => ref.watch(onboardingRepoProvider).isOnboarded(),
 );
 
 final onboardingNotifierProvider =
     StateNotifierProvider<OnboardingNotifier, OnboardingState>(
-  (ref) => OnboardingNotifier(ref.watch(onboardingRepoProvider)),
+  (ref) => OnboardingNotifier(
+    repo:        ref.watch(onboardingRepoProvider),
+    completeUC:  ref.watch(completeOnboardingUseCaseProvider),
+  ),
 );
 
 final class OnboardingNotifier extends StateNotifier<OnboardingState> {
   static const _tag = 'OnboardingNotifier';
-  final OnboardingRepository _repo;
 
-  OnboardingNotifier(this._repo)
-      : super(OnboardingState(
+  final OnboardingRepository       _repo;
+  final CompleteOnboardingUseCase  _completeUC; // ✅ injected
+
+  OnboardingNotifier({
+    required OnboardingRepository      repo,
+    required CompleteOnboardingUseCase completeUC,
+  })  : _repo       = repo,
+        _completeUC = completeUC,
+        super(OnboardingState(
           draft: OnboardingProfile(
             name:      '',
             countryId: _detectCountry(),
             lifeStage: LifeStage.single,
           ),
         ));
-
-  // ── Navigation ────────────────────────────────────────
 
   void nextStep() {
     final next = OnboardingStep.values[state.step.index + 1];
@@ -44,21 +56,18 @@ final class OnboardingNotifier extends StateNotifier<OnboardingState> {
 
   void prevStep() {
     if (state.step.index == 0) return;
-    final prev = OnboardingStep.values[state.step.index - 1];
-    state = state.copyWith(step: prev, clearError: true);
+    state = state.copyWith(
+      step: OnboardingStep.values[state.step.index - 1],
+      clearError: true,
+    );
   }
 
-  // ── Updates ───────────────────────────────────────────
-
-  void selectCountry(String id) =>
+  void selectCountry(String id)    =>
       state = state.copyWith(draft: state.draft.copyWith(countryId: id));
-
-  void selectLifeStage(LifeStage stage) =>
-      state = state.copyWith(draft: state.draft.copyWith(lifeStage: stage));
-
-  void setName(String name) =>
+  void selectLifeStage(LifeStage s) =>
+      state = state.copyWith(draft: state.draft.copyWith(lifeStage: s));
+  void setName(String name)         =>
       state = state.copyWith(draft: state.draft.copyWith(name: name));
-
   void setIncome({double? primary, double? secondary, double? extra}) =>
       state = state.copyWith(draft: state.draft.copyWith(
         primaryIncome:   primary?.clamp(0, double.infinity),
@@ -66,39 +75,20 @@ final class OnboardingNotifier extends StateNotifier<OnboardingState> {
         extraIncome:     extra?.clamp(0, double.infinity),
       ));
 
-  // ── Complete ──────────────────────────────────────────
-
   Future<bool> complete() async {
     state = state.copyWith(isSaving: true, clearError: true);
-
-    final result = await CompleteOnboardingUseCase(_repo).call(state.draft);
+    final result = await _completeUC(state.draft); // ✅ injected
     if (!mounted) return false;
-
     if (result.isFailure) {
-      AppLogger.warn(_tag, 'Complete failed: ${result.failureOrNull}');
+      AppLogger.warn(_tag, 'complete failed: ${result.failureOrNull}');
       state = state.copyWith(
-        isSaving: false,
-        error:    result.failureOrNull!.message,
-      );
+        isSaving: false, error: result.failureOrNull!.message);
       return false;
     }
-
-    state = state.copyWith(step: OnboardingStep.done, isSaving: false, clearError: true);
+    state = state.copyWith(step: OnboardingStep.done, isSaving: false);
     AppLogger.info(_tag, 'Onboarding complete ✅');
     return true;
   }
 
-  // ── Auto-detect country from device locale ─────────────
-  static String _detectCountry() {
-    try {
-      // Use platform locale to detect country
-      // In real app: PlatformDispatcher.instance.locale
-      return 'sa'; // default Saudi Arabia
-    } catch (_) {
-      return 'sa';
-    }
-  }
+  static String _detectCountry() => 'sa'; // default Saudi Arabia
 }
-
-// Re-export repo provider for use in settings
-// ignore_for_file: duplicate_export

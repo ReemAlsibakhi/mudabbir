@@ -1,26 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../expenses/data/repositories/expense_repository_impl.dart';
-import '../../../expenses/domain/repositories/expense_repository.dart';
-import '../../../goals/data/repositories/goal_repository_impl.dart';
-import '../../../goals/domain/repositories/goal_repository.dart';
-import '../../../income/data/repositories/income_repository_impl.dart';
-import '../../../income/domain/repositories/income_repository.dart';
-import '../../../onboarding/data/repositories/onboarding_repository_impl.dart';
-import '../../../onboarding/domain/repositories/onboarding_repository.dart';
+import '../../../expenses/presentation/providers/expenses_notifier.dart';
+import '../../../goals/presentation/providers/goals_notifier.dart';
+import '../../../income/presentation/providers/income_notifier.dart';
+import '../../../onboarding/presentation/providers/onboarding_notifier.dart';
 import '../../domain/entities/monthly_report.dart';
 import '../../domain/usecases/get_monthly_report_usecase.dart';
 
-final _reportIncomeRepo     = Provider<IncomeRepository>    ((_) => IncomeRepositoryImpl());
-final _reportExpenseRepo    = Provider<ExpenseRepository>   ((_) => ExpenseRepositoryImpl());
-final _reportGoalRepo       = Provider<GoalRepository>      ((_) => GoalRepositoryImpl());
-final _reportOnboardingRepo = Provider<OnboardingRepository>((_) => OnboardingRepositoryImpl());
-
-final _reportUseCaseProvider = Provider<GetMonthlyReportUseCase>((ref) =>
-  GetMonthlyReportUseCase(
-    incomeRepo:     ref.watch(_reportIncomeRepo),
-    expenseRepo:    ref.watch(_reportExpenseRepo),
-    goalRepo:       ref.watch(_reportGoalRepo),
-    onboardingRepo: ref.watch(_reportOnboardingRepo),
+// ✅ Reuses shared repo providers — no duplicate Hive connections
+final _reportUseCaseProvider = Provider<GetMonthlyReportUseCase>(
+  (ref) => GetMonthlyReportUseCase(
+    incomeRepo:     ref.watch(incomeRepoProvider),    // shared
+    expenseRepo:    ref.watch(expenseRepoProvider),   // shared
+    goalRepo:       ref.watch(goalRepoProvider),      // shared
+    onboardingRepo: ref.watch(onboardingRepoProvider),// shared
   ),
 );
 

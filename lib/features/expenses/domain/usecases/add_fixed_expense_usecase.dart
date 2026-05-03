@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/errors/result.dart';
+import '../../../../core/utils/arabic_parser.dart';
 import '../entities/expense.dart';
 import '../repositories/expense_repository.dart';
 
@@ -29,14 +31,14 @@ final class AddFixedExpenseUseCase {
 
   Future<Result<FixedExpense>> call(AddFixedExpenseParams p) async {
     if (p.name.trim().isEmpty)
-      return const Fail(ValidationFailure('اسم المصروف مطلوب'));
+      return const Fail(ValidationFailure(AppStrings.fieldRequired));
 
     // Edge: dueDayOfMonth must be 1-31
     if (p.dueDayOfMonth != null &&
         (p.dueDayOfMonth! < 1 || p.dueDayOfMonth! > 31))
-      return const Fail(ValidationFailure('يوم الاستحقاق يجب أن يكون بين 1 و 31'));
+      return const Fail(ValidationFailure(AppStrings.fieldRequired));
 
-    final amount = _parseAmount(p.amountRaw);
+    final amount = ArabicParser.parseAmount(p.amountRaw);
     if (amount.isFailure) return Fail(amount.failureOrNull!);
 
     final expense = FixedExpense(
@@ -52,9 +54,9 @@ final class AddFixedExpenseUseCase {
   }
 
   Result<double> _parseAmount(String raw) {
-    if (raw.trim().isEmpty) return const Fail(ValidationFailure('المبلغ مطلوب'));
+    if (raw.trim().isEmpty) return const Fail(ValidationFailure(AppStrings.amountRequired));
     final n = double.tryParse(raw.trim().replaceAll(',', ''));
-    if (n == null || n <= 0) return const Fail(ValidationFailure('أدخل مبلغاً صحيحاً أكبر من صفر'));
+    if (n == null || n <= 0) return const Fail(ValidationFailure(AppStrings.amountZero));
     return Success(n);
   }
 }

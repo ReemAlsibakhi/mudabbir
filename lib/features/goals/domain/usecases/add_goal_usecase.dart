@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/errors/result.dart';
+import '../../../../core/utils/arabic_parser.dart';
 import '../entities/goal.dart';
 import '../repositories/goal_repository.dart';
 
@@ -14,8 +16,8 @@ final class AddGoalParams extends Equatable {
   final String        targetRaw;
   final String        savedRaw;
   final GoalInputMode mode;
-  final int?          durationMonths;   // mode = byDuration
-  final String?       monthlyAmountRaw; // mode = byMonthlyAmount
+  final int?          durationMonths;
+  final String?       monthlyAmountRaw;
 
   const AddGoalParams({
     required this.type,
@@ -34,31 +36,26 @@ final class AddGoalParams extends Equatable {
 
 final class AddGoalUseCase {
   final GoalRepository _repo;
-  AddGoalUseCase(this._repo);
+  const AddGoalUseCase(this._repo);
 
   Future<Result<Goal>> call(AddGoalParams p) async {
-    // ── Validate name ─────────────────────────────────
+    // Validate name
     if (p.name.trim().isEmpty)
-      return const Fail(ValidationFailure('اسم الهدف مطلوب'));
+      return const Fail(ValidationFailure(AppStrings.goalNameRequired));
     if (p.name.trim().length > 60)
-      return const Fail(ValidationFailure('اسم الهدف طويل جداً (أقل من 60 حرفاً)'));
+      return const Fail(ValidationFailure(AppStrings.nameTooLong));
 
-    // ── Parse target ──────────────────────────────────
-    final target = _parsePositive(p.targetRaw, 'المبلغ المستهدف');
+    // Parse target — shared util, handles Arabic digits
+    final target = ArabicParser.parseAmount(p.targetRaw, max: 100e6);
     if (target.isFailure) return Fail(target.failureOrNull!);
-    if (target.valueOrNull! < 1)
-      return const Fail(ValidationFailure('المبلغ المستهدف يجب أن يكون أكبر من صفر'));
 
-    // ── Parse saved ───────────────────────────────────
-    final saved = _parseNonNeg(p.savedRaw, 'المدخر الحالي');
+    // Parse saved — optional (defaults to 0)
+    final saved = ArabicParser.parseOptionalAmount(p.savedRaw);
     if (saved.isFailure) return Fail(saved.failureOrNull!);
 
-    // Edge: saved > target
-    if (saved.valueOrNull! > target.valueOrNull!) {
-      return const Fail(ValidationFailure('المدخر الحالي لا يمكن أن يتجاوز المبلغ المستهدف'));
-    }
+    if (saved.valueOrNull! > target.valueOrNull!)
+      return const Fail(ValidationFailure(AppStrings.savedExceedsTarget));
 
-    // ── Compute monthly target ─────────────────────────
     final remaining = target.valueOrNull! - saved.valueOrNull!;
     double monthly  = 0;
     int?   months;
@@ -66,20 +63,19 @@ final class AddGoalUseCase {
     switch (p.mode) {
       case GoalInputMode.byDuration:
         if (p.durationMonths == null || p.durationMonths! <= 0)
-          return const Fail(ValidationFailure('عدد الأشهر غير صالح'));
+          return const Fail(ValidationFailure(AppStrings.positiveIntReq));
         if (p.durationMonths! > 600)
-          return const Fail(ValidationFailure('المدة تبدو طويلة جداً (أكثر من 50 سنة)'));
+          return const Fail(ValidationFailure(AppStrings.durationTooLong));
         months  = p.durationMonths!;
         monthly = remaining > 0 ? remaining / months : 0;
 
       case GoalInputMode.byMonthlyAmount:
-        final mo = _parsePositive(p.monthlyAmountRaw ?? '', 'المبلغ الشهري');
+        final mo = ArabicParser.parseAmount(p.monthlyAmountRaw ?? '', max: 100e6);
         if (mo.isFailure) return Fail(mo.failureOrNull!);
         monthly = mo.valueOrNull!;
         months  = remaining > 0 ? (remaining / monthly).ceil() : 0;
-        // Edge: would take > 100 years
         if (months > 1200)
-          return const Fail(ValidationFailure('بهذا المعدل سيستغرق الهدف أكثر من 100 سنة'));
+          return const Fail(ValidationFailure(AppStrings.monthlyTooHigh));
     }
 
     final goal = Goal(
@@ -95,22 +91,5 @@ final class AddGoalUseCase {
 
     final result = await _repo.save(goal);
     return result.isSuccess ? Success(goal) : Fail(result.failureOrNull!);
-  }
-
-  Result<double> _parsePositive(String raw, String field) {
-    if (raw.trim().isEmpty) return Fail(ValidationFailure('$field مطلوب'));
-    final n = double.tryParse(raw.trim().replaceAll(',', ''));
-    if (n == null)  return Fail(ValidationFailure('$field: أدخل رقماً صحيحاً'));
-    if (n <= 0)     return Fail(ValidationFailure('$field يجب أن يكون أكبر من صفر'));
-    if (n > 100e6)  return Fail(ValidationFailure('$field كبير جداً'));
-    return Success(n);
-  }
-
-  Result<double> _parseNonNeg(String raw, String field) {
-    if (raw.trim().isEmpty) return const Success(0.0);
-    final n = double.tryParse(raw.trim().replaceAll(',', ''));
-    if (n == null) return Fail(ValidationFailure('$field: أدخل رقماً صحيحاً'));
-    if (n < 0)     return Fail(ValidationFailure('$field لا يمكن أن يكون سالباً'));
-    return Success(n);
   }
 }
