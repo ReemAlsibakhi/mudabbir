@@ -394,4 +394,33 @@ abstract final class AppStrings {
   // ══════════════════════════════════════════════════════
 
   static const String navError          = 'خطأ في التنقل';
+
+  // ══════════════════════════════════════════════════════
+  // GOAL TYPE NAMES (GoalType.nameAr)
+  // ══════════════════════════════════════════════════════
+
+  static const String goalHome         = 'شراء منزل';
+  static const String goalCar          = 'سيارة';
+  static const String goalWedding      = 'زواج';
+  static const String goalTravel       = 'سفر وإجازة';
+  static const String goalEducation    = 'تعليم الأبناء';
+  static const String goalEmergency    = 'صندوق طوارئ';
+  static const String goalBusiness     = 'مشروع تجاري';
+  static const String goalHajj         = 'حج وعمرة';
+  static const String goalGold         = 'ذهب ومجوهرات';
+  static const String goalOther        = 'أخرى';
+
+  // ══════════════════════════════════════════════════════
+  // SETTINGS — additional labels
+  // ══════════════════════════════════════════════════════
+
+  static const String currencyLabel    = '💱 العملة';
+  static const String premiumTitle     = 'النسخة المميزة';
+  static const String upgradeDesc      = 'احصل على كل الميزات بـ 9.99 ريال/شهر';
+  static const String activeSubLabel   = 'اشتراك نشط';
+  static const String aboutSection     = 'عن مدبّر';
+  static const String openSource       = 'مفتوح المصدر — github.com/ReemAlsibakhi/mudabbir';
+  static const String badgePremium     = '👑 مميز';
+  static const String badgeFree        = '🆓 مجاني';
+
 }
