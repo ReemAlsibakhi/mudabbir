@@ -72,7 +72,7 @@ class QuickAddGrid extends ConsumerWidget {
                     Text(cat.icon, style: const TextStyle(fontSize: 22)),
                     const SizedBox(height: 5),
                     Text(
-                      cat.nameAr.split('و').first.trim(),
+                      cat.nameAr.split(AppStrings.andConnector).first.trim(),
                       style: AppTextStyles.caption.copyWith(
                         color: isActive ? catColor : AppColors.textTertiary,
                         fontWeight:
@@ -163,7 +163,7 @@ class _State extends ConsumerState<_AmountInput> {
                   style: AppTextStyles.subtitle
                       .copyWith(color: AppColors.textPrimary),
                   decoration: const InputDecoration(
-                    hintText: 'المبلغ',
+                    hintText: AppStrings.amountLabel,
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 12, vertical: 11),
                   ),
@@ -178,7 +178,7 @@ class _State extends ConsumerState<_AmountInput> {
                   style:
                       AppTextStyles.body.copyWith(color: AppColors.textPrimary),
                   decoration: const InputDecoration(
-                    hintText: 'وصف (اختياري)',
+                    hintText: AppStrings.descOptHint,
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 12, vertical: 11),
                   ),
@@ -188,7 +188,7 @@ class _State extends ConsumerState<_AmountInput> {
           ),
           const SizedBox(height: 10),
           MudGradientButton(
-            label: 'إضافة',
+            label: AppStrings.add,
             onTap: _submit,
             loading: _loading,
           ),

@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/categories.dart';
@@ -46,11 +47,11 @@ class _State extends State<AddFixedExpenseSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('📅 إضافة مصروف ثابت', style: AppTextStyles.title),
+          Text(AppStrings.addFixedTitle, style: AppTextStyles.title),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             value: _catId, dropdownColor: AppColors.surface2,
-            decoration: const InputDecoration(labelText: 'النوع'),
+            decoration: const InputDecoration(labelText: AppStrings.typeLabel),
             items: fixedCategories.map((c) => DropdownMenuItem(
               value: c.id,
               child: Text('${c.icon} ${c.nameAr}',
@@ -61,8 +62,8 @@ class _State extends State<AddFixedExpenseSheet> {
           const SizedBox(height: 12),
           TextFormField(
             controller: _nameCtrl, textDirection: TextDirection.rtl,
-            validator: (v) => (v?.trim().isEmpty ?? true) ? 'الاسم مطلوب' : null,
-            decoration: const InputDecoration(labelText: 'الاسم', hintText: 'مثال: إيجار الشقة'),
+            validator: (v) => (v?.trim().isEmpty ?? true) ? AppStrings.nameRequired : null,
+            decoration: const InputDecoration(labelText: AppStrings.nameLabel, hintText: AppStrings.fixedNameExample),
             style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
           ),
           const SizedBox(height: 12),
@@ -70,17 +71,17 @@ class _State extends State<AddFixedExpenseSheet> {
             controller: _amountCtrl,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
               textDirection: TextDirection.rtl,
-            validator: (v) => (v?.trim().isEmpty ?? true) ? 'المبلغ مطلوب' : null,
-            decoration: const InputDecoration(labelText: 'المبلغ الشهري', hintText: '0'),
+            validator: (v) => (v?.trim().isEmpty ?? true) ? AppStrings.amountRequired : null,
+            decoration: const InputDecoration(labelText: AppStrings.fixedAmountMonthly, hintText: '0'),
             style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
           ),
           const SizedBox(height: 12),
           // Due day selector
           DropdownButtonFormField<int?>(
             value: _dueDay, dropdownColor: AppColors.surface2,
-            decoration: const InputDecoration(labelText: 'يوم الاستحقاق (اختياري)'),
+            decoration: const InputDecoration(labelText: AppStrings.fixedDayOptional),
             items: [
-              const DropdownMenuItem(value: null, child: Text('غير محدد', style: TextStyle(fontFamily: 'Cairo'))),
+              const DropdownMenuItem(value: null, child: Text(AppStrings.notSpecified, style: TextStyle(fontFamily: 'Cairo'))),
               ...List.generate(28, (i) => DropdownMenuItem(
                 value: i + 1,
                 child: Text('اليوم ${i + 1}', style: const TextStyle(fontFamily: 'Cairo')),
@@ -94,7 +95,7 @@ class _State extends State<AddFixedExpenseSheet> {
           ],
           const SizedBox(height: 16),
           MudGradientButton(
-            label: 'إضافة — يتكرر كل شهر تلقائياً',
+            label: AppStrings.fixedAddBtn,
             onTap: _submit, loading: _loading,
           ),
         ],
@@ -122,7 +123,7 @@ class _State extends State<AddFixedExpenseSheet> {
       setState(() => _error = error);
     } else {
       context.popScreen();
-      context.showSnack('✅ تمت الإضافة — سيتكرر كل شهر', color: AppColors.success);
+      context.showSnack(AppStrings.fixedAdded, color: AppColors.success);
     }
   }
 }

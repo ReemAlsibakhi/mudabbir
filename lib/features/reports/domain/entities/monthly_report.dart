@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:equatable/equatable.dart';
 import '../../../goals/domain/entities/goal.dart';
 import '../../../onboarding/domain/entities/onboarding_profile.dart';
@@ -43,15 +44,15 @@ final class MonthlyReport extends Equatable {
   String get personaName {
     final stage = lifeStage ?? LifeStage.single;
     return switch ((stage, savingRate >= 20)) {
-      (LifeStage.single, true)   => 'الأعزب المنضبط',
-      (LifeStage.single, false)  => 'الأعزب المتعلم',
-      (LifeStage.engaged, true)  => 'المخطوب الذكي',
-      (LifeStage.engaged, false) => 'المخطوب المستعجل',
-      (LifeStage.married, true)  => 'الزوجان المثاليان',
-      (LifeStage.married, false) => 'الزوجان المتحسّنان',
-      (LifeStage.family, true)   => 'الأسرة البطلة',
-      (LifeStage.family, false)  => 'الأسرة المتقدمة',
-      _                          => 'المالي الذكي',
+      (LifeStage.single, true)   => AppStrings.personaSingle1,
+      (LifeStage.single, false)  => AppStrings.personaSingle2,
+      (LifeStage.engaged, true)  => AppStrings.personaEngaged1,
+      (LifeStage.engaged, false) => AppStrings.personaEngaged2,
+      (LifeStage.married, true)  => AppStrings.personaMarried1,
+      (LifeStage.married, false) => AppStrings.personaMarried2,
+      (LifeStage.family, true)   => AppStrings.personaFamily1,
+      (LifeStage.family, false)  => AppStrings.personaFamily2,
+      _                          => AppStrings.personaDefault,
     };
   }
 
@@ -59,10 +60,10 @@ final class MonthlyReport extends Equatable {
     final stage = lifeStage ?? LifeStage.single;
     if (isDeficit) {
       return switch (stage) {
-        LifeStage.family  => 'الأسرة تحتاج مراجعة. ابدأ بالمصاريف الثابتة الكبيرة أولاً.',
-        LifeStage.married => 'اتفقا على خفض بند واحد هذا الشهر — ابدأا بالمطاعم.',
-        LifeStage.engaged => 'انتبه — الزواج يحتاج ميزانية وفائض، ليس عجزاً.',
-        LifeStage.single  => 'وضع صعب. راجع أكبر 3 مصاريف وقلّلها الشهر القادم.',
+        LifeStage.family  => AppStrings.adviceFamily,
+        LifeStage.married => AppStrings.adviceMarried,
+        LifeStage.engaged => AppStrings.adviceEngaged,
+        LifeStage.single  => AppStrings.adviceSingle,
       };
     }
     if (savingRate >= 20) {
@@ -74,10 +75,10 @@ final class MonthlyReport extends Equatable {
       };
     }
     return switch (stage) {
-      LifeStage.family  => 'أداء جيد للأسرة. صندوق طوارئ 6 أشهر = الأولوية القصوى الآن.',
-      LifeStage.married => 'وضع معقول. جرّبا تحديد سقف أسبوعي للمصاريف اليومية معاً.',
-      LifeStage.engaged => 'ادخروا أكثر — حفل الزفاف والشقة يحتاجان جيباً عميقاً.',
-      LifeStage.single  => 'يمكنك أفضل من هذا. هدف بسيط: وفّر 500 ريال إضافية الشهر القادم.',
+      LifeStage.family  => AppStrings.adviceFamily2,
+      LifeStage.married => AppStrings.adviceMarried2,
+      LifeStage.engaged => AppStrings.adviceEngaged2,
+      LifeStage.single  => AppStrings.adviceSingle2,
     };
   }
 

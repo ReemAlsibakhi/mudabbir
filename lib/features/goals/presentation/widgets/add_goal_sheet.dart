@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extensions/context_ext.dart';
@@ -64,10 +65,10 @@ class _State extends State<AddGoalSheet> {
 
   // ── Suggested headline by life stage ───────────────────
   String _headline(LifeStage stage) => switch (stage) {
-    LifeStage.single  => '✨ ابدأ مشوار الثروة',
-    LifeStage.engaged => '💍 وفّر لحلمكم',
-    LifeStage.married => '🏡 أهداف أسرتكم',
-    LifeStage.family  => '👨‍👩‍👧‍👦 مستقبل أطفالكم',
+    LifeStage.single  => AppStrings.goalSingle,
+    LifeStage.engaged => AppStrings.goalEngaged,
+    LifeStage.married => AppStrings.goalMarried,
+    LifeStage.family  => AppStrings.goalFamily,
   };
 
   double get _target    => double.tryParse(_targetCtrl.text.replaceAll(',','')) ?? 0;
@@ -146,7 +147,7 @@ class _State extends State<AddGoalSheet> {
                 controller: _nameCtrl, textDirection: TextDirection.rtl,
                 validator: Validators.name,
                 decoration: InputDecoration(
-                  labelText: 'اسم الهدف',
+                  labelText: AppStrings.goalNameLabel,
                   hintText:  _hintForType(_type, stage),
                 ),
                 style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
@@ -159,7 +160,7 @@ class _State extends State<AddGoalSheet> {
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 validator: Validators.amount,
                 onChanged: (_) => setState(() {}),
-                decoration: const InputDecoration(labelText: 'المبلغ المستهدف', hintText: '0'),
+                decoration: const InputDecoration(labelText: AppStrings.goalTargetLabel, hintText: '0'),
                 style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
               ),
               const SizedBox(height: 12),
@@ -170,7 +171,7 @@ class _State extends State<AddGoalSheet> {
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 onChanged: (_) => setState(() {}),
                 decoration: const InputDecoration(
-                  labelText: 'مدخر حالياً (اختياري)', hintText: '0'),
+                  labelText: AppStrings.goalSavedLabel, hintText: '0'),
                 style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
               ),
               const SizedBox(height: 14),
@@ -183,7 +184,7 @@ class _State extends State<AddGoalSheet> {
                 DropdownButtonFormField<int>(
                   value: _duration, dropdownColor: AppColors.surface2,
                   onChanged: (v) => setState(() => _duration = v ?? 12),
-                  decoration: const InputDecoration(labelText: 'المدة المطلوبة'),
+                  decoration: const InputDecoration(labelText: AppStrings.goalDurationLabel),
                   items: [6,12,18,24,36,48,60,84,120,180].map((m) => DropdownMenuItem(
                     value: m,
                     child: Text(_monthLabel(m),
@@ -200,7 +201,7 @@ class _State extends State<AddGoalSheet> {
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   onChanged: (_) => setState(() {}),
                   decoration: const InputDecoration(
-                    labelText: 'مقدار الادخار الشهري', hintText: '0'),
+                    labelText: AppStrings.goalMonthlyLabel, hintText: '0'),
                   style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
                 ),
                 if (_calcMonths > 0) ...[
@@ -215,7 +216,7 @@ class _State extends State<AddGoalSheet> {
                 Text(_error!, style: AppTextStyles.caption.copyWith(color: AppColors.error)),
               ],
               const SizedBox(height: 16),
-              MudGradientButton(label: '✨ إضافة الهدف', onTap: _submit, loading: _loading),
+              MudGradientButton(label: AppStrings.addGoalTitle, onTap: _submit, loading: _loading),
             ],
           ),
         ),
@@ -239,8 +240,8 @@ class _State extends State<AddGoalSheet> {
 
   String _monthLabel(int m) {
     if (m < 12)  return '$m أشهر';
-    if (m == 12) return 'سنة';
-    if (m == 24) return 'سنتان';
+    if (m == 12) return AppStrings.yearLabel;
+    if (m == 24) return AppStrings.twoYearsLabel;
     if (m % 12 == 0) return '${m ~/ 12} سنوات';
     return '$m شهراً';
   }
@@ -261,7 +262,7 @@ class _State extends State<AddGoalSheet> {
     if (!mounted) return;
     setState(() => _loading = false);
     if (err != null) { setState(() => _error = err); }
-    else { context.popScreen(); context.showSnack('✅ تمت إضافة الهدف', color: AppColors.success); }
+    else { context.popScreen(); context.showSnack(AppStrings.goalAdded, color: AppColors.success); }
   }
 }
 
@@ -288,7 +289,7 @@ class _ModeToggle extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                m == GoalInputMode.byDuration ? 'حدد المدة' : 'حدد الشهري',
+                m == GoalInputMode.byDuration ? AppStrings.goalChooseDur : AppStrings.goalChooseMon,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.caption.copyWith(
                   fontWeight: FontWeight.w700,

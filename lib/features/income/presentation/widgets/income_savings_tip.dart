@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/extensions/double_ext.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -18,7 +19,7 @@ class IncomeSavingsTip extends StatelessWidget {
 
     return MudInsightBox(
       type: InsightType.success,
-      text: '💡 لو وفّرت 20% من دخلك = '
+      text: AppStrings.savingsTip20
             '${target20.fmt()} شهرياً\n'
             '= ${target20Year.fmt()} سنوياً! 🎯',
     );

@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -38,9 +39,9 @@ class _State extends ConsumerState<NameStep> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('👋 ما اسمك؟', style: AppTextStyles.headline2),
+          Text(AppStrings.nameTitle, style: AppTextStyles.headline2),
           const SizedBox(height: 6),
-          Text('سنناديك به في كل رسائل مدبّر', style: AppTextStyles.body),
+          Text(AppStrings.nameSubtitle, style: AppTextStyles.body),
           const SizedBox(height: 28),
           TextField(
             controller: _ctrl,
@@ -48,7 +49,7 @@ class _State extends ConsumerState<NameStep> {
             textDirection: TextDirection.rtl,
             style: AppTextStyles.headline2,
             decoration: const InputDecoration(
-              hintText: 'مثال: خالد أو نورة',
+              hintText: AppStrings.nameExample,
               hintStyle: TextStyle(fontFamily: 'Cairo', color: AppColors.textTertiary, fontSize: 20),
             ),
           ),
@@ -76,7 +77,7 @@ class _State extends ConsumerState<NameStep> {
                       color:        state.canProceedFromName ? null : AppColors.surface3,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text('التالي ←', textAlign: TextAlign.center,
+                    child: Text(AppStrings.nextArrow, textAlign: TextAlign.center,
                       style: AppTextStyles.button.copyWith(
                         color: state.canProceedFromName ? Colors.white : AppColors.textTertiary)),
                   ),

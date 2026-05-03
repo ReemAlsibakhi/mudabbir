@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -62,7 +63,7 @@ class _State extends State<PromoSlide> {
           ),
         ),
         _NextButton(
-          label: _slide < 2 ? 'التالي →' : 'ابدأ الآن 🚀',
+          label: _slide < 2 ? AppStrings.nextArrowRtl : AppStrings.startNow,
           onTap: _next,
         ),
         const SizedBox(height: 10),
@@ -70,7 +71,7 @@ class _State extends State<PromoSlide> {
           onTap: widget.onNext,
           child: const Padding(
             padding: EdgeInsets.all(8),
-            child: Text('تخطى', style: TextStyle(
+            child: Text(AppStrings.skip, style: TextStyle(
               fontFamily: 'Cairo', fontSize: 13, color: AppColors.textTertiary)),
           ),
         ),

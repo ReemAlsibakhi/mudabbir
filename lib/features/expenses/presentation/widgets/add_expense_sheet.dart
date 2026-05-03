@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,7 +57,7 @@ class _State extends State<AddExpenseSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
-            child: Text('➕ إضافة مصروف', style: AppTextStyles.title),
+            child: Text(AppStrings.addExpenseTitle2, style: AppTextStyles.title),
           ),
           const SizedBox(height: 16),
 
@@ -64,7 +65,7 @@ class _State extends State<AddExpenseSheet> {
           DropdownButtonFormField<String>(
             value:        _catId,
             dropdownColor: AppColors.surface2,
-            decoration:   const InputDecoration(labelText: 'الفئة'),
+            decoration:   const InputDecoration(labelText: AppStrings.categoryLabel),
             items: variableCategories.map((c) => DropdownMenuItem(
               value: c.id,
               child: Text('${c.icon} ${c.nameAr}',
@@ -106,7 +107,7 @@ class _State extends State<AddExpenseSheet> {
               FilteringTextInputFormatter.allow(RegExp(r'[\d٠-٩.,٫]')),
             ],
             validator: Validators.amount,
-            decoration: const InputDecoration(labelText: 'المبلغ', hintText: '0'),
+            decoration: const InputDecoration(labelText: AppStrings.amountLabel, hintText: '0'),
             style: AppTextStyles.body.copyWith(color: AppColors.textPrimary, fontSize: 16),
           ),
           const SizedBox(height: 12),
@@ -116,8 +117,8 @@ class _State extends State<AddExpenseSheet> {
             controller:   _nameCtrl,
             textDirection: TextDirection.rtl,
             decoration: const InputDecoration(
-              labelText: 'الوصف (اختياري)',
-              hintText:  'مثال: بقالة الخميس',
+              labelText: AppStrings.descOptional,
+              hintText:  AppStrings.descExample,
             ),
             style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
           ),
@@ -173,7 +174,7 @@ class _State extends State<AddExpenseSheet> {
       setState(() => _error = error);
     } else {
       context.popScreen();
-      context.showSnack('✅ تم تسجيل المصروف', color: AppColors.success);
+      context.showSnack(AppStrings.expenseAdded, color: AppColors.success);
     }
   }
 }

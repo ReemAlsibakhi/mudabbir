@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extensions/datetime_ext.dart';
@@ -64,7 +65,7 @@ class DailyHeader extends ConsumerWidget {
         const SizedBox(height: 1),
         // Subtitle
         Text(
-          'سجّل مصاريفك في 30 ثانية 👇',
+          AppStrings.dailySubtitle,
           style: AppTextStyles.caption.copyWith(
             color:    AppColors.textSecondary.withOpacity(0.55),
             fontSize: 11,
@@ -75,8 +76,8 @@ class DailyHeader extends ConsumerWidget {
   }
 
   String _greeting(int hour) {
-    if (hour < 12) return 'صباح الخير';
-    if (hour < 17) return 'مرحباً';
-    return 'مساء الخير';
+    if (hour < 12) return AppStrings.greetingMorning;
+    if (hour < 17) return AppStrings.greetingNoon;
+    return AppStrings.greetingEvening;
   }
 }

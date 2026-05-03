@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -67,7 +68,7 @@ class _ActiveStreak extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: '  يوم متواصل',
+                        text: AppStrings.streakDaysSuffix,
                         style: TextStyle(
                           fontFamily: 'Cairo', fontSize: 13,
                           fontWeight: FontWeight.w600,
@@ -129,7 +130,7 @@ class _EmptyStreak extends StatelessWidget {
         const Text('🔥', style: TextStyle(fontSize: 20)),
         const SizedBox(width: 10),
         Text(
-          'ابدأ سلسلتك اليوم!',
+          AppStrings.streakStart,
           style: AppTextStyles.body.copyWith(
             color: AppColors.textTertiary, fontSize: 13),
         ),

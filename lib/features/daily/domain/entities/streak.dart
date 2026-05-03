@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:equatable/equatable.dart';
 
 final class Streak extends Equatable {
@@ -27,15 +28,15 @@ final class Streak extends Equatable {
   }
 
   String get statusMessage {
-    if (count == 0)    return 'ابدأ سلسلتك اليوم!';
+    if (count == 0)    return AppStrings.streakStart;
     if (count < 7)     return '$count أيام متواصلة 💪';
-    if (count < 30)    return 'أنت من أفضل المستخدمين 🌟';
+    if (count < 30)    return AppStrings.streakBest;
     return 'أسطوري! $count يوم بدون انقطاع 🏆';
   }
 
   String? get badgeLabel {
-    if (count >= 30) return '🏆 أسطوري';
-    if (count >= 7)  return '⭐ متميز';
+    if (count >= 30) return AppStrings.badgeLegendary;
+    if (count >= 7)  return AppStrings.badgeExcellent;
     return null;
   }
 

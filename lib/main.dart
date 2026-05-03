@@ -1,3 +1,4 @@
+import 'core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +23,7 @@ class MudabbirApp extends ConsumerWidget {
       // ── Force RTL at the ROOT — wraps MaterialApp itself
       textDirection: TextDirection.rtl,
       child: MaterialApp.router(
-        title:                      'مدبّر',
+        title:                      AppStrings.appName,
         debugShowCheckedModeBanner: false,
         theme:                      AppTheme.dark,
         routerConfig:               router,

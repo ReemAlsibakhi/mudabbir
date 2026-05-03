@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/countries.dart';
@@ -19,9 +20,9 @@ class CountryPickerStep extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('🌍 من أي دولة أنت؟', style: AppTextStyles.headline2),
+          Text(AppStrings.countryTitle, style: AppTextStyles.headline2),
           const SizedBox(height: 6),
-          Text('سنضبط العملة والإعدادات تلقائياً',
+          Text(AppStrings.countrySubtitle,
             style: AppTextStyles.body),
           const SizedBox(height: 20),
           Expanded(
@@ -109,7 +110,7 @@ class _NavButtons extends StatelessWidget {
               color:        canNext ? null : AppColors.surface3,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text('التالي ←', textAlign: TextAlign.center,
+            child: Text(AppStrings.nextArrow, textAlign: TextAlign.center,
               style: AppTextStyles.button.copyWith(
                 color: canNext ? Colors.white : AppColors.textTertiary)),
           ),

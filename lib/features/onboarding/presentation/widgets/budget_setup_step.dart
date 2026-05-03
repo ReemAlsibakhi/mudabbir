@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,9 +47,9 @@ class _State extends ConsumerState<BudgetSetupStep> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('💰 ما دخلك الشهري؟', style: AppTextStyles.headline2),
+            Text(AppStrings.incomeTitle2, style: AppTextStyles.headline2),
             const SizedBox(height: 6),
-            Text('سنوزع ميزانيتك تلقائياً — يمكنك تعديلها لاحقاً',
+            Text(AppStrings.incomeSubtitle,
               style: AppTextStyles.body),
             const SizedBox(height: 20),
 
@@ -61,7 +62,7 @@ class _State extends ConsumerState<BudgetSetupStep> {
             if (hasPartner) ...[
               const SizedBox(height: 12),
               _IncomeField(
-                label:      'دخل الزوجة (اختياري)',
+                label:      AppStrings.wifeIncomeOpt,
                 hint:       '0',
                 controller: _secondaryCtrl,
                 onChanged:  (_) => _updateIncome(),
@@ -69,7 +70,7 @@ class _State extends ConsumerState<BudgetSetupStep> {
             ],
             const SizedBox(height: 12),
             _IncomeField(
-              label:      'دخل إضافي (مكافآت، إيجارات...)',
+              label:      AppStrings.extraIncomeOpt,
               hint:       '0',
               controller: _extraCtrl,
               onChanged:  (_) => _updateIncome(),
@@ -87,13 +88,13 @@ class _State extends ConsumerState<BudgetSetupStep> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('إجمالي الدخل الشهري',
+                    Text(AppStrings.totalMonthlyLabel,
                       style: AppTextStyles.caption),
                     Text('${totalIncome.toStringAsFixed(0)} ${country.currency}',
                       style: AppTextStyles.headline2.copyWith(color: AppColors.success)),
                     const SizedBox(height: 6),
                     Text(
-                      'هدف الادخار الموصى به (20%) = '
+                      AppStrings.savingGoal20
                       '${(totalIncome * 0.2).toStringAsFixed(0)} ${country.currency}',
                       style: AppTextStyles.caption.copyWith(color: AppColors.accentAlt),
                     ),
@@ -110,7 +111,7 @@ class _State extends ConsumerState<BudgetSetupStep> {
             const SizedBox(height: 16),
 
             MudGradientButton(
-              label:   '🚀 ابدأ مع مدبّر',
+              label:   AppStrings.startWithApp,
               onTap:   _complete,
               loading: state.isSaving,
             ),
@@ -120,7 +121,7 @@ class _State extends ConsumerState<BudgetSetupStep> {
             GestureDetector(
               onTap: state.isSaving ? null : _completeWithoutBudget,
               child: Center(
-                child: Text('تخطى الآن — سأضيفه لاحقاً',
+                child: Text(AppStrings.skipNow,
                   style: AppTextStyles.caption),
               ),
             ),

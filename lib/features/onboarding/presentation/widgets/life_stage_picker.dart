@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -19,9 +20,9 @@ class LifeStagePicker extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('👤 ما وضعك الحالي؟', style: AppTextStyles.headline2),
+          Text(AppStrings.stageTitle, style: AppTextStyles.headline2),
           const SizedBox(height: 6),
-          Text('سنخصص التطبيق بالكامل لاحتياجاتك', style: AppTextStyles.body),
+          Text(AppStrings.stageSubtitle, style: AppTextStyles.body),
           const SizedBox(height: 24),
           Expanded(
             child: Column(
@@ -92,7 +93,7 @@ class _StepNav extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 14),
             decoration: BoxDecoration(
               gradient: AppColors.primary, borderRadius: BorderRadius.circular(12)),
-            child: Text('التالي ←', textAlign: TextAlign.center,
+            child: Text(AppStrings.nextArrow, textAlign: TextAlign.center,
               style: AppTextStyles.button),
           ),
         ),

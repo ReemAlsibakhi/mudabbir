@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -71,7 +72,7 @@ class BalanceCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'المتاح هذا الشهر',
+                  AppStrings.balanceAvailable,
                   style: AppTextStyles.label.copyWith(
                       color: AppColors.textSecondary.withOpacity(0.6)),
                 ),
@@ -106,19 +107,19 @@ class BalanceCard extends ConsumerWidget {
                 Row(
                   children: [
                     _StatChip(
-                      label: 'الدخل',
+                      label: AppStrings.statIncome,
                       value: totalIncome > 0 ? totalIncome.fmt() : '—',
                       color: AppColors.accentAlt,
                     ),
                     const SizedBox(width: 8),
                     _StatChip(
-                      label: 'المصروف',
+                      label: AppStrings.statExpense,
                       value: totalExpenses > 0 ? totalExpenses.fmt() : '—',
                       color: AppColors.error,
                     ),
                     const SizedBox(width: 8),
                     _StatChip(
-                      label: 'الادخار',
+                      label: AppStrings.statSaving,
                       value: totalIncome > 0
                           ? '${savingRate.toStringAsFixed(1)}%'
                           : '—',
@@ -156,7 +157,7 @@ class _SavingRateChip extends StatelessWidget {
               ? '${rate.toStringAsFixed(1)}% نسبة ادخار ممتازة'
               : rate >= 10
                   ? 'نسبة ادخار جيدة ${rate.toStringAsFixed(1)}%'
-                  : 'ادخر أكثر لتحسين نسبتك',
+                  : AppStrings.savingRateLow,
           style: TextStyle(
             fontFamily: 'Cairo',
             fontSize: 11,

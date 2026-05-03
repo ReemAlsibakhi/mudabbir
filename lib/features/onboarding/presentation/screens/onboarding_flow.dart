@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -106,10 +107,10 @@ class _StepProgress extends StatelessWidget {
   });
 
   String get _label => switch (step) {
-    OnboardingStep.country   => 'الدولة',
-    OnboardingStep.lifeStage => 'مرحلة الحياة',
-    OnboardingStep.name      => 'الاسم',
-    OnboardingStep.budget    => 'الدخل',
+    OnboardingStep.country   => AppStrings.stepCountry,
+    OnboardingStep.lifeStage => AppStrings.stepStage,
+    OnboardingStep.name      => AppStrings.stepName,
+    OnboardingStep.budget    => AppStrings.stepIncome,
     _                        => '',
   };
 

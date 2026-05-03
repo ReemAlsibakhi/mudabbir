@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -56,7 +57,7 @@ class _State extends State<_CompletionDialog>
           children: [
             Text(widget.goal.type.icon, style: const TextStyle(fontSize: 64)),
             const SizedBox(height: 12),
-            Text('تهانينا! 🎉', style: AppTextStyles.headline1),
+            Text(AppStrings.congrats, style: AppTextStyles.headline1),
             const SizedBox(height: 8),
             Text(
               'لقد حققت هدف\n"${widget.goal.name}"\nبنجاح! 🏆',
@@ -67,7 +68,7 @@ class _State extends State<_CompletionDialog>
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: AppColors.success),
               onPressed: () => Navigator.pop(context),
-              child: Text('رائع! شكراً 🚀',
+              child: Text(AppStrings.congratsBtn,
                 style: AppTextStyles.button),
             ),
           ],

@@ -1,3 +1,4 @@
+import 'core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -13,7 +14,7 @@ import 'shared/data/models/user_model.dart';
 
 abstract final class Bootstrap {
   static Future<void> init() async {
-    AppLogger.info('Bootstrap', 'Initializing مدبّر...');
+    AppLogger.info('Bootstrap', AppStrings.appInitializing);
     await Future.wait([
       _initHive(),
       _initSystemUI(),

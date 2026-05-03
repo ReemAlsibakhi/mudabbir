@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import '../../../../core/errors/result.dart';
@@ -36,14 +37,14 @@ final class PdfService {
       // ── Assemble report ───────────────────────────────
       final lines = <String>[
         '═══════════════════════════════════',
-        '        تقرير مدبّر المالي',
+        AppStrings.pdfTitle,
         '═══════════════════════════════════',
         '',
         'الاسم:    $userName',
         'الشهر:    ${report.monthKey}',
         'العملة:   $currency',
         '',
-        '── الملخص ──────────────────────────',
+        AppStrings.pdfSummaryHeader,
         'الدخل:              ${report.totalIncome.toStringAsFixed(0)} $currency',
         'المصاريف الثابتة:   ${report.totalFixed.toStringAsFixed(0)} $currency',
         'المصاريف المتغيرة:  ${report.totalVariable.toStringAsFixed(0)} $currency',
@@ -51,18 +52,18 @@ final class PdfService {
         'الفائض:             ${report.balance.toStringAsFixed(0)} $currency',
         'نسبة الادخار:       ${report.savingRate.toStringAsFixed(1)}%',
         '',
-        '── الشخصية المالية ─────────────────',
+        AppStrings.pdfPersonaHeader,
         '${report.personaIcon} ${report.personaName}',
         report.personaDesc,
         '',
-        '── تفصيل المصاريف ──────────────────',
+        AppStrings.pdfBreakHeader,
         ...catLines,
         '',
-        '── الأهداف ─────────────────────────',
+        AppStrings.pdfGoalsHeader,
         ...goalLines,
         '',
         '═══════════════════════════════════',
-        '  مدبّر — تطبيق المصروف العائلي العربي',
+        AppStrings.pdfAppFooter,
         '═══════════════════════════════════',
       ];
 

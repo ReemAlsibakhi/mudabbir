@@ -423,4 +423,205 @@ abstract final class AppStrings {
   static const String badgePremium     = '👑 مميز';
   static const String badgeFree        = '🆓 مجاني';
 
+
+  // ══════════════════════════════════════════════════════
+  // BOOTSTRAP
+  // ══════════════════════════════════════════════════════
+  static const String appInitializing   = 'Initializing مدبّر...';
+
+  // ══════════════════════════════════════════════════════
+  // STREAK / DAILY ENTITY
+  // ══════════════════════════════════════════════════════
+  static const String streakStart       = 'ابدأ سلسلتك اليوم!';
+  static const String streakBest        = 'أنت من أفضل المستخدمين 🌟';
+  static const String badgeLegendary    = '🏆 أسطوري';
+  static const String badgeExcellent    = '⭐ متميز';
+  static const String streakDaysSuffix  = 'يوم متواصل';
+
+  // ══════════════════════════════════════════════════════
+  // BALANCE CARD
+  // ══════════════════════════════════════════════════════
+  static const String balanceAvailable  = 'المتاح هذا الشهر';
+  static const String savingRateLow     = 'ادخر أكثر لتحسين نسبتك';
+
+  // ══════════════════════════════════════════════════════
+  // DAILY HEADER GREETINGS
+  // ══════════════════════════════════════════════════════
+  static const String greetingMorning   = 'صباح الخير';
+  static const String greetingNoon      = 'مرحباً';
+  static const String greetingEvening   = 'مساء الخير';
+  static const String dailySubtitle     = 'سجّل مصاريفك في 30 ثانية 👇';
+
+  // ══════════════════════════════════════════════════════
+  // QUICK ADD GRID
+  // ══════════════════════════════════════════════════════
+  static const String descOptHint       = 'وصف (اختياري)';
+  static const String andConnector      = 'و';
+
+  // ══════════════════════════════════════════════════════
+  // ADD EXPENSE SHEET
+  // ══════════════════════════════════════════════════════
+  static const String addExpenseTitle2  = '➕ إضافة مصروف';
+  static const String descExample       = 'مثال: بقالة الخميس';
+
+  // ══════════════════════════════════════════════════════
+  // ADD FIXED EXPENSE SHEET
+  // ══════════════════════════════════════════════════════
+  static const String fixedAmountMonthly= 'المبلغ الشهري';
+  static const String fixedNameExample  = 'مثال: إيجار الشقة';
+  static const String fixedDayOptional  = 'يوم الاستحقاق (اختياري)';
+  static const String fixedAddBtn       = 'إضافة — يتكرر كل شهر تلقائياً';
+
+  // ══════════════════════════════════════════════════════
+  // GOALS — ADD GOAL SHEET
+  // ══════════════════════════════════════════════════════
+  static const String goalSingle        = '✨ ابدأ مشوار الثروة';
+  static const String goalEngaged       = '💍 وفّر لحلمكم';
+  static const String goalMarried       = '🏡 أهداف أسرتكم';
+  static const String goalFamily        = '👨‍👩‍👧‍👦 مستقبل أطفالكم';
+  static const String goalChooseDur     = 'حدد المدة';
+  static const String goalChooseMon     = 'حدد الشهري';
+  static const String yearLabel         = 'سنة';
+  static const String twoYearsLabel     = 'سنتان';
+
+  // ══════════════════════════════════════════════════════
+  // GOAL COMPLETION OVERLAY
+  // ══════════════════════════════════════════════════════
+  static const String congrats          = 'تهانينا! 🎉';
+  static const String congratsBtn       = 'رائع! شكراً 🚀';
+
+  // ══════════════════════════════════════════════════════
+  // INCOME FORM
+  // ══════════════════════════════════════════════════════
+  static const String incomePrimSingle  = '👨 راتبك الشهري';
+  static const String incomeHusbandRole = '👨 دخل الزوج (رب الأسرة)';
+  static const String incomeWifeOpt     = '👩 دخل الزوجة (اختياري)';
+  static const String incomeTipSingle   = '💡 نصيحة للأعزب: وفّر 30% الآن قبل الالتزامات';
+  static const String incomeTipEngaged  = '💡 نصيحة للمخطوب: ابدأ صندوق الزفاف — الأيام تمر سريعاً';
+  static const String incomeTipMarried  = '💡 نصيحة للمتزوجين: اتفقا على ميزانية مشتركة كل بداية شهر';
+  static const String incomeTipFamily   = '💡 نصيحة للأسرة: صندوق طوارئ 6 أشهر = أولوية قصوى';
+  static const String incomeInputLabel  = 'إدخال الدخل الشهري';
+  static const String incomeExample     = 'مثال: 8000';
+  static const String incomeExtraFull   = '💼 دخل إضافي (مكافآت، عمل حر، إيجارات...)';
+
+  // ══════════════════════════════════════════════════════
+  // INCOME SAVINGS TIP
+  // ══════════════════════════════════════════════════════
+  static const String savingsTip20      = '💡 لو وفّرت 20% من دخلك = ';
+
+  // ══════════════════════════════════════════════════════
+  // LOCATION ALERT (static parts)
+  // ══════════════════════════════════════════════════════
+  static const String alertPharmacy     = 'في صيدلية — تريد تسجيل مصروف صحة؟';
+  static const String alertFuel         = 'عند محطة وقود — تريد تسجيل مصروف وقود؟';
+
+  // ══════════════════════════════════════════════════════
+  // NOTIFICATIONS
+  // ══════════════════════════════════════════════════════
+  static const String notifDefaultName  = 'صديقي';
+  static const String notifAppMorning   = 'مدبّر 💰';
+  static const String notifAppEvening   = 'مدبّر 🌙';
+  static const String notifMorningChan  = 'إشعار الصباح';
+  static const String notifEveningChan  = 'ملخص المساء';
+  static const String notifBudgetTitle  = '⚠️ تنبيه ميزانية';
+  static const String notifBudgetChan   = 'تنبيهات الميزانية';
+  static const String notifStreakTitle   = '🔥 سلسلتك في خطر!';
+  static const String notifStreakChan    = 'تنبيه السلسلة';
+  static const String notifDueTitle     = '📅 موعد سداد قادم';
+  static const String notifDueChan      = 'مواعيد السداد';
+
+  // ══════════════════════════════════════════════════════
+  // ONBOARDING PROFILE — life stage data
+  // ══════════════════════════════════════════════════════
+  static const String stageSingle       = 'أعزب';
+  static const String stageEngaged      = 'مخطوب';
+  static const String stageMarried      = 'متزوج';
+  static const String stageFamily       = 'أسرة مع أطفال';
+  static const String stageMottoSingle  = 'تحكم بمستقبلك المالي';
+  static const String stageMottoEngaged = 'وفّر لحلمك الكبير';
+  static const String stageMottoMarried = 'نسّق مع شريك حياتك';
+  static const String stageMottoFamily  = 'أدر مصاريف أسرتك';
+  static const String incomeLabelSingle = 'راتبك الشهري';
+  static const String incomeLabelHusb   = 'دخل الزوج';
+
+  // ══════════════════════════════════════════════════════
+  // ONBOARDING FLOW — step names
+  // ══════════════════════════════════════════════════════
+  static const String stepCountry       = 'الدولة';
+  static const String stepStage         = 'مرحلة الحياة';
+  static const String stepName          = 'الاسم';
+  static const String stepIncome        = 'الدخل';
+
+  // ══════════════════════════════════════════════════════
+  // ONBOARDING WIDGETS
+  // ══════════════════════════════════════════════════════
+  static const String countryTitle      = '🌍 من أي دولة أنت؟';
+  static const String countrySubtitle   = 'سنضبط العملة والإعدادات تلقائياً';
+  static const String stageTitle        = '👤 ما وضعك الحالي؟';
+  static const String stageSubtitle     = 'سنخصص التطبيق بالكامل لاحتياجاتك';
+  static const String nameTitle         = '👋 ما اسمك؟';
+  static const String nameSubtitle      = 'سنناديك به في كل رسائل مدبّر';
+  static const String nameExample       = 'مثال: خالد أو نورة';
+  static const String nextArrow         = 'التالي ←';
+  static const String nextArrowRtl      = 'التالي →';
+  static const String startNow          = 'ابدأ الآن 🚀';
+  static const String skipNow           = 'تخطى الآن — سأضيفه لاحقاً';
+  static const String incomeTitle2      = '💰 ما دخلك الشهري؟';
+  static const String incomeSubtitle    = 'سنوزع ميزانيتك تلقائياً — يمكنك تعديلها لاحقاً';
+  static const String wifeIncomeOpt     = 'دخل الزوجة (اختياري)';
+  static const String extraIncomeOpt    = 'دخل إضافي (مكافآت، إيجارات...)';
+  static const String totalMonthlyLabel = 'إجمالي الدخل الشهري';
+  static const String savingGoal20      = 'هدف الادخار الموصى به (20%) = ';
+  static const String startWithApp      = '🚀 ابدأ مع مدبّر';
+
+  // ══════════════════════════════════════════════════════
+  // MONTHLY REPORT — persona names & advice
+  // ══════════════════════════════════════════════════════
+  static const String personaSingle1    = 'الأعزب المنضبط';
+  static const String personaSingle2    = 'الأعزب المتعلم';
+  static const String personaEngaged1   = 'المخطوب الذكي';
+  static const String personaEngaged2   = 'المخطوب المستعجل';
+  static const String personaMarried1   = 'الزوجان المثاليان';
+  static const String personaMarried2   = 'الزوجان المتحسّنان';
+  static const String personaFamily1    = 'الأسرة البطلة';
+  static const String personaFamily2    = 'الأسرة المتقدمة';
+  static const String personaDefault    = 'المالي الذكي';
+  static const String adviceFamily      = 'الأسرة تحتاج مراجعة. ابدأ بالمصاريف الثابتة الكبيرة أولاً.';
+  static const String adviceMarried     = 'اتفقا على خفض بند واحد هذا الشهر — ابدأا بالمطاعم.';
+  static const String adviceEngaged     = 'انتبه — الزواج يحتاج ميزانية وفائض، ليس عجزاً.';
+  static const String adviceSingle      = 'وضع صعب. راجع أكبر 3 مصاريف وقلّلها الشهر القادم.';
+  static const String adviceFamily2     = 'أداء جيد للأسرة. صندوق طوارئ 6 أشهر = الأولوية القصوى الآن.';
+  static const String adviceMarried2    = 'وضع معقول. جرّبا تحديد سقف أسبوعي للمصاريف اليومية معاً.';
+  static const String adviceEngaged2    = 'ادخروا أكثر — حفل الزفاف والشقة يحتاجان جيباً عميقاً.';
+  static const String adviceSingle2     = 'يمكنك أفضل من هذا. هدف بسيط: وفّر 500 ريال إضافية الشهر القادم.';
+
+  // ══════════════════════════════════════════════════════
+  // PDF REPORT LABELS
+  // ══════════════════════════════════════════════════════
+  static const String pdfTitle          = 'تقرير مدبّر المالي';
+  static const String pdfAppFooter      = 'مدبّر — تطبيق المصروف العائلي العربي';
+  static const String pdfSummaryHeader  = '── الملخص ──────────────────────────';
+  static const String pdfPersonaHeader  = '── الشخصية المالية ─────────────────';
+  static const String pdfBreakHeader    = '── تفصيل المصاريف ──────────────────';
+  static const String pdfGoalsHeader    = '── الأهداف ─────────────────────────';
+  static const String pdfDetailLabel    = 'التفصيل:';
+
+
+
+  // ══════════════════════════════════════════════════════
+  // CHAT SUGGESTED QUESTIONS (per life stage)
+  // ══════════════════════════════════════════════════════
+  static const String q1Single    = 'كيف أوزع راتبي بذكاء؟';
+  static const String q2Single    = 'كم أحتاج في صندوق الطوارئ؟';
+  static const String q3Single    = 'ما أفضل هدف ادخار لي الآن؟';
+  static const String q1Engaged   = 'كيف نخطط لميزانية الزفاف؟';
+  static const String q2Engaged   = 'كيف نبدأ حياتنا المالية صح؟';
+  static const String q3Engaged   = 'كم نحتاج قبل الزواج؟';
+  static const String q1Married   = 'كيف نوزع الدخل المشترك؟';
+  static const String q2Married   = 'هل وضعنا المالي جيد هذا الشهر؟';
+  static const String q3Married   = 'كيف نوفر أكثر كزوجين؟';
+  static const String q1Family    = 'كيف نوفر لتعليم الأطفال؟';
+  static const String q2Family    = 'هل ميزانية الأسرة متوازنة؟';
+  static const String q3Family    = 'ما المبلغ الكافي لصندوق الطوارئ؟';
+
 }

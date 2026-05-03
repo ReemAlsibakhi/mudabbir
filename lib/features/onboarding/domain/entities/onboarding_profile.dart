@@ -1,12 +1,13 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:equatable/equatable.dart';
 
 enum LifeStage {
   single, engaged, married, family;
 
-  String get nameAr => const {'single':'أعزب','engaged':'مخطوب','married':'متزوج','family':'أسرة مع أطفال'}[name]!;
+  String get nameAr => const {'single':AppStrings.stageSingle,'engaged':AppStrings.stageEngaged,'married':AppStrings.stageMarried,'family':AppStrings.stageFamily}[name]!;
   String get icon   => const {'single':'🧑','engaged':'💍','married':'👫','family':'👨‍👩‍👧‍👦'}[name]!;
-  String get desc   => const {'single':'تحكم بمستقبلك المالي','engaged':'وفّر لحلمك الكبير','married':'نسّق مع شريك حياتك','family':'أدر مصاريف أسرتك'}[name]!;
-  String get incomeLabel1 => (this==LifeStage.single||this==LifeStage.engaged) ? 'راتبك الشهري' : 'دخل الزوج';
+  String get desc   => const {'single':AppStrings.stageMottoSingle,'engaged':AppStrings.stageMottoEngaged,'married':AppStrings.stageMottoMarried,'family':AppStrings.stageMottoFamily}[name]!;
+  String get incomeLabel1 => (this==LifeStage.single||this==LifeStage.engaged) ? AppStrings.incomeLabelSingle : AppStrings.incomeLabelHusb;
   bool get hasPartner       => this==LifeStage.married||this==LifeStage.family;
   bool get showMarriageGoal => this==LifeStage.single ||this==LifeStage.engaged;
   bool get showChildGoals   => this==LifeStage.family;

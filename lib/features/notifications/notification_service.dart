@@ -2,6 +2,7 @@
 // NotificationService — All cases handled
 // ═══════════════════════════════════════════════════════════
 
+import '../../core/constants/app_strings.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import '../../../core/utils/logger.dart';
@@ -59,16 +60,16 @@ abstract final class NotificationService {
   }) async {
     if (!_initialized) return;
     // Edge: empty name
-    final name = userName.isNotEmpty ? userName : 'صديقي';
+    final name = userName.isNotEmpty ? userName : AppStrings.notifDefaultName;
 
     try {
       await _plugin.zonedSchedule(
         NotifId.morning,
-        'مدبّر 💰',
+        AppStrings.notifAppMorning,
         'صباح الخير يا $name! المتاح اليوم: '
         '${budgetRemaining.toStringAsFixed(0)} $currency',
         _nextTime(9, 0),
-        _details('morning', 'إشعار الصباح'),
+        _details('morning', AppStrings.notifMorningChan),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
@@ -86,15 +87,15 @@ abstract final class NotificationService {
     required String userName,
   }) async {
     if (!_initialized) return;
-    final name = userName.isNotEmpty ? userName : 'صديقي';
+    final name = userName.isNotEmpty ? userName : AppStrings.notifDefaultName;
 
     try {
       await _plugin.zonedSchedule(
         NotifId.evening,
-        'مدبّر 🌙',
+        AppStrings.notifAppEvening,
         'كيف كان يومك يا $name؟ سجّل مصاريفك الآن في 30 ثانية',
         _nextTime(21, 0),
-        _details('evening', 'ملخص المساء'),
+        _details('evening', AppStrings.notifEveningChan),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
@@ -117,9 +118,9 @@ abstract final class NotificationService {
     try {
       await _plugin.show(
         NotifId.budgetAlert,
-        '⚠️ تنبيه ميزانية',
+        AppStrings.notifBudgetTitle,
         'استنفدت ${usedPct.toStringAsFixed(0)}% من ميزانية $category',
-        _details('budget_alert', 'تنبيهات الميزانية', importance: Importance.max),
+        _details('budget_alert', AppStrings.notifBudgetChan, importance: Importance.max),
       );
     } catch (e) {
       AppLogger.error(_tag, 'showBudgetAlert failed', e);
@@ -135,9 +136,9 @@ abstract final class NotificationService {
     try {
       await _plugin.show(
         NotifId.streak,
-        '🔥 سلسلتك في خطر!',
+        AppStrings.notifStreakTitle,
         'لا تكسر سلسلتك الـ $streakCount يوم! سجّل في 30 ثانية',
-        _details('streak', 'تنبيه السلسلة'),
+        _details('streak', AppStrings.notifStreakChan),
       );
     } catch (e) {
       AppLogger.error(_tag, 'showStreakAlert failed', e);
@@ -162,10 +163,10 @@ abstract final class NotificationService {
 
       await _plugin.zonedSchedule(
         NotifId.fixedExpense,
-        '📅 موعد سداد قادم',
+        AppStrings.notifDueTitle,
         '$expenseName ($amount $currency) موعده بعد 3 أيام',
         tz.TZDateTime.from(remindAt, tz.local),
-        _details('fixed_expense', 'مواعيد السداد'),
+        _details('fixed_expense', AppStrings.notifDueChan),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,

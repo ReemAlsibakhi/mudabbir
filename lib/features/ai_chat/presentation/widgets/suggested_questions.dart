@@ -12,24 +12,24 @@ class SuggestedQuestions extends ConsumerWidget {
 
   static const _questions = {
     LifeStage.single: [
-      'كيف أوزع راتبي بذكاء؟',
-      'كم أحتاج في صندوق الطوارئ؟',
-      'ما أفضل هدف ادخار لي الآن؟',
+      AppStrings.q1Single,
+      AppStrings.q2Single,
+      AppStrings.q3Single,
     ],
     LifeStage.engaged: [
-      'كيف نخطط لميزانية الزفاف؟',
-      'كيف نبدأ حياتنا المالية صح؟',
-      'كم نحتاج قبل الزواج؟',
+      AppStrings.q1Engaged,
+      AppStrings.q2Engaged,
+      AppStrings.q3Engaged,
     ],
     LifeStage.married: [
-      'كيف نوزع الدخل المشترك؟',
-      'هل وضعنا المالي جيد هذا الشهر؟',
-      'كيف نوفر أكثر كزوجين؟',
+      AppStrings.q1Married,
+      AppStrings.q2Married,
+      AppStrings.q3Married,
     ],
     LifeStage.family: [
-      'كيف نوفر لتعليم الأطفال؟',
-      'هل ميزانية الأسرة متوازنة؟',
-      'ما المبلغ الكافي لصندوق الطوارئ؟',
+      AppStrings.q1Family,
+      AppStrings.q2Family,
+      AppStrings.q3Family,
     ],
   };
 

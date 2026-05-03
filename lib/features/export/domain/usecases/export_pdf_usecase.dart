@@ -2,6 +2,7 @@
 // ExportPdfUseCase — Generate monthly report PDF
 // ═══════════════════════════════════════════════════════════
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/errors/result.dart';
 import '../../../../core/utils/logger.dart';
 
@@ -20,7 +21,7 @@ final class ExportPdfUseCase {
     try {
       // Build PDF content
       final lines = <String>[
-        'تقرير مدبّر المالي',
+        AppStrings.pdfTitle,
         'الاسم: $userName',
         'الشهر: $monthKey',
         '─────────────────',
@@ -29,7 +30,7 @@ final class ExportPdfUseCase {
         'الفائض:  ${balance.toStringAsFixed(0)} ريال',
         'الادخار: ${savingRate.toStringAsFixed(1)}%',
         '─────────────────',
-        'التفصيل:',
+        AppStrings.pdfDetailLabel,
         ...categoryBreakdown.entries
             .where((e) => e.value > 0)
             .map((e) => '  ${e.key}: ${e.value.toStringAsFixed(0)} ريال'),

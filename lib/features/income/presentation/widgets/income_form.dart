@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,24 +69,24 @@ class _State extends ConsumerState<IncomeForm> {
 
     // ── Label adapts to life stage ────────────────────────
     final primaryLabel = switch (lifeStage) {
-      LifeStage.single   => '👨 راتبك الشهري',
-      LifeStage.engaged  => '👨 راتبك الشهري',
+      LifeStage.single   => AppStrings.incomePrimSingle,
+      LifeStage.engaged  => AppStrings.incomePrimSingle,
       LifeStage.married  => '👨 دخل الزوج',
-      LifeStage.family   => '👨 دخل الزوج (رب الأسرة)',
+      LifeStage.family   => AppStrings.incomeHusbandRole,
     };
 
     final partnerLabel = switch (lifeStage) {
-      LifeStage.married => '👩 دخل الزوجة (اختياري)',
-      LifeStage.family  => '👩 دخل الزوجة (اختياري)',
+      LifeStage.married => AppStrings.incomeWifeOpt,
+      LifeStage.family  => AppStrings.incomeWifeOpt,
       _                 => '',
     };
 
     // ── Saving tip adapts to life stage ───────────────────
     final savingTip = switch (lifeStage) {
-      LifeStage.single  => '💡 نصيحة للأعزب: وفّر 30% الآن قبل الالتزامات',
-      LifeStage.engaged => '💡 نصيحة للمخطوب: ابدأ صندوق الزفاف — الأيام تمر سريعاً',
-      LifeStage.married => '💡 نصيحة للمتزوجين: اتفقا على ميزانية مشتركة كل بداية شهر',
-      LifeStage.family  => '💡 نصيحة للأسرة: صندوق طوارئ 6 أشهر = أولوية قصوى',
+      LifeStage.single  => AppStrings.incomeTipSingle,
+      LifeStage.engaged => AppStrings.incomeTipEngaged,
+      LifeStage.married => AppStrings.incomeTipMarried,
+      LifeStage.family  => AppStrings.incomeTipFamily,
     };
 
     return MudCard(
@@ -94,11 +95,11 @@ class _State extends ConsumerState<IncomeForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const MudSectionLabel('إدخال الدخل الشهري'),
+            const MudSectionLabel(AppStrings.incomeInputLabel),
 
             // ── Primary income ────────────────────────────
             _IncomeField(label: primaryLabel, controller: _primaryCtrl,
-              hint: 'مثال: 8000', autofocus: true),
+              hint: AppStrings.incomeExample, autofocus: true),
             const SizedBox(height: 12),
 
             // ── Partner income — married/family ONLY ──────
@@ -109,14 +110,14 @@ class _State extends ConsumerState<IncomeForm> {
 
             // ── Extra income — everyone ───────────────────
             _IncomeField(
-              label: '💼 دخل إضافي (مكافآت، عمل حر، إيجارات...)',
+              label: AppStrings.incomeExtraFull,
               controller: _extraCtrl, hint: '0',
             ),
             const SizedBox(height: 14),
 
             // ── Save button ───────────────────────────────
             MudGradientButton(
-              label:   _isDirty ? '💾 حفظ الدخل' : '✅ محفوظ',
+              label:   _isDirty ? AppStrings.incomeSaveBtn : AppStrings.incomeSavedBtn,
               onTap:   _submit,
               enabled: _isDirty,
             ),
@@ -126,7 +127,7 @@ class _State extends ConsumerState<IncomeForm> {
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Center(
-                  child: Text('⚠️ لديك تغييرات غير محفوظة',
+                  child: Text(AppStrings.incomeUnsaved,
                     style: AppTextStyles.caption.copyWith(color: AppColors.warning)),
                 ),
               ),
@@ -193,9 +194,9 @@ class _IncomeField extends StatelessWidget {
           final n = double.tryParse(v.trim().replaceAll(',','')
             .replaceAllMapped(RegExp(r'[٠-٩]'),
               (m) => (m.group(0)!.codeUnitAt(0) - 0x0660).toString()));
-          if (n == null)  return 'أدخل رقماً صحيحاً';
-          if (n < 0)      return 'لا يمكن أن يكون سالباً';
-          if (n > 1e8)    return 'الرقم كبير جداً';
+          if (n == null)  return AppStrings.amountInvalid;
+          if (n < 0)      return AppStrings.amountNegative;
+          if (n > 1e8)    return AppStrings.amountTooLarge;
           return null;
         },
       ),

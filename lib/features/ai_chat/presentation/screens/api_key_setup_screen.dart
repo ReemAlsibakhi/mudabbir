@@ -89,7 +89,7 @@ class _State extends ConsumerState<ApiKeySetupScreen> {
 
       // Save button
       MudGradientButton(
-        label:   _hasExisting ? '💾 تحديث المفتاح' : '🔑 حفظ والبدء',
+        label:   _hasExisting ? AppStrings.apiKeyUpdateBtn : AppStrings.apiKeySaveBtn,
         onTap:   _save,
         loading: _saving,
       ),
@@ -108,7 +108,7 @@ class _State extends ConsumerState<ApiKeySetupScreen> {
               border: Border.all(
                 color: AppColors.error.withOpacity(0.2)),
             ),
-            child: Text('🗑️ حذف المفتاح',
+            child: Text(AppStrings.apiKeyDeleteBtn,
               textAlign: TextAlign.center,
               style: AppTextStyles.bodyBold.copyWith(
                 color: AppColors.error)),
@@ -157,10 +157,10 @@ class _State extends ConsumerState<ApiKeySetupScreen> {
                       color: AppColors.accentAlt)),
                   const SizedBox(height: 8),
                   ...[
-                    '١. افتح: console.anthropic.com',
-                    '٢. سجّل دخول أو أنشئ حساباً',
-                    '٣. API Keys ← Create Key',
-                    '٤. انسخ المفتاح والصقه أدناه',
+                    AppStrings.apiKeyStep1,
+                    AppStrings.apiKeyStep2,
+                    AppStrings.apiKeyStep3,
+                    AppStrings.apiKeyStep4,
                   ].map((s) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Text(s, style: AppTextStyles.body),

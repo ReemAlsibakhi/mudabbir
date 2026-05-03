@@ -65,7 +65,7 @@ class _KeySetupGate extends StatelessWidget {
                   textAlign: TextAlign.center),
                 const SizedBox(height: 8),
                 Text(
-                  'اسألني عن ميزانيتك، مصاريفك، أهدافك — وسأجيبك بناءً على بياناتك الحقيقية',
+                  AppStrings.chatHeroBody,
                   style: AppTextStyles.body,
                   textAlign: TextAlign.center,
                 ),
@@ -96,10 +96,10 @@ class _KeySetupGate extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 ...[
-                  '1. افتح: console.anthropic.com',
+                  AppStrings.apiKeyStep1,
                   '2. أنشئ حساباً مجانياً',
-                  '3. من القائمة: API Keys ← Create Key',
-                  '4. انسخ المفتاح والصقه أدناه',
+                  AppStrings.apiKeyStep3,
+                  AppStrings.apiKeyStep4,
                 ].map((s) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 3),
                   child: Text(s,
@@ -121,7 +121,7 @@ class _KeySetupGate extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'مجاني تماماً — Anthropic تعطي رصيداً ابتدائياً مجاناً',
+                          AppStrings.chatFreeNote,
                           style: AppTextStyles.caption.copyWith(
                             color: AppColors.success),
                         ),
@@ -327,7 +327,7 @@ class _EmptyState extends ConsumerWidget {
                   style: AppTextStyles.headline2),
                 const SizedBox(height: 8),
                 Text(
-                  'اسألني عن ميزانيتك، مصاريفك، أو أي قرار مالي',
+                  AppStrings.chatStartBody,
                   style: AppTextStyles.body,
                   textAlign: TextAlign.center,
                 ),

@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:equatable/equatable.dart';
 
 enum LocationType { supermarket, restaurant, mall, pharmacy, fuel }
@@ -29,8 +30,8 @@ final class LocationAlert extends Equatable {
     LocationType.supermarket => 'دخلت $placeName — تريد تسجيل مصروف بقالة؟',
     LocationType.restaurant  => 'أنت في $placeName — تريد تسجيل وجبة؟',
     LocationType.mall        => 'دخلت $placeName — انتبه من التسوق الزائد!',
-    LocationType.pharmacy    => 'في صيدلية — تريد تسجيل مصروف صحة؟',
-    LocationType.fuel        => 'عند محطة وقود — تريد تسجيل مصروف وقود؟',
+    LocationType.pharmacy    => AppStrings.alertPharmacy,
+    LocationType.fuel        => AppStrings.alertFuel,
   };
 
   @override
