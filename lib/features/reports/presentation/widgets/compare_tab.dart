@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extensions/double_ext.dart';
@@ -20,8 +21,8 @@ class CompareTab extends ConsumerWidget {
     if (months.every((m) => !m.hasData)) {
       return const MudEmptyView(
         icon:     '📊',
-        title:    'لا توجد بيانات للمقارنة بعد',
-        subtitle: 'سجّل مصاريف شهرين على الأقل',
+        title:    AppStrings.noCompareData,
+        subtitle: AppStrings.noCompareBody,
       );
     }
 
@@ -79,7 +80,7 @@ class CompareTab extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _SectionLabel('الإنفاق — آخر 3 أشهر'),
+              const _SectionLabel(AppStrings.last3Chart),
               ...months.where((m) => m.hasData).map((m) {
                 final maxExp = months
                     .map((x) => x.totalExpenses)
@@ -130,14 +131,14 @@ class CompareTab extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const _SectionLabel('ملخص الفروق'),
-                _DiffRow(label: 'إجمالي الإنفاق',
+                const _SectionLabel(AppStrings.compareSummary),
+                _DiffRow(label: AppStrings.compareTotal,
                   curr: curr.totalExpenses, prev: prev.totalExpenses),
-                _DiffRow(label: 'المصاريف المتغيرة',
+                _DiffRow(label: AppStrings.compareVariable,
                   curr: curr.totalVariable, prev: prev.totalVariable),
-                _DiffRow(label: 'المصاريف الثابتة',
+                _DiffRow(label: AppStrings.compareFixed,
                   curr: curr.totalFixed, prev: prev.totalFixed),
-                _DiffRow(label: 'الادخار',
+                _DiffRow(label: AppStrings.compareSaving,
                   curr: curr.balance, prev: prev.balance,
                   higherIsBetter: true),
               ],

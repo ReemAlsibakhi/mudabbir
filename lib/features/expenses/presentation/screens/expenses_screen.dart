@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extensions/context_ext.dart';
@@ -87,7 +88,7 @@ class _State extends ConsumerState<ExpensesScreen>
         },
         icon:  const Icon(Icons.add_rounded, color: Colors.white),
         label: Text(
-          _tabs.index == 0 ? 'إضافة ثابت' : 'إضافة مصروف',
+          _tabs.index == 0 ? AppStrings.addFixed : AppStrings.addExpense,
           style: AppTextStyles.button.copyWith(fontSize: 13)),
       ),
     );
@@ -119,14 +120,14 @@ class _Header extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.chevron_right_rounded,
                   color: AppColors.textSecondary),
-                tooltip: 'الشهر السابق',
+                tooltip: AppStrings.prevMonth,
                 onPressed: onPrev,
               ),
               Expanded(
                 child: Center(
                   child: Column(
                     children: [
-                      Text('💸 المصروف', style: AppTextStyles.title),
+                      Text(AppStrings.expensesTitle, style: AppTextStyles.title),
                       Text(month.monthAr,
                         style: AppTextStyles.caption.copyWith(
                           color: AppColors.accentAlt)),
@@ -138,7 +139,7 @@ class _Header extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.chevron_left_rounded,
                   color: AppColors.textSecondary),
-                tooltip: 'الشهر التالي',
+                tooltip: AppStrings.nextMonth,
                 onPressed: onNext,
               ),
             ],
@@ -148,8 +149,8 @@ class _Header extends StatelessWidget {
         TabBar(
           controller: tabs,
           tabs: const [
-            Tab(text: '📅 ثابت شهري'),
-            Tab(text: '📆 متغير يومي'),
+            Tab(text: AppStrings.tabFixed),
+            Tab(text: AppStrings.tabVariable),
           ],
           labelStyle:           AppTextStyles.bodyBold.copyWith(fontSize: 13),
           unselectedLabelStyle: AppTextStyles.body.copyWith(fontSize: 13),

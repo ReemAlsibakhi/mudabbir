@@ -1,3 +1,4 @@
+import '../constants/app_strings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -83,7 +84,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       backgroundColor: const Color(0xFF050A14),
       body: Center(
         child: Text(
-          state.error?.message ?? 'خطأ في التنقل',
+          state.error?.message ?? AppStrings.navError,
           style: const TextStyle(fontFamily: 'Cairo', color: Colors.white70),
         ),
       ),

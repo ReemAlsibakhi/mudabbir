@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -43,14 +44,14 @@ class DailyScreen extends ConsumerWidget {
                     // AI Chat icon
                     _HeaderIcon(
                       icon:    Icons.smart_toy_outlined,
-                      tooltip: 'المستشار الذكي',
+                      tooltip: AppStrings.aiAssistant,
                       color:   AppColors.purple,
                       onTap:   () => context.go(AppRoutes.chat),
                     ),
                     const SizedBox(width: 6),
                     _HeaderIcon(
                       icon:    Icons.account_balance_wallet_outlined,
-                      tooltip: 'الدخل الشهري',
+                      tooltip: AppStrings.incomeTooltip,
                       color:   AppColors.accentAlt,
                       onTap:   () => Navigator.push(context,
                         MaterialPageRoute(
@@ -59,7 +60,7 @@ class DailyScreen extends ConsumerWidget {
                     const SizedBox(width: 8),
                     _HeaderIcon(
                       icon:    Icons.settings_outlined,
-                      tooltip: 'الإعدادات',
+                      tooltip: AppStrings.settingsTooltip,
                       color:   AppColors.textTertiary,
                       onTap:   () => Navigator.push(context,
                         MaterialPageRoute(
@@ -176,7 +177,7 @@ class _AddButton extends StatelessWidget {
               child: Text('🎤', style: TextStyle(fontSize: 14))),
           ),
           const SizedBox(width: 10),
-          Text('إضافة مصروف يدوياً',
+          Text(AppStrings.addManually,
             style: AppTextStyles.button.copyWith(fontSize: 14)),
         ],
       ),
@@ -191,7 +192,7 @@ class _NoSpendButton extends ConsumerWidget {
     onTap: () async {
       await ref.read(dailyActionsProvider).noSpendToday();
       if (context.mounted) {
-        context.showSnack('✅ يوم بدون مصاريف — عمل رائع!',
+        context.showSnack(AppStrings.noSpendDay,
           color: AppColors.success);
       }
     },
@@ -208,7 +209,7 @@ class _NoSpendButton extends ConsumerWidget {
         children: [
           const Text('✅', style: TextStyle(fontSize: 16)),
           const SizedBox(width: 8),
-          Text('اليوم ما صرفت شيء',
+          Text(AppStrings.noSpendBtn,
             style: AppTextStyles.subtitle.copyWith(
               color:    AppColors.success.withOpacity(0.85),
               fontSize: 14)),

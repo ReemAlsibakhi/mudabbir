@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -36,7 +37,7 @@ class QuickAddGrid extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('إضافة سريعة', style: AppTextStyles.label),
+        Text(AppStrings.quickAdd, style: AppTextStyles.label),
         const SizedBox(height: 8),
         GridView.count(
           crossAxisCount: 3,

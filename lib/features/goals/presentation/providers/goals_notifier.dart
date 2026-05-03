@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils/logger.dart';
@@ -58,7 +59,7 @@ final class GoalsNotifier extends StateNotifier<GoalsState> {
         },
         onError: (e, st) {
           AppLogger.error(_tag, 'stream error', e, st as StackTrace);
-          if (mounted) state = const GoalsError('تعذّر تحميل الأهداف');
+          if (mounted) state = const GoalsError(AppStrings.goalLoadFailed);
         },
         cancelOnError: false,
       );
@@ -105,7 +106,7 @@ final class GoalsNotifier extends StateNotifier<GoalsState> {
   Future<void> deleteGoal(String id) async {
     final result = await _repo.delete(id);
     if (result.isFailure && mounted && state is GoalsLoaded)
-      state = (state as GoalsLoaded).copyWith(errorMessage: 'تعذّر حذف الهدف');
+      state = (state as GoalsLoaded).copyWith(errorMessage: AppStrings.goalDelFailed);
   }
 
   void clearError() {

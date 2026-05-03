@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,8 +20,8 @@ class ExpenseList extends ConsumerWidget {
     if (items.isEmpty) {
       return const MudEmptyView(
         icon:     '📭',
-        title:    'لا توجد مصاريف هذا الشهر',
-        subtitle: 'اضغط + لإضافة مصروف جديد',
+        title:    AppStrings.noExpensesTitle,
+        subtitle: AppStrings.noExpensesBody,
       );
     }
 
@@ -72,16 +73,16 @@ class ExpenseList extends ConsumerWidget {
       context: ctx,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.surface2,
-        title:   Text('حذف المصروف', style: AppTextStyles.title),
-        content: Text('هل تريد حذف هذا المصروف؟', style: AppTextStyles.body),
+        title:   Text(AppStrings.deleteExpenseTitle, style: AppTextStyles.title),
+        content: Text(AppStrings.deleteExpenseQ, style: AppTextStyles.body),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text('إلغاء',
+            child: Text(AppStrings.cancel,
               style: AppTextStyles.body.copyWith(color: AppColors.textSecondary))),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('حذف',
+            child: Text(AppStrings.delete,
               style: AppTextStyles.body.copyWith(color: AppColors.error))),
         ],
       ),
@@ -97,8 +98,8 @@ class ExpenseList extends ConsumerWidget {
       final now  = DateTime.now();
       final today     = DateTime(now.year, now.month, now.day);
       final yesterday = DateTime(now.year, now.month, now.day - 1);
-      if (d == today)     return 'اليوم';
-      if (d == yesterday) return 'أمس';
+      if (d == today)     return AppStrings.today;
+      if (d == yesterday) return AppStrings.yesterday;
       return '${d.day}/${d.month}/${d.year}';
     } catch (_) { return dateKey; }
   }
@@ -130,7 +131,7 @@ class _ExpenseItem extends StatelessWidget {
             Icon(Icons.delete_outline_rounded,
               color: AppColors.error, size: 22),
             const SizedBox(width: 8),
-            Text('حذف', style: AppTextStyles.body.copyWith(color: AppColors.error)),
+            Text(AppStrings.delete, style: AppTextStyles.body.copyWith(color: AppColors.error)),
             const SizedBox(width: 16),
           ],
         ),

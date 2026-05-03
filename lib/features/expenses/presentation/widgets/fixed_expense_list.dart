@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,8 +20,8 @@ class FixedExpenseList extends ConsumerWidget {
     if (items.isEmpty) {
       return const MudEmptyView(
         icon:     '📅',
-        title:    'لا توجد مصاريف ثابتة',
-        subtitle: 'أضف إيجارك وفواتيرك لتتبعها تلقائياً كل شهر',
+        title:    AppStrings.noFixedTitle,
+        subtitle: AppStrings.noFixedBody,
       );
     }
 
@@ -44,7 +45,7 @@ class FixedExpenseList extends ConsumerWidget {
               children: [
                 Icon(Icons.delete_outline_rounded, color: AppColors.error, size: 20),
                 const SizedBox(width: 8),
-                Text('حذف', style: TextStyle(fontFamily:'Cairo', color: AppColors.error)),
+                Text(AppStrings.delete, style: TextStyle(fontFamily:'Cairo', color: AppColors.error)),
                 const SizedBox(width: 12),
               ],
             ),
@@ -55,13 +56,13 @@ class FixedExpenseList extends ConsumerWidget {
               context: context,
               builder: (_) => AlertDialog(
                 backgroundColor: AppColors.surface2,
-                title:   const Text('حذف الثابت', style: TextStyle(fontFamily:'Cairo')),
-                content: const Text('هل تريد حذف هذا المصروف الثابت؟', style: TextStyle(fontFamily:'Cairo')),
+                title:   const Text(AppStrings.deleteFixedTitle, style: TextStyle(fontFamily:'Cairo')),
+                content: const Text(AppStrings.deleteFixedQ, style: TextStyle(fontFamily:'Cairo')),
                 actions: [
                   TextButton(onPressed: () => Navigator.pop(context, false),
-                    child: const Text('إلغاء', style: TextStyle(fontFamily:'Cairo'))),
+                    child: const Text(AppStrings.cancel, style: TextStyle(fontFamily:'Cairo'))),
                   TextButton(onPressed: () => Navigator.pop(context, true),
-                    child: const Text('حذف', style: TextStyle(fontFamily:'Cairo', color: AppColors.error))),
+                    child: const Text(AppStrings.delete, style: TextStyle(fontFamily:'Cairo', color: AppColors.error))),
                 ],
               ),
             ) ?? false;
@@ -87,7 +88,7 @@ class FixedExpenseList extends ConsumerWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('إجمالي الثابت الشهري', style: AppTextStyles.subtitle),
+              Text(AppStrings.fixedTotal, style: AppTextStyles.subtitle),
               Text(total.fmt(),
                 style: AppTextStyles.body.copyWith(
                   color: AppColors.error, fontWeight: FontWeight.w900, fontSize: 18)),

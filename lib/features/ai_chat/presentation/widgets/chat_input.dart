@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -46,7 +47,7 @@ class _State extends State<ChatInput> {
             textInputAction: TextInputAction.send,
             onSubmitted:     (_) => _send(),
             decoration: InputDecoration(
-              hintText:       'اسأل عن ميزانيتك...',
+              hintText:       AppStrings.chatInputHint,
               border:         OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide:   BorderSide.none,

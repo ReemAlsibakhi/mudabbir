@@ -1,3 +1,4 @@
+import '../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -24,7 +25,7 @@ class MudErrorView extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: onRetry,
-              child: const Text('إعادة المحاولة'),
+              child: const Text(AppStrings.retry),
             ),
           ],
         ],

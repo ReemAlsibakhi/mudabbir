@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -40,7 +41,7 @@ class _State extends ConsumerState<ApiKeySetupScreen> {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       // ── Input field ───────────────────────────────
-      Text('أدخل مفتاح API',
+      Text(AppStrings.apiKeyInputLabel,
         style: AppTextStyles.bodyBold),
       const SizedBox(height: 8),
       TextField(
@@ -79,7 +80,7 @@ class _State extends ConsumerState<ApiKeySetupScreen> {
           const Icon(Icons.lock_outline_rounded,
             size: 13, color: AppColors.success),
           const SizedBox(width: 5),
-          Text('يُحفظ على هاتفك فقط — لا يُرفع لأي مكان',
+          Text(AppStrings.chatKeyPrivacy,
             style: AppTextStyles.caption.copyWith(
               color: AppColors.success)),
         ],
@@ -132,7 +133,7 @@ class _State extends ConsumerState<ApiKeySetupScreen> {
             color: AppColors.textPrimary),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('مفتاح Claude API', style: AppTextStyles.title),
+        title: Text(AppStrings.apiKeyTitle, style: AppTextStyles.title),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -151,7 +152,7 @@ class _State extends ConsumerState<ApiKeySetupScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('كيف تحصل على المفتاح؟',
+                  Text(AppStrings.apiKeyHowTitle,
                     style: AppTextStyles.bodyBold.copyWith(
                       color: AppColors.accentAlt)),
                   const SizedBox(height: 8),
@@ -178,11 +179,11 @@ class _State extends ConsumerState<ApiKeySetupScreen> {
   Future<void> _save() async {
     final key = _ctrl.text.trim();
     if (key.isEmpty) {
-      setState(() => _error = 'أدخل المفتاح');
+      setState(() => _error = AppStrings.apiKeyRequired);
       return;
     }
     if (!key.startsWith('sk-ant-')) {
-      setState(() => _error = 'المفتاح يجب أن يبدأ بـ sk-ant-');
+      setState(() => _error = AppStrings.apiKeyInvalidFmt);
       return;
     }
     setState(() => _saving = true);
@@ -195,7 +196,7 @@ class _State extends ConsumerState<ApiKeySetupScreen> {
     // standalone = show success snack
     if (!widget.fromChat && !widget.embedded) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('✅ تم حفظ المفتاح',
+        content: Text(AppStrings.keySaved,
           style: TextStyle(fontFamily: 'Cairo')),
         backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,

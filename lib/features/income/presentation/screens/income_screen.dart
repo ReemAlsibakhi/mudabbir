@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extensions/context_ext.dart';
@@ -38,7 +39,7 @@ class _State extends ConsumerState<IncomeScreen> {
         ref.read(incomeNotifierProvider(_month.monthKey).notifier).clearError();
       }
       if (next is IncomeLoaded && next.saveSuccess) {
-        context.showSnack('✅ تم حفظ الدخل', color: AppColors.success);
+        context.showSnack(AppStrings.incomeSaved, color: AppColors.success);
       }
     });
 
@@ -93,7 +94,7 @@ class _ErrorView extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('رجوع'),
+            child: const Text(AppStrings.back),
           ),
         ],
       ),
@@ -127,7 +128,7 @@ class _IncomeContent extends StatelessWidget {
         ),
         title: Column(
           children: [
-            Text('💰 الدخل الشهري', style: AppTextStyles.title),
+            Text(AppStrings.incomeTitle, style: AppTextStyles.title),
             Text(month.monthAr,
               style: AppTextStyles.caption.copyWith(
                 color: AppColors.textSecondary)),
@@ -138,13 +139,13 @@ class _IncomeContent extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.chevron_right_rounded,
               color: AppColors.textSecondary),
-            tooltip: 'الشهر السابق',
+            tooltip: AppStrings.prevMonth,
             onPressed: onPrev,
           ),
           IconButton(
             icon: const Icon(Icons.chevron_left_rounded,
               color: AppColors.textSecondary),
-            tooltip: 'الشهر التالي',
+            tooltip: AppStrings.nextMonth,
             onPressed: onNext,
           ),
           if (state.isSaving)

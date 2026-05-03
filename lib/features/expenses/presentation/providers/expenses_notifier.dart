@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils/logger.dart';
@@ -86,7 +87,7 @@ final class ExpensesNotifier extends StateNotifier<ExpensesState> {
         onError: (e, st) {
           AppLogger.error(_tag, 'variable stream', e, st as StackTrace);
           if (mounted && state is ExpensesLoaded)
-            state = (state as ExpensesLoaded).copyWith(errorMessage: 'تعذّر تحميل المصاريف');
+            state = (state as ExpensesLoaded).copyWith(errorMessage: AppStrings.expenseLoadFailed);
         },
         cancelOnError: false,
       );
@@ -139,13 +140,13 @@ final class ExpensesNotifier extends StateNotifier<ExpensesState> {
   Future<void> deleteExpense(String id) async {
     final result = await _deleteUseCase(id); // ✅ injected
     if (result.isFailure && mounted && state is ExpensesLoaded)
-      state = (state as ExpensesLoaded).copyWith(errorMessage: 'تعذّر حذف المصروف');
+      state = (state as ExpensesLoaded).copyWith(errorMessage: AppStrings.expenseDelFailed);
   }
 
   Future<void> deleteFixedExpense(String id) async {
     final result = await _deleteFixedUseCase(id); // ✅ injected
     if (result.isFailure && mounted && state is ExpensesLoaded)
-      state = (state as ExpensesLoaded).copyWith(errorMessage: 'تعذّر حذف المصروف الثابت');
+      state = (state as ExpensesLoaded).copyWith(errorMessage: AppStrings.fixedDelFailed);
   }
 
   void clearError() {

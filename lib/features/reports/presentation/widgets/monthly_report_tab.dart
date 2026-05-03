@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/categories.dart';
@@ -27,8 +28,8 @@ class MonthlyReportTab extends ConsumerWidget {
     if (!report.hasData) {
       return const MudEmptyView(
         icon:     '📊',
-        title:    'لا توجد بيانات لهذا الشهر',
-        subtitle: 'ابدأ بإدخال دخلك ومصاريفك',
+        title:    AppStrings.noDataMonth,
+        subtitle: AppStrings.noDataMonthBody,
       );
     }
 
@@ -43,27 +44,27 @@ class MonthlyReportTab extends ConsumerWidget {
           mainAxisSpacing: 10, crossAxisSpacing: 10, childAspectRatio: 1.5,
           children: [
             MudStatCard(
-              icon: '📥', label: 'الدخل',
-              value: report.totalIncome.fmt(), sub: 'هذا الشهر',
+              icon: '📥', label: AppStrings.reportIncome,
+              value: report.totalIncome.fmt(), sub: AppStrings.reportThisMonth,
               valueColor: AppColors.accentAlt,
             ),
             MudStatCard(
-              icon: '📤', label: 'المصروف',
-              value: report.totalExpenses.fmt(), sub: 'ثابت + متغير',
+              icon: '📤', label: AppStrings.reportExpense,
+              value: report.totalExpenses.fmt(), sub: AppStrings.reportFixedVar,
               valueColor: AppColors.error,
             ),
             MudStatCard(
               icon: report.isDeficit ? '⚠️' : '💾',
-              label: report.isDeficit ? 'العجز' : 'الفائض',
+              label: report.isDeficit ? AppStrings.reportDeficit : AppStrings.reportBalance,
               value: report.balance.abs().fmt(),
-              sub: report.isDeficit ? 'تجاوزت الميزانية' : 'قابل للادخار',
+              sub: report.isDeficit ? AppStrings.reportOverBudget : AppStrings.reportSavable,
               valueColor: report.isDeficit ? AppColors.error : AppColors.success,
             ),
             MudStatCard(
-              icon: '📊', label: 'نسبة الادخار',
+              icon: '📊', label: AppStrings.reportSavingRate,
               value: '${report.savingRate.toStringAsFixed(1)}%',
-              sub: report.savingRate >= 20 ? 'ممتاز 🌟'
-                 : report.savingRate >= 10 ? 'جيد 👍' : 'يحتاج تحسين',
+              sub: report.savingRate >= 20 ? AppStrings.ratingExcellent
+                 : report.savingRate >= 10 ? AppStrings.ratingGood : AppStrings.ratingImprove,
               valueColor: AppColors.warning,
             ),
           ],
@@ -89,7 +90,7 @@ class MonthlyReportTab extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('شخصيتكم هذا الشهر', style: AppTextStyles.caption),
+                    Text(AppStrings.reportPersona, style: AppTextStyles.caption),
                     Text(report.personaName,
                       style: AppTextStyles.subtitle.copyWith(color: AppColors.accentAlt)),
                     const SizedBox(height: 3),
@@ -108,7 +109,7 @@ class MonthlyReportTab extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const MudSectionLabel('تفصيل المصاريف'),
+                const MudSectionLabel(AppStrings.reportBreakdown),
                 ...(catMap.entries
                     .where((e) => e.value > 0)
                     .toList()

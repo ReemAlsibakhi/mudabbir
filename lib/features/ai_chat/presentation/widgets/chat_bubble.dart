@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -74,7 +75,7 @@ class ChatBubble extends StatelessWidget {
     if (text.isEmpty) return;
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(
-      content: Text('تم النسخ', style: TextStyle(fontFamily: 'Cairo')),
+      content: Text(AppStrings.copied, style: TextStyle(fontFamily: 'Cairo')),
       duration: Duration(seconds: 1),
       behavior: SnackBarBehavior.floating,
     ));

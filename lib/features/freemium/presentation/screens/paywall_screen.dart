@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extensions/context_ext.dart';
@@ -81,9 +82,9 @@ class PaywallScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('9.99 ريال',
+              Text(AppStrings.paywallPrice,
                 style: AppTextStyles.headline2.copyWith(color: AppColors.goldLight)),
-              Text(' / شهر فقط',
+              Text(AppStrings.paywallPeriod,
                 style: AppTextStyles.body.copyWith(color: AppColors.textSecondary)),
             ],
           ),
@@ -103,7 +104,7 @@ class PaywallScreen extends StatelessWidget {
               gradient:     AppColors.goldGradient,
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Text('جرّب مجاناً لمدة 7 أيام',
+            child: Text(AppStrings.paywallCta,
               textAlign: TextAlign.center,
               style: AppTextStyles.button.copyWith(fontSize: 16)),
           ),
@@ -112,7 +113,7 @@ class PaywallScreen extends StatelessWidget {
         GestureDetector(
           onTap: () => Navigator.pop(context, false),
           child: Center(
-            child: Text('ليس الآن',
+            child: Text(AppStrings.paywallNotNow,
               style: AppTextStyles.caption.copyWith(color: AppColors.textTertiary)),
           ),
         ),
@@ -121,10 +122,10 @@ class PaywallScreen extends StatelessWidget {
   );
 
   static const _premiumFeatures = [
-    'مستشار Claude AI المالي الذكي',
-    'تنبيهات GPS عند دخول المحلات',
-    'تصدير تقارير PDF احترافية',
-    'وضع الزوجين — ميزانية مشتركة',
-    '3 رموز إنقاذ للسلسلة شهرياً',
+    AppStrings.paywallAiChat,
+    AppStrings.paywallGps,
+    AppStrings.paywallPdf,
+    AppStrings.paywallCouple,
+    AppStrings.paywallTokens,
   ];
 }

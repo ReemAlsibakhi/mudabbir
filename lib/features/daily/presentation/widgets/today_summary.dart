@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,7 +34,7 @@ class TodaySummary extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const MudSectionLabel('ملخص اليوم'),
+        const MudSectionLabel(AppStrings.todaySummary),
         MudCard(
           child: todayItems.isEmpty
               ? const Center(
@@ -41,7 +42,7 @@ class TodaySummary extends ConsumerWidget {
                   SizedBox(height: 8),
                   Text('☀️', style: TextStyle(fontSize: 36)),
                   SizedBox(height: 8),
-                  Text('لم تسجل أي مصروف اليوم بعد',
+                  Text(AppStrings.todayNoExpenses,
                       style: TextStyle(
                           fontFamily: 'Cairo',
                           fontSize: 13,
@@ -101,7 +102,7 @@ class TodaySummary extends ConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('مجموع اليوم',
+                      const Text(AppStrings.todayTotal,
                           style: TextStyle(
                               fontFamily: 'Cairo',
                               fontSize: 14,

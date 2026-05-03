@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils/logger.dart';
@@ -53,9 +54,9 @@ final class IncomeNotifier extends StateNotifier<IncomeState> {
           if (!mounted) return;
           if (state is IncomeLoaded) {
             state = (state as IncomeLoaded).copyWith(
-              saveError: 'خطأ في تحميل البيانات');
+              saveError: AppStrings.incomeDataError);
           } else {
-            state = const IncomeError('تعذّر تحميل بيانات الدخل');
+            state = const IncomeError(AppStrings.incomeLoadFailed);
           }
         },
         cancelOnError: false,

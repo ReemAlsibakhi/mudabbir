@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import '../../../../core/errors/result.dart';
@@ -12,19 +13,19 @@ final class LocationRepositoryImpl {
     try {
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled)
-        return const Fail(PermissionFailure('GPS غير مفعّل على الجهاز'));
+        return const Fail(PermissionFailure(AppStrings.locationDisabled));
 
       var permission = await Geolocator.checkPermission();
 
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied)
-          return const Fail(PermissionFailure('تم رفض إذن الموقع'));
+          return const Fail(PermissionFailure(AppStrings.permissionDenied));
       }
 
       if (permission == LocationPermission.deniedForever)
         return const Fail(
-            PermissionFailure('الإذن مرفوض بشكل دائم — افتح الإعدادات'));
+            PermissionFailure(AppStrings.permDeniedForever));
 
       return const Success(true);
     } catch (e, st) {
@@ -42,7 +43,7 @@ final class LocationRepositoryImpl {
         desiredAccuracy: LocationAccuracy.high,
       ).timeout(
         const Duration(seconds: 15),
-        onTimeout: () => throw Exception('انتهت مهلة تحديد الموقع'),
+        onTimeout: () => throw Exception(AppStrings.locationTimeout),
       );
       return Success(position);
     } catch (e, st) {
@@ -56,16 +57,16 @@ final class LocationRepositoryImpl {
     try {
       final placemarks = await placemarkFromCoordinates(lat, lng);
       if (placemarks.isEmpty)
-        return const Fail(NotFoundFailure('لم يتم تحديد المكان'));
+        return const Fail(NotFoundFailure(AppStrings.locationNotFound));
 
       final place = placemarks.first;
       final name  = place.name?.isNotEmpty == true
           ? place.name!
-          : place.street ?? place.locality ?? 'موقع غير معروف';
+          : place.street ?? place.locality ?? AppStrings.locationUnknown;
       return Success(name);
     } catch (e) {
       AppLogger.error(_tag, 'getPlaceName', e);
-      return const Fail(UnexpectedFailure('خطأ في تحديد المكان'));
+      return const Fail(UnexpectedFailure(AppStrings.locationError));
     }
   }
 

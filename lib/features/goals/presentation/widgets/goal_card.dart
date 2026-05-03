@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extensions/double_ext.dart';
@@ -147,7 +148,7 @@ class _State extends ConsumerState<GoalCard> {
                       const Icon(Icons.add_rounded,
                         size: 16, color: AppColors.accentAlt),
                       const SizedBox(width: 6),
-                      Text('إضافة مبلغ للادخار',
+                      Text(AppStrings.goalSavingAdd,
                         style: AppTextStyles.caption.copyWith(
                           color: AppColors.accentAlt,
                           fontWeight: FontWeight.w700)),
@@ -167,7 +168,7 @@ class _State extends ConsumerState<GoalCard> {
                       style: AppTextStyles.body.copyWith(
                         color: AppColors.textPrimary),
                       decoration: InputDecoration(
-                        hintText:       'المبلغ',
+                        hintText:       AppStrings.amountLabel,
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 10),
                         errorText:  _error,
@@ -205,7 +206,7 @@ class _State extends ConsumerState<GoalCard> {
                               width: 16, height: 16,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2, color: Colors.white))
-                          : Text('إضافة',
+                          : Text(AppStrings.add,
                               style: AppTextStyles.button.copyWith(
                                 fontSize: 13)),
                     ),
@@ -223,7 +224,7 @@ class _State extends ConsumerState<GoalCard> {
                 borderRadius: BorderRadius.circular(9),
               ),
               child: Center(
-                child: Text('🎉 تم تحقيق الهدف! مبروك!',
+                child: Text(AppStrings.goalCelebration,
                   style: AppTextStyles.bodyBold.copyWith(
                     color: AppColors.success)),
               ),
@@ -236,7 +237,7 @@ class _State extends ConsumerState<GoalCard> {
   Future<void> _addSaving() async {
     final raw = _amountCtrl.text.trim();
     if (raw.isEmpty) {
-      setState(() => _error = 'أدخل مبلغاً');
+      setState(() => _error = AppStrings.enterAmount);
       return;
     }
     setState(() { _adding = true; _error = null; });
@@ -257,18 +258,18 @@ class _State extends ConsumerState<GoalCard> {
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.surface2,
-        title:   Text('حذف الهدف', style: AppTextStyles.title),
+        title:   Text(AppStrings.deleteGoalTitle, style: AppTextStyles.title),
         content: Text('هل تريد حذف هدف "${widget.goal.name}"؟',
           style: AppTextStyles.body),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('إلغاء',
+            child: Text(AppStrings.cancel,
               style: AppTextStyles.body.copyWith(
                 color: AppColors.textSecondary))),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text('حذف',
+            child: Text(AppStrings.delete,
               style: AppTextStyles.body.copyWith(color: AppColors.error))),
         ],
       ),

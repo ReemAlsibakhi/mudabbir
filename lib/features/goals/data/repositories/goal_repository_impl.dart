@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/result.dart';
@@ -51,7 +52,7 @@ final class GoalRepositoryImpl implements GoalRepository {
   @override
   Future<Result<void>> addSaving(String id, double amount) => Result.guard(() async {
     final model = _box.get(id);
-    if (model == null) throw const NotFoundFailure('الهدف غير موجود');
+    if (model == null) throw const NotFoundFailure(AppStrings.goalNotFound);
 
     final newSaved = (model.saved + amount).clamp(0.0, model.target);
     model

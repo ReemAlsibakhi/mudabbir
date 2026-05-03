@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/extensions/double_ext.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -13,15 +14,15 @@ class IncomeSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) => MudCard(
     child: Column(
       children: [
-        _Row(label: '👨 الدخل الأساسي',  value: income.primary,   show: true),
-        _Row(label: '👩 دخل الشريك',      value: income.secondary, show: income.hasPartner),
-        _Row(label: '💼 دخل إضافي',       value: income.extra,     show: income.hasExtra),
+        _Row(label: AppStrings.incomePrimLabel,  value: income.primary,   show: true),
+        _Row(label: AppStrings.incomePartLabel,      value: income.secondary, show: income.hasPartner),
+        _Row(label: AppStrings.incomeExtraLabel,       value: income.extra,     show: income.hasExtra),
         const Divider(color: AppColors.border, height: 20),
         // Total row
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('إجمالي الدخل', style: AppTextStyles.subtitle),
+            Text(AppStrings.incomeTotalLabel, style: AppTextStyles.subtitle),
             Text(
               // Edge: total = 0 → show dash
               income.hasIncome ? income.total.fmt() : '—',

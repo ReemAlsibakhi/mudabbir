@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -43,7 +44,7 @@ class SuggestedQuestions extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('أسئلة مقترحة', style: AppTextStyles.label),
+          Text(AppStrings.chatSuggestions, style: AppTextStyles.label),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8, runSpacing: 8,

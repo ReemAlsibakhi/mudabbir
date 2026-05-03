@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/extensions/double_ext.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -18,16 +19,16 @@ class ExpensesSummaryBar extends StatelessWidget {
       color: AppColors.surface2,
       child: Row(
         children: [
-          _Item(label: 'ثابت',    value: totalFixed,    color: AppColors.accentAlt),
+          _Item(label: AppStrings.totalFixed,    value: totalFixed,    color: AppColors.accentAlt),
           const SizedBox(width: 8),
           const Text('+', style: TextStyle(color: AppColors.textTertiary)),
           const SizedBox(width: 8),
-          _Item(label: 'متغير',   value: totalVariable, color: AppColors.orange),
+          _Item(label: AppStrings.totalVariable,   value: totalVariable, color: AppColors.orange),
           const Spacer(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text('الإجمالي', style: AppTextStyles.caption),
+              Text(AppStrings.totalExpenses, style: AppTextStyles.caption),
               Text(
                 total > 0 ? total.fmt() : '—',
                 style: AppTextStyles.body.copyWith(

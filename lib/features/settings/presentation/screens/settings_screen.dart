@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +28,7 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('⚙️ الإعدادات', style: AppTextStyles.title),
+        title: Text(AppStrings.settingsTitle, style: AppTextStyles.title),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
           onPressed: () => Navigator.of(context).pop(),
@@ -44,11 +45,11 @@ class SettingsScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const MudSectionLabel('الملف الشخصي'),
+                    const MudSectionLabel(AppStrings.profile),
                     _ProfileHeader(profile: profile, country: country, sub: sub),
                     const Divider(color: AppColors.border, height: 20),
                     _InfoRow(label: '🌍 الدولة',       value: '${country.flag} ${country.nameAr}'),
-                    _InfoRow(label: '💱 العملة',       value: country.currency),
+                    _InfoRow(label: AppStrings.currencyLabel,       value: country.currency),
                     _LifeStageRow(profile: profile),
                   ],
                 ),
@@ -59,23 +60,23 @@ class SettingsScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const MudSectionLabel('الاشتراك'),
+                  const MudSectionLabel(AppStrings.subscription),
                   if (sub.isFree) ...[
                     _SettingsTile(
-                      icon: '👑', title: 'ترقية للنسخة المميزة',
-                      subtitle: 'AI Chat + GPS + PDF + وضع الزوجين',
+                      icon: '👑', title: AppStrings.upgradeLabel,
+                      subtitle: AppStrings.upgradeFeatures,
                       accent: true,
                       onTap: () => PaywallScreen.show(context,
-                        feature: 'النسخة المميزة',
-                        desc:    'احصل على كل الميزات بـ 9.99 ريال/شهر',
+                        feature: AppStrings.premiumTitle,
+                        desc:    AppStrings.upgradeDesc,
                       ),
                     ),
                   ] else ...[
                     _SettingsTile(
-                      icon: '✅', title: 'مشترك — نسخة مميزة',
+                      icon: '✅', title: AppStrings.premiumPlan,
                       subtitle: sub.expiresAt != null
                           ? 'ينتهي في ${_formatDate(sub.expiresAt!)}'
-                          : 'اشتراك نشط',
+                          : AppStrings.activeSubLabel,
                     ),
                   ],
                 ],
@@ -87,19 +88,19 @@ class SettingsScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const MudSectionLabel('المستشار الذكي 🆓'),
+                  const MudSectionLabel(AppStrings.aiChatFree),
                   _SettingsTile(
                     icon: '🤖', title: 'Claude API Key',
                     subtitle: hasApiKey
-                      ? '✅ مضبوط — المستشار جاهز للاستخدام'
-                      : '⚠️ أدخل مفتاحك المجاني للبدء',
+                      ? AppStrings.apiKeyReady
+                      : AppStrings.apiKeyMissingHint,
                     accent: !hasApiKey,
                     onTap: () => Navigator.push(context,
                       MaterialPageRoute(builder: (_) => const ApiKeySetupScreen())),
                   ),
                   _SettingsTile(
-                    icon: '💬', title: 'فتح المستشار الذكي',
-                    subtitle: hasApiKey ? null : 'يتطلب إدخال المفتاح أولاً',
+                    icon: '💬', title: AppStrings.openChat,
+                    subtitle: hasApiKey ? null : AppStrings.apiKeyNeeded,
                     onTap: () => context.go(AppRoutes.chat),
                   ),
                 ],
@@ -111,7 +112,7 @@ class SettingsScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const MudSectionLabel('🌍 تغيير الدولة'),
+                  const MudSectionLabel(AppStrings.countryChange),
                   GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -158,15 +159,15 @@ class SettingsScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const MudSectionLabel('الإشعارات'),
+                  const MudSectionLabel(AppStrings.notifications),
                   _SettingsTile(
-                    icon: '🔔', title: 'إشعار الصباح (9:00)',
-                    subtitle: 'تذكير بتسجيل المصاريف',
+                    icon: '🔔', title: AppStrings.morningNotif,
+                    subtitle: AppStrings.morningNotifBody,
                     trailing: _Switch(value: true, onChanged: (_) {}),
                   ),
                   _SettingsTile(
-                    icon: '🌙', title: 'ملخص المساء (9:00)',
-                    subtitle: 'مراجعة يومية سريعة',
+                    icon: '🌙', title: AppStrings.eveningNotif,
+                    subtitle: AppStrings.eveningNotifBody,
                     trailing: _Switch(value: true, onChanged: (_) {}),
                   ),
                 ],
@@ -178,12 +179,12 @@ class SettingsScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const MudSectionLabel('الخصوصية والأمان'),
+                  const MudSectionLabel(AppStrings.privacy),
                   ...[
-                    '✅ بياناتك على هاتفك فقط',
-                    '✅ لا سيرفر، لا إنترنت مطلوب',
-                    '✅ لا إعلانات أبداً',
-                    '✅ يمكنك حذف كل شيء في أي وقت',
+                    AppStrings.privacyLocal,
+                    AppStrings.privacyNoServer,
+                    AppStrings.privacyNoAds,
+                    AppStrings.privacyDelete,
                   ].map((t) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 3),
                     child: Text(t, style: AppTextStyles.body.copyWith(fontSize: 13)))),
@@ -198,7 +199,7 @@ class SettingsScreen extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(10),
                         border:       Border.all(color: AppColors.error.withOpacity(0.2)),
                       ),
-                      child: Text('🗑️ حذف جميع البيانات',
+                      child: Text(AppStrings.deleteAllData,
                         textAlign: TextAlign.center,
                         style: AppTextStyles.bodyBold.copyWith(color: AppColors.error)),
                     ),
@@ -212,10 +213,10 @@ class SettingsScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const MudSectionLabel('عن مدبّر'),
-                  Text('الإصدار 2.0.0', style: AppTextStyles.body),
-                  Text('22 دولة عربية · 4 مراحل حياة', style: AppTextStyles.body),
-                  Text('مفتوح المصدر — github.com/ReemAlsibakhi/mudabbir',
+                  const MudSectionLabel(AppStrings.aboutSection),
+                  Text(AppStrings.aboutVersion, style: AppTextStyles.body),
+                  Text(AppStrings.aboutCountries, style: AppTextStyles.body),
+                  Text(AppStrings.openSource,
                     style: AppTextStyles.caption.copyWith(color: AppColors.accentAlt)),
                 ],
               ),
@@ -240,16 +241,16 @@ class SettingsScreen extends ConsumerWidget {
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.surface2,
-        title:   Text('حذف البيانات', style: AppTextStyles.title),
-        content: Text('سيتم حذف جميع بياناتك نهائياً. لا يمكن التراجع.',
+        title:   Text(AppStrings.deleteDataTitle, style: AppTextStyles.title),
+        content: Text(AppStrings.deleteDataQ,
           style: AppTextStyles.body),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('إلغاء', style: AppTextStyles.body.copyWith(color: AppColors.textSecondary))),
+            child: Text(AppStrings.cancel, style: AppTextStyles.body.copyWith(color: AppColors.textSecondary))),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text('حذف', style: AppTextStyles.body.copyWith(color: AppColors.error))),
+            child: Text(AppStrings.delete, style: AppTextStyles.body.copyWith(color: AppColors.error))),
         ],
       ),
     );
@@ -295,7 +296,7 @@ class _ProfileHeader extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
-              sub.isPremium ? '👑 مميز' : '🆓 مجاني',
+              sub.isPremium ? AppStrings.badgePremium : AppStrings.badgeFree,
               style: AppTextStyles.caption.copyWith(
                 color: sub.isPremium ? AppColors.goldLight : AppColors.accentAlt,
                 fontWeight: FontWeight.w700),
@@ -393,7 +394,7 @@ class _LifeStageRow extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('👥 مرحلة الحياة', style: AppTextStyles.body),
+          Text(AppStrings.lifeStageLabel, style: AppTextStyles.body),
           Row(
             children: [
               Text('${profile.lifeStage.icon} ${profile.lifeStage.nameAr}',
@@ -412,7 +413,7 @@ class _LifeStageRow extends ConsumerWidget {
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.surface2,
-        title: Text('تغيير مرحلة الحياة', style: AppTextStyles.title),
+        title: Text(AppStrings.changeStageTitle, style: AppTextStyles.title),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: LifeStage.values.map((stage) => ListTile(

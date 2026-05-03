@@ -2,6 +2,7 @@
 // ReportsScreen — 3 tabs: Monthly, Compare, Goals
 // ═══════════════════════════════════════════════════════════
 
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extensions/datetime_ext.dart';
@@ -96,12 +97,12 @@ class _ReportsHeader extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.arrow_forward_ios_rounded,
                   color: AppColors.textSecondary),
-                tooltip: 'الشهر السابق',
+                tooltip: AppStrings.prevMonth,
                 onPressed: onPrev,
               ),
               Column(
                 children: [
-                  Text('📈 التقارير', style: AppTextStyles.title),
+                  Text(AppStrings.reportsTitle, style: AppTextStyles.title),
                   Text(month.monthAr,
                     style: AppTextStyles.caption.copyWith(
                       color: AppColors.accentAlt)),
@@ -110,7 +111,7 @@ class _ReportsHeader extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.arrow_back_ios_rounded,
                   color: AppColors.textSecondary),
-                tooltip: 'الشهر التالي',
+                tooltip: AppStrings.nextMonth,
                 onPressed: onNext,
               ),
             ],
@@ -119,9 +120,9 @@ class _ReportsHeader extends StatelessWidget {
         TabBar(
           controller: tabs,
           tabs: const [
-            Tab(text: 'شهري'),
-            Tab(text: 'مقارنة'),
-            Tab(text: 'الأهداف'),
+            Tab(text: AppStrings.tabMonthly),
+            Tab(text: AppStrings.tabCompare),
+            Tab(text: AppStrings.tabGoals),
           ],
           labelStyle:           AppTextStyles.bodyBold.copyWith(fontSize: 12),
           unselectedLabelStyle: AppTextStyles.body.copyWith(fontSize: 12),

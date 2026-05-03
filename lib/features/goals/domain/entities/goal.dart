@@ -1,20 +1,21 @@
 import 'package:equatable/equatable.dart';
+import '../../../../core/constants/app_strings.dart';
 
 enum GoalType {
   home, car, wedding, travel, education,
   emergency, business, hajj, gold, other;
 
   String get nameAr => switch (this) {
-    GoalType.home      => 'شراء منزل',
-    GoalType.car       => 'سيارة',
-    GoalType.wedding   => 'زواج',
-    GoalType.travel    => 'سفر وإجازة',
-    GoalType.education => 'تعليم الأبناء',
-    GoalType.emergency => 'صندوق طوارئ',
-    GoalType.business  => 'مشروع تجاري',
-    GoalType.hajj      => 'حج وعمرة',
-    GoalType.gold      => 'ذهب ومجوهرات',
-    GoalType.other     => 'أخرى',
+    GoalType.home      => AppStrings.goalHome,
+    GoalType.car       => AppStrings.goalCar,
+    GoalType.wedding   => AppStrings.goalWedding,
+    GoalType.travel    => AppStrings.goalTravel,
+    GoalType.education => AppStrings.goalEducation,
+    GoalType.emergency => AppStrings.goalEmergency,
+    GoalType.business  => AppStrings.goalBusiness,
+    GoalType.hajj      => AppStrings.goalHajj,
+    GoalType.gold      => AppStrings.goalGold,
+    GoalType.other     => AppStrings.goalOther,
   };
 
   String get icon => switch (this) {

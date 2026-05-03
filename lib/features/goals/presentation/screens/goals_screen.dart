@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extensions/context_ext.dart';
@@ -51,7 +52,7 @@ class GoalsScreen extends ConsumerWidget {
         backgroundColor: AppColors.accent,
         onPressed:       () => AddGoalSheet.show(context, ref),
         icon:            const Icon(Icons.add, color: Colors.white),
-        label:           Text('هدف جديد', style: AppTextStyles.button.copyWith(fontSize: 13)),
+        label:           Text(AppStrings.newGoal, style: AppTextStyles.button.copyWith(fontSize: 13)),
       ),
     );
   }
@@ -66,11 +67,11 @@ class _GoalsContent extends ConsumerWidget {
     if (state.isEmpty) {
       return MudEmptyView(
         icon:     '🎯',
-        title:    'لا توجد أهداف بعد',
-        subtitle: 'أضف هدفك الأول وابدأ رحلة التوفير',
+        title:    AppStrings.noGoalsTitle,
+        subtitle: AppStrings.noGoalsBody,
         action:   ElevatedButton(
           onPressed: () => AddGoalSheet.show(context, ref),
-          child: const Text('أضف هدفك الأول'),
+          child: const Text(AppStrings.noGoalsBtn),
         ),
       );
     }
@@ -83,7 +84,7 @@ class _GoalsContent extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('🎯 الأهداف المالية', style: AppTextStyles.headline2),
+                Text(AppStrings.goalsTitle, style: AppTextStyles.headline2),
                 const SizedBox(height: 12),
                 GoalsSummary(
                   totalSaved:  state.totalSaved,
@@ -110,7 +111,7 @@ class _GoalsContent extends ConsumerWidget {
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             sliver: SliverToBoxAdapter(
-              child: Text('✅ مكتملة',
+              child: Text(AppStrings.goalsCompleted,
                 style: AppTextStyles.label.copyWith(color: AppColors.success)),
             ),
           ),

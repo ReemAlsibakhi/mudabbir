@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -145,7 +146,7 @@ final class ChatNotifier extends StateNotifier<ChatState> {
       );
       await _repo.saveHistory(state.messages);
     } else {
-      final err = result.failureOrNull?.message ?? 'حدث خطأ';
+      final err = result.failureOrNull?.message ?? AppStrings.genericError;
       state = state.copyWith(
         messages: [...state.messages, ChatMessage.error(err)],
         isTyping: false,
@@ -187,7 +188,7 @@ final class ChatNotifier extends StateNotifier<ChatState> {
       ].join('\n');
     } catch (e) {
       AppLogger.error(_tag, 'context error', e);
-      return 'بيانات غير متاحة';
+      return AppStrings.chatContextNA;
     }
   }
 }

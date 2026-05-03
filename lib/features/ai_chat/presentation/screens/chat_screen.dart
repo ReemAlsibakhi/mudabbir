@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -38,7 +39,7 @@ class _KeySetupGate extends StatelessWidget {
           color: AppColors.textPrimary),
         onPressed: () => context.go(AppRoutes.home),
       ),
-      title: Text('مستشارك المالي 🤖', style: AppTextStyles.title),
+      title: Text(AppStrings.chatTitle, style: AppTextStyles.title),
     ),
     body: SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -59,7 +60,7 @@ class _KeySetupGate extends StatelessWidget {
               children: [
                 const Text('🤖', style: TextStyle(fontSize: 56)),
                 const SizedBox(height: 12),
-                Text('المستشار المالي الذكي',
+                Text(AppStrings.chatHeroTitle,
                   style: AppTextStyles.headline2,
                   textAlign: TextAlign.center),
                 const SizedBox(height: 8),
@@ -89,7 +90,7 @@ class _KeySetupGate extends StatelessWidget {
                   children: [
                     const Text('🔑', style: TextStyle(fontSize: 18)),
                     const SizedBox(width: 8),
-                    Text('احصل على مفتاح API مجاني',
+                    Text(AppStrings.chatGetKey,
                       style: AppTextStyles.bodyBold),
                   ],
                 ),
@@ -179,7 +180,7 @@ class _State extends ConsumerState<_ChatContent> {
         ),
         title: Column(
           children: [
-            Text('مستشارك المالي', style: AppTextStyles.title),
+            Text(AppStrings.chatTitle, style: AppTextStyles.title),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -190,7 +191,7 @@ class _State extends ConsumerState<_ChatContent> {
                     color: AppColors.success),
                 ),
                 const SizedBox(width: 4),
-                Text('Claude AI — جاهز',
+                Text(AppStrings.chatOnline,
                   style: AppTextStyles.caption.copyWith(
                     color: AppColors.success)),
               ],
@@ -202,7 +203,7 @@ class _State extends ConsumerState<_ChatContent> {
           IconButton(
             icon: const Icon(Icons.key_outlined,
               color: AppColors.textTertiary, size: 20),
-            tooltip: 'تغيير المفتاح',
+            tooltip: AppStrings.chatChangeKey,
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -214,7 +215,7 @@ class _State extends ConsumerState<_ChatContent> {
             IconButton(
               icon: const Icon(Icons.delete_outline_rounded,
                 color: AppColors.textTertiary, size: 20),
-              tooltip: 'مسح المحادثة',
+              tooltip: AppStrings.chatClearTitle,
               onPressed: () => _confirmClear(context),
             ),
         ],
@@ -284,17 +285,17 @@ class _State extends ConsumerState<_ChatContent> {
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.surface2,
-        title: Text('مسح المحادثة', style: AppTextStyles.title),
-        content: Text('سيتم حذف كل الرسائل', style: AppTextStyles.body),
+        title: Text(AppStrings.chatClearTitle, style: AppTextStyles.title),
+        content: Text(AppStrings.chatDeleteBody, style: AppTextStyles.body),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('إلغاء',
+            child: Text(AppStrings.cancel,
               style: AppTextStyles.body.copyWith(
                 color: AppColors.textSecondary))),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text('مسح',
+            child: Text(AppStrings.delete,
               style: AppTextStyles.body.copyWith(
                 color: AppColors.error))),
         ],
@@ -322,7 +323,7 @@ class _EmptyState extends ConsumerWidget {
               children: [
                 const Text('🤖', style: TextStyle(fontSize: 72)),
                 const SizedBox(height: 16),
-                Text('ابدأ المحادثة',
+                Text(AppStrings.chatStartTitle,
                   style: AppTextStyles.headline2),
                 const SizedBox(height: 8),
                 Text(

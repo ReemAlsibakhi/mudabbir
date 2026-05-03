@@ -1,3 +1,4 @@
+import '../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -10,10 +11,10 @@ class MainShell extends StatelessWidget {
   const MainShell({super.key, required this.child});
 
   static const _tabs = [
-    (path: AppRoutes.home,     icon: '🌙', label: 'اليوم'),
-    (path: AppRoutes.expenses, icon: '💸', label: 'مصروف'),
-    (path: AppRoutes.goals,    icon: '🎯', label: 'أهداف'),
-    (path: AppRoutes.reports,  icon: '📊', label: 'تقارير'),
+    (path: AppRoutes.home,     icon: '🌙', label: AppStrings.navToday),
+    (path: AppRoutes.expenses, icon: '💸', label: AppStrings.navExpenses),
+    (path: AppRoutes.goals,    icon: '🎯', label: AppStrings.navGoals),
+    (path: AppRoutes.reports,  icon: '📊', label: AppStrings.navReports),
   ];
 
   @override

@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extensions/double_ext.dart';
@@ -33,8 +34,8 @@ class _GoalsContent extends StatelessWidget {
     if (state.isEmpty) {
       return const MudEmptyView(
         icon:     '🎯',
-        title:    'لا توجد أهداف بعد',
-        subtitle: 'أضف أهدافاً مالية لتتبع تقدمها هنا',
+        title:    AppStrings.noGoalReport,
+        subtitle: AppStrings.noGoalReportBody,
       );
     }
 
@@ -50,19 +51,19 @@ class _GoalsContent extends StatelessWidget {
                 children: [
                   _SummaryItem(
                     icon:  '🎯',
-                    label: 'أهداف نشطة',
+                    label: AppStrings.goalsActive,
                     value: '${state.activeGoals.length}',
                     color: AppColors.accentAlt,
                   ),
                   _SummaryItem(
                     icon:  '✅',
-                    label: 'مكتملة',
+                    label: AppStrings.goalsDone,
                     value: '${state.doneGoals.length}',
                     color: AppColors.success,
                   ),
                   _SummaryItem(
                     icon:  '💰',
-                    label: 'إجمالي مدخر',
+                    label: AppStrings.goalsTotalSaved,
                     value: state.totalSaved.fmt(),
                     color: AppColors.warning,
                   ),
@@ -73,7 +74,7 @@ class _GoalsContent extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('التقدم الكلي', style: AppTextStyles.caption),
+                    Text(AppStrings.goalsOverall, style: AppTextStyles.caption),
                     Text(
                       '${(state.totalSaved / state.totalTarget * 100).toStringAsFixed(1)}%',
                       style: AppTextStyles.caption.copyWith(
@@ -120,7 +121,7 @@ class _GoalsContent extends StatelessWidget {
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
-                        g.isCompleted ? '✅ مكتمل' : '${(g.progress * 100).toStringAsFixed(0)}%',
+                        g.isCompleted ? AppStrings.goalCompleted : '${(g.progress * 100).toStringAsFixed(0)}%',
                         style: AppTextStyles.caption.copyWith(
                           color: g.isCompleted ? AppColors.success : AppColors.accentAlt,
                           fontWeight: FontWeight.w700,
