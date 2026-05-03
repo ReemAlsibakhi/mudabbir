@@ -1,4 +1,5 @@
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/arabic_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -71,7 +72,7 @@ class _State extends ConsumerState<IncomeForm> {
     final primaryLabel = switch (lifeStage) {
       LifeStage.single   => AppStrings.incomePrimSingle,
       LifeStage.engaged  => AppStrings.incomePrimSingle,
-      LifeStage.married  => '👨 دخل الزوج',
+      LifeStage.married  => AppStrings.incomeHusbandMarried,
       LifeStage.family   => AppStrings.incomeHusbandRole,
     };
 
@@ -191,9 +192,8 @@ class _IncomeField extends StatelessWidget {
         decoration: InputDecoration(hintText: hint),
         validator: (v) {
           if (v == null || v.trim().isEmpty) return null; // optional
-          final n = double.tryParse(v.trim().replaceAll(',','')
-            .replaceAllMapped(RegExp(r'[٠-٩]'),
-              (m) => (m.group(0)!.codeUnitAt(0) - 0x0660).toString()));
+          final n = double.tryParse(
+              ArabicParser.normalizeDigits(v.trim().replaceAll(',','')));
           if (n == null)  return AppStrings.amountInvalid;
           if (n < 0)      return AppStrings.amountNegative;
           if (n > 1e8)    return AppStrings.amountTooLarge;

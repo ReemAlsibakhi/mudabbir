@@ -14,13 +14,10 @@ class PromoSlide extends StatefulWidget {
 class _State extends State<PromoSlide> {
   int _slide = 0;
 
-  static const _slides = [
-    (icon: '🏦', title: 'تعرّف أين يذهب\nراتبك كل شهر',
-     desc:  'مدبّر يساعدك تتحكم في مصاريف أسرتك بذكاء — 30 ثانية يومياً فقط'),
-    (icon: '🎯', title: 'حقق أهدافك\nالمالية أسرع',
-     desc:  'منزل، سيارة، إجازة — مدبّر يحسب كم تحتاج توفير كل شهر'),
-    (icon: '🔒', title: 'بياناتك خاصة\n100% على هاتفك',
-     desc:  'لا سيرفر، لا إنترنت، لا أحد يراها. بياناتك ملكك فقط.'),
+  static final _slides = [
+    (icon: '🏦', title: AppStrings.promoTitle1, desc: AppStrings.promoDesc1),
+    (icon: '🎯', title: AppStrings.promoTitle2, desc: AppStrings.promoDesc2),
+    (icon: '🔒', title: AppStrings.promoTitle3, desc: AppStrings.promoDesc3),
   ];
 
   @override

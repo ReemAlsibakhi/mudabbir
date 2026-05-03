@@ -624,4 +624,71 @@ abstract final class AppStrings {
   static const String q2Family    = 'هل ميزانية الأسرة متوازنة؟';
   static const String q3Family    = 'ما المبلغ الكافي لصندوق الطوارئ؟';
 
+  // ══════════════════════════════════════════════════════
+  // CHAT SCREEN — API key steps (Latin numerals version)
+  // ══════════════════════════════════════════════════════
+
+  static const String chatApiStep2     = '2. أنشئ حساباً مجانياً';
+
+  // ══════════════════════════════════════════════════════
+  // BALANCE CARD — currency fallback
+  // ══════════════════════════════════════════════════════
+
+  static const String defaultCurrency  = 'ريال';
+
+  // ══════════════════════════════════════════════════════
+  // PROMO SLIDE — onboarding content
+  // ══════════════════════════════════════════════════════
+
+  static const String promoDesc1       = 'مدبّر يساعدك تتحكم في مصاريف أسرتك بذكاء — 30 ثانية يومياً فقط';
+  static const String promoDesc2       = 'منزل، سيارة، إجازة — مدبّر يحسب كم تحتاج توفير كل شهر';
+  static const String promoDesc3       = 'لا سيرفر، لا إنترنت، لا أحد يراها. بياناتك ملكك فقط.';
+
+  // ══════════════════════════════════════════════════════
+  // INCOME FORM — life stage specific labels
+  // ══════════════════════════════════════════════════════
+
+  static const String incomeHusbandMarried = '👨 دخل الزوج';
+
+  // ══════════════════════════════════════════════════════
+  // ADD GOAL SHEET — contextual hints per type+stage
+  // ══════════════════════════════════════════════════════
+
+  static const String hintHomeFamily   = 'بيت واسع للأسرة';
+  static const String hintHomeSingle   = 'شقتي الأولى';
+  static const String hintWeddingFull  = 'حفل الزفاف والشبكة';
+  static const String hintWeddingSmall = 'حفل زواج';
+  static const String hintEduFamily    = 'تعليم الأبناء الجامعي';
+  static const String hintEduSelf      = 'دراستي';
+  static const String hintEmgFamily    = 'صندوق طوارئ الأسرة (6 أشهر)';
+  static const String hintEmgSingle    = 'صندوق الطوارئ';
+  static const String hintCar          = 'سيارة العائلة';
+  static const String hintTravel       = 'رحلة إجازة';
+  static const String hintHajj         = 'حج أو عمرة';
+  static const String hintBusiness     = 'مشروعي التجاري';
+  static const String hintGold         = 'ذهب وادخار';
+  static const String hintOther        = 'هدف مخصص';
+
+  // ══════════════════════════════════════════════════════
+  // LOCATION — place detection keywords
+  // (used for contains() matching — not UI display)
+  // ══════════════════════════════════════════════════════
+
+  static const String placeKwLulu      = 'لولو';
+  static const String placeKwGrocery   = 'بقالة';
+  static const String placeKwRestaurant= 'مطعم';
+  static const String placeKwCafe      = 'كافيه';
+  static const String placeKwMall      = 'مول';
+  static const String placeKwPharmacy  = 'صيدلية';
+  static const String placeKwNahdi     = 'النهدي';
+  static const String placeKwGasStation= 'محطة';
+
+  // ══════════════════════════════════════════════════════
+  // PROMO SLIDE — titles
+  // ══════════════════════════════════════════════════════
+
+  static const String promoTitle1      = 'تعرّف أين يذهب\nراتبك كل شهر';
+  static const String promoTitle2      = 'حقق أهدافك\nالمالية أسرع';
+  static const String promoTitle3      = 'بياناتك خاصة\n100%% على هاتفك';
+
 }

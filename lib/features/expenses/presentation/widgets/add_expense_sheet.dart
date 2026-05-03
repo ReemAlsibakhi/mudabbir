@@ -131,7 +131,7 @@ class _State extends State<AddExpenseSheet> {
           const SizedBox(height: 16),
 
           MudGradientButton(
-            label:   'إضافة',
+            label:   AppStrings.add,
             onTap:   _submit,
             loading: _loading,
           ),

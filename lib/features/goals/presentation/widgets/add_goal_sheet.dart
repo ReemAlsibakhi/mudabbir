@@ -226,16 +226,16 @@ class _State extends State<AddGoalSheet> {
 
   // ── Contextual hints by type + stage ────────────────────
   String _hintForType(GoalType t, LifeStage stage) => switch (t) {
-    GoalType.home      => stage == LifeStage.family ? 'بيت واسع للأسرة' : 'شقتي الأولى',
-    GoalType.wedding   => stage == LifeStage.engaged ? 'حفل الزفاف والشبكة' : 'حفل زواج',
-    GoalType.education => stage == LifeStage.family ? 'تعليم الأبناء الجامعي' : 'دراستي',
-    GoalType.emergency => stage == LifeStage.family ? 'صندوق طوارئ الأسرة (6 أشهر)' : 'صندوق الطوارئ',
-    GoalType.car       => 'سيارة العائلة',
-    GoalType.travel    => 'رحلة إجازة',
-    GoalType.hajj      => 'حج أو عمرة',
-    GoalType.business  => 'مشروعي التجاري',
-    GoalType.gold      => 'ذهب وادخار',
-    GoalType.other     => 'هدف مخصص',
+    GoalType.home      => stage == LifeStage.family ? AppStrings.hintHomeFamily  : AppStrings.hintHomeSingle,
+    GoalType.wedding   => stage == LifeStage.engaged ? AppStrings.hintWeddingFull : AppStrings.hintWeddingSmall,
+    GoalType.education => stage == LifeStage.family ? AppStrings.hintEduFamily   : AppStrings.hintEduSelf,
+    GoalType.emergency => stage == LifeStage.family ? AppStrings.hintEmgFamily   : AppStrings.hintEmgSingle,
+    GoalType.car       => AppStrings.hintCar,
+    GoalType.travel    => AppStrings.hintTravel,
+    GoalType.hajj      => AppStrings.hintHajj,
+    GoalType.business  => AppStrings.hintBusiness,
+    GoalType.gold      => AppStrings.hintGold,
+    GoalType.other     => AppStrings.hintOther,
   };
 
   String _monthLabel(int m) {

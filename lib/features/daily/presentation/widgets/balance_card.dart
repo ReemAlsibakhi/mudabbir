@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/extensions/datetime_ext.dart';
+import '../../../../core/constants/countries.dart';
 import '../../../../core/extensions/double_ext.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -22,7 +23,9 @@ class BalanceCard extends ConsumerWidget {
     final income = ref.watch(incomeNotifierProvider(monthKey));
     final expenses = ref.watch(expensesNotifierProvider(monthKey));
     final profile = ref.watch(onboardingRepoProvider).getSaved();
-    final currency = 'ريال';
+    final countryId = profile?.countryId ?? 'sa';
+    final country   = getCountryById(countryId);
+    final currency  = country.currency;
 
     final totalIncome = income is IncomeLoaded ? income.income.total : 0.0;
     final totalExpenses = expenses is ExpensesLoaded ? expenses.total : 0.0;
@@ -81,7 +84,7 @@ class BalanceCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      'ريال ',
+                      '$currency ',
                       style: AppTextStyles.title.copyWith(
                         color: AppColors.textSecondary.withOpacity(0.5),
                         fontWeight: FontWeight.w500,

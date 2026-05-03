@@ -73,21 +73,21 @@ final class LocationRepositoryImpl {
   // ── Detect type from place name ───────────────────────
   LocationType detectType(String placeName) {
     final n = placeName.toLowerCase();
-    if (n.contains('carrefour') || n.contains('لولو') ||
-        n.contains('hypermarket') || n.contains('بقالة') ||
+    if (n.contains('carrefour') || n.contains(AppStrings.placeKwLulu) ||
+        n.contains('hypermarket') || n.contains(AppStrings.placeKwGrocery) ||
         n.contains('panda')       || n.contains('danube'))
       return LocationType.supermarket;
-    if (n.contains('restaurant')  || n.contains('مطعم') ||
+    if (n.contains('restaurant')  || n.contains(AppStrings.placeKwRestaurant) ||
         n.contains('kfc')         || n.contains('mcdonalds') ||
-        n.contains('cafe')        || n.contains('كافيه'))
+        n.contains('cafe')        || n.contains(AppStrings.placeKwCafe))
       return LocationType.restaurant;
-    if (n.contains('mall')        || n.contains('مول') ||
+    if (n.contains('mall')        || n.contains(AppStrings.placeKwMall) ||
         n.contains('plaza'))
       return LocationType.mall;
-    if (n.contains('pharmacy')    || n.contains('صيدلية') ||
-        n.contains('nahdi')       || n.contains('النهدي'))
+    if (n.contains('pharmacy')    || n.contains(AppStrings.placeKwPharmacy) ||
+        n.contains('nahdi')       || n.contains(AppStrings.placeKwNahdi))
       return LocationType.pharmacy;
-    if (n.contains('petro')       || n.contains('محطة') ||
+    if (n.contains('petro')       || n.contains(AppStrings.placeKwGasStation) ||
         n.contains('aramco')      || n.contains('shell'))
       return LocationType.fuel;
     return LocationType.mall;

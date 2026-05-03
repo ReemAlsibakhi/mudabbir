@@ -97,7 +97,7 @@ class _KeySetupGate extends StatelessWidget {
                 const SizedBox(height: 12),
                 ...[
                   AppStrings.apiKeyStep1,
-                  '2. أنشئ حساباً مجانياً',
+                  AppStrings.chatApiStep2,
                   AppStrings.apiKeyStep3,
                   AppStrings.apiKeyStep4,
                 ].map((s) => Padding(
