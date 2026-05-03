@@ -216,7 +216,7 @@ class _State extends ConsumerState<_AmountInput> {
     setState(() => _loading = false);
     if (error == null) {
       ref.read(_selectedCatProvider.notifier).state = null;
-      context.showSnack('✅ تم تسجيل ${amt.toStringAsFixed(0)} ريال',
+      context.showSnack('${AppStrings.quickAddSuccessPre}${amt.toStringAsFixed(0)}${AppStrings.quickAddSuccessSuf}',
           color: AppColors.success);
     } else {
       context.showSnack(error, color: AppColors.error);

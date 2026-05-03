@@ -105,7 +105,7 @@ final class ExpensesNotifier extends StateNotifier<ExpensesState> {
       );
     } catch (e, st) {
       AppLogger.error(_tag, 'init failed', e, st);
-      state = ExpensesError('تعذّر تهيئة المصاريف: ${e.runtimeType}');
+      state = ExpensesError('${AppStrings.expenseInitError}${e.runtimeType}');
     }
   }
 

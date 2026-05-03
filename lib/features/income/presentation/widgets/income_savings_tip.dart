@@ -11,17 +11,16 @@ class IncomeSavingsTip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Edge: no income yet → no tip
     if (!income.hasIncome) return const SizedBox.shrink();
 
-    final target20    = income.total * 0.20;
+    final target20     = income.total * 0.20;
     final target20Year = income.total * 0.20 * 12;
 
     return MudInsightBox(
       type: InsightType.success,
-      text: AppStrings.savingsTip20
-            '${target20.fmt()} شهرياً\n'
-            '= ${target20Year.fmt()} سنوياً! 🎯',
+      // ✅ Proper string interpolation — no adjacent concat with variable
+      text: '${AppStrings.savingsTip20}${target20.fmt()} ${AppStrings.monthly}\n'
+            '= ${target20Year.fmt()} ${AppStrings.yearly}',
     );
   }
 }

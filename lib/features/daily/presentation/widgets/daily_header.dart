@@ -36,7 +36,7 @@ class DailyHeader extends ConsumerWidget {
             style: AppTextStyles.headline2.copyWith(fontSize: 19),
             children: [
               TextSpan(
-                text:  '$greeting، ',
+                text:  '$greeting${AppStrings.greetingSuf}',
                 style: const TextStyle(color: AppColors.textPrimary),
               ),
               if (name.isNotEmpty)

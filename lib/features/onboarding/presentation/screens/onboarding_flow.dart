@@ -122,7 +122,7 @@ class _StepProgress extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('خطوة $current من $total',
+            Text('${AppStrings.onboardingStepPre}$current${AppStrings.onboardingStepMid}$total',
               style: AppTextStyles.caption.copyWith(color: AppColors.accentAlt)),
             Text(_label, style: AppTextStyles.caption),
           ],

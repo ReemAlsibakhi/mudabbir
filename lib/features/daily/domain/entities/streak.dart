@@ -29,9 +29,9 @@ final class Streak extends Equatable {
 
   String get statusMessage {
     if (count == 0)    return AppStrings.streakStart;
-    if (count < 7)     return '$count أيام متواصلة 💪';
+    if (count < 7)     return '$count${AppStrings.streakDaysSuf}';
     if (count < 30)    return AppStrings.streakBest;
-    return 'أسطوري! $count يوم بدون انقطاع 🏆';
+    return '${AppStrings.streakLegendPre}$count${AppStrings.streakLegendSuf}';
   }
 
   String? get badgeLabel {

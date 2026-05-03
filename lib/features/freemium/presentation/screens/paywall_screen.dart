@@ -51,7 +51,7 @@ class PaywallScreen extends StatelessWidget {
         ),
         const SizedBox(height: 16),
 
-        Text('$lockedFeature — للمشتركين فقط',
+        Text('$lockedFeature${AppStrings.paywallFeatureSuf}',
           style: AppTextStyles.headline2, textAlign: TextAlign.center),
         const SizedBox(height: 8),
         Text(featureDesc,

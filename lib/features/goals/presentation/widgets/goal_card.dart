@@ -110,13 +110,13 @@ class _State extends ConsumerState<GoalCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '💡 المتبقي: ${g.remaining.fmt()}'
-                    '${monthsLeft != null ? ' · $monthsLeft شهر بمعدلك' : ''}',
+                    '${AppStrings.goalInsightRemaining}${g.remaining.fmt()}'
+                    '${monthsLeft != null ? '${AppStrings.goalInsightAtRate}$monthsLeft${AppStrings.goalInsightMonthsRate}' : ''}',
                     style: AppTextStyles.caption.copyWith(height: 1.6),
                   ),
                   if (faster != null && monthsLeft != null && monthsLeft > 1)
                     Text(
-                      '⚡ بادخار ${faster.fmt()}/شهر → ${(monthsLeft ~/ 2)} شهر فقط',
+                      '${AppStrings.goalInsightFasterPre}${faster.fmt()}${AppStrings.goalInsightFasterMid}${(monthsLeft ~/ 2)}${AppStrings.goalInsightFasterSuf}',
                       style: AppTextStyles.caption.copyWith(
                         color: AppColors.accentAlt, height: 1.6),
                     ),
@@ -259,7 +259,7 @@ class _State extends ConsumerState<GoalCard> {
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.surface2,
         title:   Text(AppStrings.deleteGoalTitle, style: AppTextStyles.title),
-        content: Text('هل تريد حذف هدف "${widget.goal.name}"؟',
+        content: Text('${AppStrings.goalDeleteConfirmPre}${widget.goal.name}${AppStrings.goalDeleteConfirmSuf}',
           style: AppTextStyles.body),
         actions: [
           TextButton(

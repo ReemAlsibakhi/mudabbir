@@ -66,7 +66,7 @@ abstract final class NotificationService {
       await _plugin.zonedSchedule(
         NotifId.morning,
         AppStrings.notifAppMorning,
-        'صباح الخير يا $name! المتاح اليوم: '
+        '${AppStrings.notifMorningPre}$name${AppStrings.notifMorningSuf}'
         '${budgetRemaining.toStringAsFixed(0)} $currency',
         _nextTime(9, 0),
         _details('morning', AppStrings.notifMorningChan),
@@ -93,7 +93,7 @@ abstract final class NotificationService {
       await _plugin.zonedSchedule(
         NotifId.evening,
         AppStrings.notifAppEvening,
-        'كيف كان يومك يا $name؟ سجّل مصاريفك الآن في 30 ثانية',
+        '${AppStrings.notifEvening}$name${AppStrings.notifEveningSuf}',
         _nextTime(21, 0),
         _details('evening', AppStrings.notifEveningChan),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
@@ -119,7 +119,7 @@ abstract final class NotificationService {
       await _plugin.show(
         NotifId.budgetAlert,
         AppStrings.notifBudgetTitle,
-        'استنفدت ${usedPct.toStringAsFixed(0)}% من ميزانية $category',
+        '${AppStrings.notifBudgetPre}${usedPct.toStringAsFixed(0)}${AppStrings.notifBudgetMid}$category',
         _details('budget_alert', AppStrings.notifBudgetChan, importance: Importance.max),
       );
     } catch (e) {
@@ -137,7 +137,7 @@ abstract final class NotificationService {
       await _plugin.show(
         NotifId.streak,
         AppStrings.notifStreakTitle,
-        'لا تكسر سلسلتك الـ $streakCount يوم! سجّل في 30 ثانية',
+        '${AppStrings.notifStreakPre}$streakCount${AppStrings.notifStreakSuf}',
         _details('streak', AppStrings.notifStreakChan),
       );
     } catch (e) {
@@ -164,7 +164,7 @@ abstract final class NotificationService {
       await _plugin.zonedSchedule(
         NotifId.fixedExpense,
         AppStrings.notifDueTitle,
-        '$expenseName ($amount $currency) موعده بعد 3 أيام',
+        '$expenseName ($amount $currency)${AppStrings.notifFixedSuf}',
         tz.TZDateTime.from(remindAt, tz.local),
         _details('fixed_expense', AppStrings.notifDueChan),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,

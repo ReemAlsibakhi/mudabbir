@@ -75,7 +75,7 @@ class SettingsScreen extends ConsumerWidget {
                     _SettingsTile(
                       icon: '✅', title: AppStrings.premiumPlan,
                       subtitle: sub.expiresAt != null
-                          ? 'ينتهي في ${_formatDate(sub.expiresAt!)}'
+                          ? '${AppStrings.subExpiresPre}${_formatDate(sub.expiresAt!)}'
                           : AppStrings.activeSubLabel,
                     ),
                   ],

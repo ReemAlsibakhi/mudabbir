@@ -56,7 +56,7 @@ final class ClaudeApiService {
       // Edge: non-200 response
       if (response.statusCode != 200) {
         final body = jsonDecode(utf8.decode(response.bodyBytes));
-        final msg  = body['error']?['message'] as String? ?? 'خطأ من الخادم (${response.statusCode})';
+        final msg  = body['error']?['message'] as String? ?? '${AppStrings.serverError} (${response.statusCode})';
         AppLogger.error(_tag, 'API error $msg');
         return Fail(UnexpectedFailure(_arabicError(response.statusCode, msg)));
       }

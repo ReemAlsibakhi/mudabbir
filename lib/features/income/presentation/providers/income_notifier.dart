@@ -63,7 +63,7 @@ final class IncomeNotifier extends StateNotifier<IncomeState> {
       );
     } catch (e, st) {
       AppLogger.error(_tag, 'init failed', e, st);
-      state = IncomeError('تعذّر تهيئة الدخل: ${e.runtimeType}');
+      state = IncomeError('${AppStrings.incomeInitError}${e.runtimeType}');
     }
   }
 

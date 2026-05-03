@@ -157,9 +157,9 @@ class _SavingRateChip extends StatelessWidget {
         const SizedBox(width: 4),
         Text(
           isGood
-              ? '${rate.toStringAsFixed(1)}% نسبة ادخار ممتازة'
+              ? '${rate.toStringAsFixed(1)}${AppStrings.savingExcellentSuf}'
               : rate >= 10
-                  ? 'نسبة ادخار جيدة ${rate.toStringAsFixed(1)}%'
+                  ? '${AppStrings.savingGoodPre}${rate.toStringAsFixed(1)}%'
                   : AppStrings.savingRateLow,
           style: TextStyle(
             fontFamily: 'Cairo',

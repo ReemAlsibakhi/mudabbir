@@ -2,7 +2,6 @@ import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/constants/categories.dart';
 import '../../../../core/constants/countries.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -28,10 +27,9 @@ class _State extends ConsumerState<BudgetSetupStep> {
 
   @override
   Widget build(BuildContext context) {
-    final state    = ref.watch(onboardingNotifierProvider);
-    final notifier = ref.read(onboardingNotifierProvider.notifier);
-    final draft    = state.draft;
-    final country  = getCountryById(draft.countryId);
+    final state      = ref.watch(onboardingNotifierProvider);
+    final draft      = state.draft;
+    final country    = getCountryById(draft.countryId);
     final hasPartner = draft.lifeStage.hasPartner;
 
     final totalIncome = (double.tryParse(_primaryCtrl.text) ?? 0) +
@@ -49,13 +47,13 @@ class _State extends ConsumerState<BudgetSetupStep> {
           children: [
             Text(AppStrings.incomeTitle2, style: AppTextStyles.headline2),
             const SizedBox(height: 6),
-            Text(AppStrings.incomeSubtitle,
-              style: AppTextStyles.body),
+            Text(AppStrings.incomeSubtitle, style: AppTextStyles.body),
             const SizedBox(height: 20),
 
             _IncomeField(
-              label:      '${draft.lifeStage.incomeLabel1}',
-              hint:       'مثال: 8000 ${country.currency}',
+              label:      draft.lifeStage.incomeLabel1,
+              // ✅ Dynamic hint with currency from data
+              hint:       '${AppStrings.incomeHintPrefix} ${country.currency}',
               controller: _primaryCtrl,
               onChanged:  (_) => _updateIncome(),
             ),
@@ -93,9 +91,9 @@ class _State extends ConsumerState<BudgetSetupStep> {
                     Text('${totalIncome.toStringAsFixed(0)} ${country.currency}',
                       style: AppTextStyles.headline2.copyWith(color: AppColors.success)),
                     const SizedBox(height: 6),
+                    // ✅ Proper interpolation — not adjacent concat with variable
                     Text(
-                      AppStrings.savingGoal20
-                      '${(totalIncome * 0.2).toStringAsFixed(0)} ${country.currency}',
+                      '${AppStrings.savingGoal20}${(totalIncome * 0.2).toStringAsFixed(0)} ${country.currency}',
                       style: AppTextStyles.caption.copyWith(color: AppColors.accentAlt),
                     ),
                   ],
@@ -116,13 +114,11 @@ class _State extends ConsumerState<BudgetSetupStep> {
               loading: state.isSaving,
             ),
 
-            // Skip budget — allowed
             const SizedBox(height: 8),
             GestureDetector(
               onTap: state.isSaving ? null : _completeWithoutBudget,
               child: Center(
-                child: Text(AppStrings.skipNow,
-                  style: AppTextStyles.caption),
+                child: Text(AppStrings.skipNow, style: AppTextStyles.caption),
               ),
             ),
           ],
@@ -132,8 +128,7 @@ class _State extends ConsumerState<BudgetSetupStep> {
   }
 
   void _updateIncome() {
-    final notifier = ref.read(onboardingNotifierProvider.notifier);
-    notifier.setIncome(
+    ref.read(onboardingNotifierProvider.notifier).setIncome(
       primary:   double.tryParse(_primaryCtrl.text)   ?? 0,
       secondary: double.tryParse(_secondaryCtrl.text) ?? 0,
       extra:     double.tryParse(_extraCtrl.text)     ?? 0,
@@ -168,10 +163,10 @@ class _IncomeField extends StatelessWidget {
       Text(label, style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600)),
       const SizedBox(height: 6),
       TextField(
-        controller: controller,
-        onChanged:  onChanged,
+        controller:  controller,
+        onChanged:   onChanged,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              textDirection: TextDirection.rtl,
+        textDirection: TextDirection.rtl,
         inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.,٠-٩٫]'))],
         style: AppTextStyles.body.copyWith(color: AppColors.textPrimary, fontSize: 16),
         decoration: InputDecoration(hintText: hint),

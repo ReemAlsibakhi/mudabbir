@@ -140,16 +140,16 @@ class _GoalsContent extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('${g.saved.fmt()} مدخر',
+                    Text('${g.saved.fmt()}${AppStrings.goalSaved}',
                       style: AppTextStyles.caption.copyWith(color: AppColors.success)),
-                    Text('من ${g.target.fmt()}',
+                    Text('${AppStrings.goalFrom}${g.target.fmt()}',
                       style: AppTextStyles.caption),
                   ],
                 ),
                 if (!g.isCompleted && monthsLeft != null) ...[
                   const SizedBox(height: 4),
                   Text(
-                    '💡 بمعدلك الحالي: $monthsLeft شهر للوصول للهدف',
+                    '${AppStrings.goalMonthsLeft}$monthsLeft${AppStrings.goalMonthsLeftSuf}',
                     style: AppTextStyles.caption.copyWith(color: AppColors.accentAlt),
                   ),
                 ],

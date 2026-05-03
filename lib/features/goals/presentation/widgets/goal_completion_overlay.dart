@@ -60,7 +60,7 @@ class _State extends State<_CompletionDialog>
             Text(AppStrings.congrats, style: AppTextStyles.headline1),
             const SizedBox(height: 8),
             Text(
-              'لقد حققت هدف\n"${widget.goal.name}"\nبنجاح! 🏆',
+              '${AppStrings.goalCelebPre}${widget.goal.name}${AppStrings.goalCelebSuf}',
               textAlign: TextAlign.center,
               style: AppTextStyles.body.copyWith(height: 1.8),
             ),

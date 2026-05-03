@@ -65,7 +65,7 @@ final class GoalsNotifier extends StateNotifier<GoalsState> {
       );
     } catch (e, st) {
       AppLogger.error(_tag, 'init failed', e, st);
-      state = GoalsError('خطأ في تهيئة الأهداف: ${e.runtimeType}');
+      state = GoalsError('${AppStrings.goalInitError}${e.runtimeType}');
     }
   }
 

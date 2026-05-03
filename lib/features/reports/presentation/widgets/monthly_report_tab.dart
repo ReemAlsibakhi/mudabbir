@@ -151,7 +151,7 @@ class MonthlyReportTab extends ConsumerWidget {
               ? '⚠️ عجز مالي بمقدار ${report.balance.abs().fmt()}. راجعوا المصاريف وقللوا البنود غير الضرورية فوراً.'
               : report.savingRate < 10
               ? '💡 نسبة الادخار ${report.savingRate.toStringAsFixed(1)}%. الهدف 20% = ${(report.totalIncome * 0.2).fmt()} شهرياً.'
-              : '✨ وضع ممتاز! تدخرون ${report.balance.fmt()} هذا الشهر. واصلوا!',
+              : '${AppStrings.reportExcellentPre}${report.balance.fmt()}${AppStrings.reportExcellentSuf}',
         ),
       ],
     );

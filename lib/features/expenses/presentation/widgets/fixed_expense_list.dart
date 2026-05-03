@@ -138,7 +138,7 @@ class _FixedItem extends StatelessWidget {
                 Text(expense.name, style: AppTextStyles.bodyBold),
                 Row(
                   children: [
-                    Text('${cat.nameAr} · تلقائي كل شهر',
+                    Text('${cat.nameAr}${AppStrings.autoMonthly}',
                       style: AppTextStyles.caption),
                     // Due soon badge
                     if (isDueSoon) ...[

@@ -84,7 +84,7 @@ class _State extends State<AddFixedExpenseSheet> {
               const DropdownMenuItem(value: null, child: Text(AppStrings.notSpecified, style: TextStyle(fontFamily: 'Cairo'))),
               ...List.generate(28, (i) => DropdownMenuItem(
                 value: i + 1,
-                child: Text('اليوم ${i + 1}', style: const TextStyle(fontFamily: 'Cairo')),
+                child: Text('${AppStrings.dayPrefix}${i + 1}', style: const TextStyle(fontFamily: 'Cairo')),
               )),
             ],
             onChanged: (v) => setState(() => _dueDay = v),

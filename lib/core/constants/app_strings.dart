@@ -696,4 +696,174 @@ abstract final class AppStrings {
   static const String days          = 'أيام';
   static const String countryLabel  = '🌍 الدولة';
 
+  // ══════════════════════════════════════════════════════
+  // TIME UNITS (used in dynamic strings)
+  // ══════════════════════════════════════════════════════
+
+  static const String monthly           = 'شهرياً';
+  static const String yearly            = 'سنوياً! 🎯';
+  static const String months            = 'شهر';
+  static const String monthsAr         = 'أشهر';
+  static const String monthSuffix      = 'شهراً';
+  static const String years            = 'سنوات';
+  static const String year             = 'سنة';
+  static const String oneYear          = 'سنة واحدة';
+  static const String twoYears         = 'سنتان';
+
+  // ══════════════════════════════════════════════════════
+  // INCOME SCREEN — missing
+  // ══════════════════════════════════════════════════════
+
+  static const String incomeHintPrefix  = 'مثال: 8000';
+
+  // ══════════════════════════════════════════════════════
+  // GOAL CARD — dynamic templates (Arabic part only)
+  // ══════════════════════════════════════════════════════
+
+  static const String goalInsightRemaining  = '💡 المتبقي: ';
+  static const String goalInsightAtRate     = ' · ';
+  static const String goalInsightMonthsRate = ' شهر بمعدلك';
+  static const String goalInsightFasterPre  = '⚡ بادخار ';
+  static const String goalInsightFasterMid  = '/شهر → ';
+  static const String goalInsightFasterSuf  = ' شهر فقط';
+  static const String goalDeleteConfirmPre  = 'هل تريد حذف هدف "';
+  static const String goalDeleteConfirmSuf  = '"؟';
+  static const String goalNeedMonthlyPre    = 'تحتاج ';
+  static const String goalNeedMonthlySuf    = ' شهرياً خلال ';
+  static const String goalNeedMonthlySuf2   = ' شهر';
+  static const String goalReachPre          = 'ستصل للهدف في ';
+  static const String goalReachMid          = ' شهر (';
+  static const String goalReachSuf          = ' سنة)';
+  static const String goalCelebPre          = 'لقد حققت هدف\n"';
+  static const String goalCelebSuf          = '"\nبنجاح! 🏆';
+  static const String goalSaved            = ' مدخر';
+  static const String goalFrom             = 'من ';
+  static const String goalProgressSuf      = '% من إجمالي الأهداف';
+  static const String goalMonthsLeft       = '💡 بمعدلك الحالي: ';
+  static const String goalMonthsLeftSuf    = ' شهر للوصول للهدف';
+
+  // ══════════════════════════════════════════════════════
+  // GOALS SUMMARY — dynamic
+  // ══════════════════════════════════════════════════════
+
+  static const String goalActiveCount      = ' نشط · ';
+  static const String goalDoneCount        = ' مكتمل';
+
+  // ══════════════════════════════════════════════════════
+  // FIXED EXPENSE LIST — dynamic
+  // ══════════════════════════════════════════════════════
+
+  static const String autoMonthly          = ' · تلقائي كل شهر';
+  static const String dayPrefix            = 'اليوم ';
+
+  // ══════════════════════════════════════════════════════
+  // BALANCE CARD — dynamic saving rate
+  // ══════════════════════════════════════════════════════
+
+  static const String savingExcellentSuf   = '% نسبة ادخار ممتازة';
+  static const String savingGoodPre        = 'نسبة ادخار جيدة ';
+  static const String savingRateLow        = 'ادخر أكثر لتحسين نسبتك';
+
+  // ══════════════════════════════════════════════════════
+  // NOTIFICATIONS — dynamic templates
+  // ══════════════════════════════════════════════════════
+
+  static const String notifMorningPre      = 'صباح الخير يا ';
+  static const String notifMorningSuf      = '! المتاح اليوم: ';
+  static const String notifEvening         = 'كيف كان يومك يا ';
+  static const String notifEveningSuf      = '؟ سجّل مصاريفك الآن في 30 ثانية';
+  static const String notifBudgetPre       = 'استنفدت ';
+  static const String notifBudgetMid       = '% من ميزانية ';
+  static const String notifStreakPre        = 'لا تكسر سلسلتك الـ ';
+  static const String notifStreakSuf        = ' يوم! سجّل في 30 ثانية';
+  static const String notifFixedPre        = '';
+  static const String notifFixedSuf        = ' موعده بعد 3 أيام';
+
+  // ══════════════════════════════════════════════════════
+  // STREAK — dynamic
+  // ══════════════════════════════════════════════════════
+
+  static const String streakDaysSuf        = ' أيام متواصلة 💪';
+  static const String streakLegendPre      = 'أسطوري! ';
+  static const String streakLegendSuf      = ' يوم بدون انقطاع 🏆';
+
+  // ══════════════════════════════════════════════════════
+  // LOCATION ALERTS — dynamic (placeName is runtime)
+  // ══════════════════════════════════════════════════════
+
+  static const String alertSuperPre        = 'دخلت ';
+  static const String alertSuperSuf        = ' — تريد تسجيل مصروف بقالة؟';
+  static const String alertRestPre         = 'أنت في ';
+  static const String alertRestSuf         = ' — تريد تسجيل وجبة؟';
+  static const String alertMallPre         = 'دخلت ';
+  static const String alertMallSuf         = ' — انتبه من التسوق الزائد!';
+
+  // ══════════════════════════════════════════════════════
+  // ONBOARDING — dynamic
+  // ══════════════════════════════════════════════════════
+
+  static const String onboardingStepPre    = 'خطوة ';
+  static const String onboardingStepMid    = ' من ';
+
+  // ══════════════════════════════════════════════════════
+  // REPORTS — dynamic
+  // ══════════════════════════════════════════════════════
+
+  static const String compareMonthPre      = 'مقارنة ';
+  static const String compareMonthMid      = ' بـ ';
+  static const String reportDeficitMsg     = '⚠️ عجز مالي بمقدار ';
+  static const String reportDeficitSuf     = '. راجعوا المصاريف معاً.';
+  static const String reportSavingMsg      = '💡 نسبة الادخار ';
+  static const String reportSavingMid      = '%. الهدف 20% — واصلوا!';
+  static const String reportExcellentPre   = '✨ وضع ممتاز! تدخرون ';
+  static const String reportExcellentSuf   = ' هذا الشهر. واصلوا!';
+
+  // ══════════════════════════════════════════════════════
+  // PAYWALL — dynamic
+  // ══════════════════════════════════════════════════════
+
+  static const String paywallFeatureSuf    = ' — للمشتركين فقط';
+
+  // ══════════════════════════════════════════════════════
+  // QUICK ADD — dynamic
+  // ══════════════════════════════════════════════════════
+
+  static const String quickAddSuccessPre   = '✅ تم تسجيل ';
+  static const String quickAddSuccessSuf   = ' ريال';
+
+  // ══════════════════════════════════════════════════════
+  // SETTINGS — dynamic
+  // ══════════════════════════════════════════════════════
+
+  static const String subExpiresPre        = 'ينتهي في ';
+
+  // ══════════════════════════════════════════════════════
+  // DAILY HEADER — dynamic greeting
+  // ══════════════════════════════════════════════════════
+
+  static const String greetingSuf          = '، ';
+
+  // ══════════════════════════════════════════════════════
+  // AI CHAT CONTEXT — dynamic labels (not UI, system prompt)
+  // These stay inline — they're API prompts not UI text
+  // ══════════════════════════════════════════════════════
+
+  // ══════════════════════════════════════════════════════
+  // PDF / EXPORT — dynamic report labels
+  // ══════════════════════════════════════════════════════
+
+  static const String pdfNameLabel         = 'الاسم:    ';
+  static const String pdfMonthLabel        = 'الشهر:    ';
+  static const String pdfCurrencyLabel     = 'العملة:   ';
+  static const String pdfIncomeLabel       = 'الدخل:              ';
+  static const String pdfFixedLabel        = 'المصاريف الثابتة:   ';
+  static const String pdfVariableLabel     = 'المصاريف المتغيرة:  ';
+  static const String pdfTotalLabel        = 'الإجمالي:           ';
+  static const String pdfBalanceLabel      = 'الفائض:             ';
+  static const String pdfSavingLabel       = 'نسبة الادخار:       ';
+  static const String pdfSavedLabel        = ' مدخر';
+  static const String pdfFromTarget        = ' مدخر من ';
+  static const String expenseInitError    = 'تعذّر تهيئة المصاريف: ';
+  static const String goalInitError      = 'خطأ في تهيئة الأهداف: ';
+  static const String incomeInitError    = 'تعذّر تهيئة الدخل: ';
 }

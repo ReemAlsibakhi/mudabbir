@@ -44,8 +44,8 @@ class CompareTab extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'مقارنة ${_monthLabel(curr.monthKey)} '
-                  'بـ ${_monthLabel(prev.monthKey)}',
+                  '${AppStrings.compareMonthPre}${_monthLabel(curr.monthKey)} '
+                  '${AppStrings.compareMonthMid}${_monthLabel(prev.monthKey)}',
                   style: AppTextStyles.caption,
                 ),
                 const SizedBox(height: 8),
@@ -63,7 +63,7 @@ class CompareTab extends ConsumerWidget {
                       padding: const EdgeInsets.only(bottom: 4),
                       child: Text(
                         '${diffPct.abs().toStringAsFixed(1)}% '
-                        '${improved ? "تحسن 💚" : "زيادة في الإنفاق"}',
+                        '${improved ? AppStrings.compareImproved : AppStrings.compareIncreased}',
                         style: AppTextStyles.body.copyWith(
                           color: improved ? AppColors.success : AppColors.error,
                         ),

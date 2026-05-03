@@ -193,7 +193,7 @@ class _State extends State<AddGoalSheet> {
                 ),
                 if (_calcMonthly > 0) ...[
                   const SizedBox(height: 10),
-                  _Insight('تحتاج ${_calcMonthly.toStringAsFixed(0)} شهرياً خلال $_duration شهر'),
+                  _Insight('${AppStrings.goalNeedMonthlyPre}${_calcMonthly.toStringAsFixed(0)} ${AppStrings.monthly} ${AppStrings.goalNeedMonthlySuf} $_duration ${AppStrings.goalNeedMonthlySuf2}'),
                 ],
               ] else ...[
                 TextFormField(
@@ -206,8 +206,8 @@ class _State extends State<AddGoalSheet> {
                 ),
                 if (_calcMonths > 0) ...[
                   const SizedBox(height: 10),
-                  _Insight('ستصل للهدف في $_calcMonths شهر '
-                    '(${(_calcMonths / 12).toStringAsFixed(1)} سنة)'),
+                  _Insight('${AppStrings.goalReachPre}$_calcMonths${AppStrings.goalReachMid}'
+                    '${(_calcMonths / 12).toStringAsFixed(1)}${AppStrings.goalReachSuf}'),
                 ],
               ],
 
@@ -239,11 +239,11 @@ class _State extends State<AddGoalSheet> {
   };
 
   String _monthLabel(int m) {
-    if (m < 12)  return '$m أشهر';
+    if (m < 12)  return '\$m ${AppStrings.monthsAr}';
     if (m == 12) return AppStrings.yearLabel;
     if (m == 24) return AppStrings.twoYearsLabel;
-    if (m % 12 == 0) return '${m ~/ 12} سنوات';
-    return '$m شهراً';
+    if (m % 12 == 0) return '\${m ~/ 12} ${AppStrings.years}';
+    return '\$m ${AppStrings.monthSuffix}';
   }
 
   Future<void> _submit() async {

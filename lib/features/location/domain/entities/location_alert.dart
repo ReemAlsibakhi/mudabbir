@@ -27,9 +27,9 @@ final class LocationAlert extends Equatable {
   };
 
   String get alertMessage => switch (type) {
-    LocationType.supermarket => 'دخلت $placeName — تريد تسجيل مصروف بقالة؟',
-    LocationType.restaurant  => 'أنت في $placeName — تريد تسجيل وجبة؟',
-    LocationType.mall        => 'دخلت $placeName — انتبه من التسوق الزائد!',
+    LocationType.supermarket => '${AppStrings.alertSuperPre}$placeName${AppStrings.alertSuperSuf}',
+    LocationType.restaurant  => '${AppStrings.alertRestPre}$placeName${AppStrings.alertRestSuf}',
+    LocationType.mall        => '${AppStrings.alertMallPre}$placeName${AppStrings.alertMallSuf}',
     LocationType.pharmacy    => AppStrings.alertPharmacy,
     LocationType.fuel        => AppStrings.alertFuel,
   };

@@ -44,10 +44,10 @@ class GoalsSummary extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text('$activeCount نشط · $doneCount مكتمل',
+                  Text('$activeCount${AppStrings.goalActiveCount}$doneCount${AppStrings.goalDoneCount}',
                     style: AppTextStyles.caption),
                   Text(
-                    totalTarget > 0 ? 'من ${totalTarget.fmt()}' : '',
+                    totalTarget > 0 ? '${AppStrings.goalFrom}${totalTarget.fmt()}' : '',
                     style: AppTextStyles.caption,
                   ),
                 ],
@@ -58,7 +58,7 @@ class GoalsSummary extends StatelessWidget {
             const SizedBox(height: 10),
             MudProgressBar(value: progress, color: AppColors.success),
             const SizedBox(height: 4),
-            Text('${(progress * 100).toStringAsFixed(1)}% من إجمالي الأهداف',
+            Text('${(progress * 100).toStringAsFixed(1)}${AppStrings.goalProgressSuf}',
               style: AppTextStyles.caption),
           ],
         ],
