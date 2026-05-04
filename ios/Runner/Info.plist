@@ -23,6 +23,7 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 
+	<!-- Arabic RTL Support -->
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>ar</string>
@@ -31,25 +32,49 @@
 	<array>
 		<string>ar</string>
 	</array>
+
+	<!-- Location permissions — required by geolocator package -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>مدبّر يستخدم موقعك لاكتشاف المحلات القريبة وتسجيل المصاريف تلقائياً</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>مدبّر يستخدم موقعك في الخلفية لإشعارك عند دخول المحلات</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>مدبّر يستخدم موقعك لاكتشاف المحلات القريبة</string>
+
+	<!-- Camera — required by image_picker package -->
+	<key>NSCameraUsageDescription</key>
+	<string>مدبّر يستخدم الكاميرا لمسح الفواتير وإضافة المصاريف تلقائياً</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>مدبّر يستخدم مكتبة الصور لاختيار صور الفواتير</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>مدبّر يحفظ تقارير PDF في مكتبة الصور</string>
+
+	<!-- Notifications — required by flutter_local_notifications -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+
+	<!-- App display -->
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+
+	<!-- Portrait only (RTL app) -->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
