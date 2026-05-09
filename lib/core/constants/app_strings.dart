@@ -866,4 +866,24 @@ abstract final class AppStrings {
   static const String expenseInitError    = 'تعذّر تهيئة المصاريف: ';
   static const String goalInitError      = 'خطأ في تهيئة الأهداف: ';
   static const String incomeInitError    = 'تعذّر تهيئة الدخل: ';
+
+  // ══════════════════════════════════════════════════════
+  // PERSONA DESCRIPTIONS — high savers (savingRate >= 20)
+  // ══════════════════════════════════════════════════════
+
+  static const String personaHighFamily   = 'أسرتكم من أفضل 10% في إدارة الميزانية! الأطفال محظوظون.';
+  static const String personaHighMarried  = 'زوجان يتفاهمان — انضباطكم المالي مثال يُحتذى به.';
+  static const String personaHighEngaged  = 'ممتاز! تبدأ حياتكم بأفضل أساس مالي ممكن.';
+  static const String personaHighSingle   = 'انضباط استثنائي! وفّر الآن واستثمر — الوقت في صالحك.';
+
+  // ══════════════════════════════════════════════════════
+  // REPORT INSIGHT MESSAGES — dynamic (balance/rate from runtime)
+  // ══════════════════════════════════════════════════════
+
+  static const String reportDeficitPre    = '⚠️ عجز مالي بمقدار ';
+  static const String reportDeficitSuf2   = '. راجعوا المصاريف وقللوا البنود غير الضرورية فوراً.';
+  static const String reportLowSavePre    = '💡 نسبة الادخار ';
+  static const String reportLowSaveMid    = '%. الهدف 20% = ';
+  static const String reportLowSaveSuf    = ' شهرياً.';
+
 }

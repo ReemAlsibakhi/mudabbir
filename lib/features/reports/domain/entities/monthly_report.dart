@@ -68,10 +68,10 @@ final class MonthlyReport extends Equatable {
     }
     if (savingRate >= 20) {
       return switch (stage) {
-        LifeStage.family  => '${personaIcon} أسرتكم من أفضل 10% في إدارة الميزانية! الأطفال محظوظون.',
-        LifeStage.married => '${personaIcon} زوجان يتفاهمان — انضباطكم المالي مثال يُحتذى به.',
-        LifeStage.engaged => '${personaIcon} ممتاز! تبدأ حياتكم بأفضل أساس مالي ممكن.',
-        LifeStage.single  => '${personaIcon} انضباط استثنائي! وفّر الآن واستثمر — الوقت في صالحك.',
+        LifeStage.family  => '\$personaIcon \${AppStrings.personaHighFamily}',
+        LifeStage.married => '\$personaIcon \${AppStrings.personaHighMarried}',
+        LifeStage.engaged => '\$personaIcon \${AppStrings.personaHighEngaged}',
+        LifeStage.single  => '\$personaIcon \${AppStrings.personaHighSingle}',
       };
     }
     return switch (stage) {

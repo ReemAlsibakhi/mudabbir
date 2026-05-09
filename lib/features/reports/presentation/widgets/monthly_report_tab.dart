@@ -148,9 +148,9 @@ class MonthlyReportTab extends ConsumerWidget {
               : report.savingRate >= 20 ? InsightType.success
               : InsightType.info,
           text: report.isDeficit
-              ? '⚠️ عجز مالي بمقدار ${report.balance.abs().fmt()}. راجعوا المصاريف وقللوا البنود غير الضرورية فوراً.'
+              ? '${AppStrings.reportDeficitPre}${report.balance.abs().fmt()}${AppStrings.reportDeficitSuf2}'
               : report.savingRate < 10
-              ? '💡 نسبة الادخار ${report.savingRate.toStringAsFixed(1)}%. الهدف 20% = ${(report.totalIncome * 0.2).fmt()} شهرياً.'
+              ? '${AppStrings.reportLowSavePre}${report.savingRate.toStringAsFixed(1)}${AppStrings.reportLowSaveMid}${(report.totalIncome * 0.2).fmt()}${AppStrings.reportLowSaveSuf}'
               : '${AppStrings.reportExcellentPre}${report.balance.fmt()}${AppStrings.reportExcellentSuf}',
         ),
       ],
