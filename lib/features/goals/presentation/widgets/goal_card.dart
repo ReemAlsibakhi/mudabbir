@@ -279,3 +279,62 @@ class _State extends ConsumerState<GoalCard> {
     }
   }
 }
+
+// ── Behind Alert widget ──────────────────────────────────────
+class _BehindAlert extends StatelessWidget {
+  final Goal goal;
+  const _BehindAlert({required this.goal});
+
+  @override
+  Widget build(BuildContext context) {
+    // How much should have been saved vs actual?
+    final ideal    = goal.monthlyTarget * ((goal.targetMonths ?? 12) - (goal.monthsLeft ?? 0));
+    if (ideal <= 0) return const SizedBox.shrink();
+
+    final deficit  = ideal - goal.saved;
+    if (deficit <= 0) {
+      // On track or ahead
+      if (goal.saved > ideal * 1.1) {
+        final aheadPct = ((goal.saved / ideal - 1) * 100).clamp(0, 999).toStringAsFixed(0);
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+          decoration: BoxDecoration(
+            color:        AppColors.success.withOpacity(0.07),
+            borderRadius: BorderRadius.circular(8),
+            border:       Border.all(color: AppColors.success.withOpacity(0.15)),
+          ),
+          child: Text(
+            '${AppStrings.weddingAheadPre}$aheadPct${AppStrings.weddingAheadSuf}',
+            style: AppTextStyles.caption.copyWith(color: AppColors.success),
+            textAlign: TextAlign.center,
+          ),
+        );
+      }
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        decoration: BoxDecoration(
+          color:        AppColors.success.withOpacity(0.07),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(AppStrings.weddingOnTrack,
+          style: AppTextStyles.caption.copyWith(color: AppColors.success),
+          textAlign: TextAlign.center),
+      );
+    }
+
+    final behindPct = (deficit / ideal * 100).clamp(0, 100).toStringAsFixed(0);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color:        AppColors.error.withOpacity(0.07),
+        borderRadius: BorderRadius.circular(8),
+        border:       Border.all(color: AppColors.error.withOpacity(0.15)),
+      ),
+      child: Text(
+        '${AppStrings.weddingBehindPre}$behindPct${AppStrings.weddingBehindSuf}',
+        style: AppTextStyles.caption.copyWith(color: AppColors.error),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}

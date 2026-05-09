@@ -886,4 +886,29 @@ abstract final class AppStrings {
   static const String reportLowSaveMid    = '%. الهدف 20% = ';
   static const String reportLowSaveSuf    = ' شهرياً.';
 
+  // ══════════════════════════════════════════════════════
+  // WEDDING GOAL — engaged scenario
+  // ══════════════════════════════════════════════════════
+
+  static const String weddingDateLabel    = '📅 تاريخ الزواج';
+  static const String weddingDateHint     = 'اختر تاريخ الزواج';
+  static const String weddingMonthsLeft   = 'أشهر متبقية للزواج';
+  static const String weddingBudgetTitle  = '💍 تفصيل تكاليف الزواج';
+  static const String weddingMahr         = '💍 المهر';
+  static const String weddingShebka       = '💎 الشبكة والمصاغ';
+  static const String weddingHall         = '🏛️ قاعة الأفراح';
+  static const String weddingHoneymoon    = '✈️ شهر العسل';
+  static const String weddingApartment    = '🏠 الشقة';
+  static const String weddingFurniture    = '🛋️ الأثاث';
+  static const String weddingTotal        = 'إجمالي تكاليف الزواج';
+  static const String weddingNeedPerMonth = '💡 تحتاج توفير ';
+  static const String weddingPerMonthSuf  = ' شهرياً للوصول لهدفك';
+  static const String weddingBehindPre    = '⚠️ أنت متأخر بنسبة ';
+  static const String weddingBehindSuf    = '% عن هدف توفير الزواج — راجع خطتك';
+  static const String weddingOnTrack      = '✅ أنت في المسار الصحيح نحو هدف الزواج';
+  static const String weddingAheadPre     = '🌟 رائع! متقدم بـ ';
+  static const String weddingAheadSuf     = '% عن خطة التوفير';
+  static const String weddingDateMode     = 'حدد تاريخ الزواج';
+  static const String weddingMonthMode    = 'حدد عدد الأشهر';
+
 }
