@@ -9,6 +9,8 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/ui/widgets/mud_card.dart';
 import '../../../ai_chat/presentation/providers/chat_notifier.dart';
 import '../../../ai_chat/presentation/screens/api_key_setup_screen.dart';
+import '../../../couple/presentation/providers/couple_notifier.dart';
+import '../../../couple/presentation/screens/couple_setup_screen.dart';
 import '../../../freemium/domain/entities/subscription.dart';
 import '../../../freemium/presentation/providers/subscription_provider.dart';
 import '../../../freemium/presentation/screens/paywall_screen.dart';
@@ -179,10 +181,22 @@ class SettingsScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ✅ Couple Mode teaser for married/family
+                  // ✅ Couple Mode for married/family
                   if (profile?.lifeStage == LifeStage.married ||
-                      profile?.lifeStage == LifeStage.family)
-                    _CoupleModeTeaser(),
+                      profile?.lifeStage == LifeStage.family) ...[
+                    const MudSectionLabel('💑 وضع الزوجين'),
+                    _SettingsTile(
+                      icon: '💑',
+                      title: AppStrings.paywallCouple,
+                      subtitle: coupleActive
+                          ? '🟢 متزامنان — المزامنة نشطة'
+                          : AppStrings.coupleModeNote,
+                      accent: !coupleActive,
+                      onTap: () => Navigator.push(context,
+                        MaterialPageRoute(
+                          builder: (_) => const CoupleSetupScreen())),
+                    ),
+                  ],
 
                   const MudSectionLabel(AppStrings.privacy),
                   ...[

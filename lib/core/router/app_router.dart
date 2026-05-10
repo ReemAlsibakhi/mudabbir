@@ -8,6 +8,7 @@ import '../../features/daily/presentation/screens/daily_screen.dart';
 import '../../features/expenses/presentation/screens/expenses_screen.dart';
 import '../../features/goals/presentation/screens/goals_screen.dart';
 import '../../features/income/presentation/screens/income_screen.dart';
+import '../../features/couple/presentation/screens/couple_setup_screen.dart';
 import '../../features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import '../../features/onboarding/presentation/providers/onboarding_notifier.dart';
 import '../../features/onboarding/presentation/providers/onboarding_state.dart';

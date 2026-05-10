@@ -1,4 +1,10 @@
 abstract final class AppConstants {
+  // ── Supabase — Couple Mode ──────────────────────────────
+  // Get these from supabase.com → your project → Settings → API
+  // See ios/SETUP_SUPABASE.md for full setup guide
+  static const String supabaseUrl     = '';  // TODO: paste your URL
+  static const String supabaseAnonKey = '';  // TODO: paste your anon key
+
   static const String appName    = 'مدبّر';
   static const String appVersion = '1.0.0';
 
