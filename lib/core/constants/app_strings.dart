@@ -911,4 +911,20 @@ abstract final class AppStrings {
   static const String weddingDateMode     = 'حدد تاريخ الزواج';
   static const String weddingMonthMode    = 'حدد عدد الأشهر';
 
+  // ══════════════════════════════════════════════════════
+  // MARRIED SCENARIO — couple features
+  // ══════════════════════════════════════════════════════
+
+  static const String coupleContribTitle  = '📊 مساهمة كل طرف في الدخل';
+  static const String coupleShareReport   = 'مشاركة التقرير مع الشريك';
+  static const String coupleBothIncome    = '💑 كلا الزوجين يعملان';
+  static const String coupleGoalHome      = '🏠 هدف مشترك — شراء منزل';
+  static const String coupleSpendingSync  = 'تنسيق الإنفاق';
+  static const String coupleInsightPre    = '💡 باجمع دخلكما ';
+  static const String coupleInsightMid    = ' توفرون ';
+  static const String coupleInsightSuf    = '% من الدخل المشترك — ممتاز للبناء المشترك!';
+  static const String coupleLowSaving     = '⚠️ معدل الادخار المشترك منخفض — راجعا الميزانية معاً';
+  static const String coupleModeNote      = '💡 ميزة الحساب المشترك على جهازين قادمة قريباً';
+  static const String coupleExportHint    = 'شاركا هذا التقرير بينكما عبر واتساب';
+
 }

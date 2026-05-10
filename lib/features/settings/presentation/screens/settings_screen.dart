@@ -179,6 +179,11 @@ class SettingsScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // ✅ Couple Mode teaser for married/family
+                  if (profile?.lifeStage == LifeStage.married ||
+                      profile?.lifeStage == LifeStage.family)
+                    _CoupleModeTeaser(),
+
                   const MudSectionLabel(AppStrings.privacy),
                   ...[
                     AppStrings.privacyLocal,
@@ -449,5 +454,49 @@ class _Switch extends StatelessWidget {
     activeTrackColor:  AppColors.accent.withOpacity(0.3),
     inactiveThumbColor: AppColors.textTertiary,
     inactiveTrackColor: AppColors.surface3,
+  );
+}
+
+// ── Couple Mode Teaser ─────────────────────────────────────
+class _CoupleModeTeaser extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Container(
+    margin:  const EdgeInsets.only(bottom: 8),
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(colors: [
+        AppColors.accent.withOpacity(0.08),
+        AppColors.accentAlt.withOpacity(0.05),
+      ]),
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(
+        color: AppColors.accent.withOpacity(0.2)),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(children: [
+          const Text('💑', style: TextStyle(fontSize: 20)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(AppStrings.paywallCouple,
+              style: AppTextStyles.bodyBold)),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color:        AppColors.accent.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(99)),
+            child: Text('قريباً',
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.accentAlt,
+                fontWeight: FontWeight.w700)),
+          ),
+        ]),
+        const SizedBox(height: 6),
+        Text(AppStrings.coupleModeNote,
+          style: AppTextStyles.caption.copyWith(
+            color: AppColors.textSecondary, height: 1.5)),
+      ],
+    ),
   );
 }

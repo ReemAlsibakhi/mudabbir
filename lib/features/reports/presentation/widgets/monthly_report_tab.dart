@@ -13,6 +13,8 @@ import '../../../../shared/ui/widgets/mud_stat_card.dart';
 import '../../../expenses/presentation/providers/expenses_notifier.dart';
 import '../../../expenses/presentation/providers/expenses_state.dart';
 import '../providers/reports_provider.dart';
+import '../../../onboarding/domain/entities/onboarding_profile.dart';
+import '../../domain/entities/monthly_report.dart';
 
 class MonthlyReportTab extends ConsumerWidget {
   final String monthKey;
@@ -103,6 +105,11 @@ class MonthlyReportTab extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
 
+        // ✅ COUPLE INSIGHT — shown for married/family stage only
+        _CoupleInsight(report: report),
+
+        const SizedBox(height: 12),
+
         // ── Category Breakdown ────────────────────────
         if (catMap.isNotEmpty)
           MudCard(
@@ -154,6 +161,72 @@ class MonthlyReportTab extends ConsumerWidget {
               : '${AppStrings.reportExcellentPre}${report.balance.fmt()}${AppStrings.reportExcellentSuf}',
         ),
       ],
+    );
+  }
+}
+
+// ✅ Couple insight — only shows for married/family with both incomes
+class _CoupleInsight extends ConsumerWidget {
+  final MonthlyReport report;
+  const _CoupleInsight({required this.report});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Only relevant for married or family life stage
+    final stage = report.lifeStage;
+    if (stage == null) return const SizedBox.shrink();
+    if (stage != LifeStage.married && stage != LifeStage.family)
+      return const SizedBox.shrink();
+    if (report.totalIncome <= 0) return const SizedBox.shrink();
+
+    final savingRate = report.savingRate;
+    final isGood     = savingRate >= 15;
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: [
+          AppColors.accent.withOpacity(0.07),
+          AppColors.accentAlt.withOpacity(0.04),
+        ]),
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(
+          color: (isGood ? AppColors.success : AppColors.warning)
+              .withOpacity(0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(AppStrings.coupleBothIncome,
+            style: AppTextStyles.bodyBold),
+          const SizedBox(height: 6),
+          Text(
+            isGood
+                ? '${AppStrings.coupleInsightPre}'
+                  '${report.totalIncome.fmt()}'
+                  '${AppStrings.coupleInsightMid}'
+                  '${savingRate.toStringAsFixed(1)}'
+                  '${AppStrings.coupleInsightSuf}'
+                : AppStrings.coupleLowSaving,
+            style: AppTextStyles.body.copyWith(
+              color: isGood ? AppColors.success : AppColors.warning,
+              fontSize: 13,
+              height: 1.5),
+          ),
+          const SizedBox(height: 8),
+          // "Share report" hint
+          Row(
+            children: [
+              const Icon(Icons.share_outlined,
+                size: 14, color: AppColors.textTertiary),
+              const SizedBox(width: 6),
+              Text(AppStrings.coupleExportHint,
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textTertiary)),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
