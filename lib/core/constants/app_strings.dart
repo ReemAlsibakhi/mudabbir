@@ -927,4 +927,68 @@ abstract final class AppStrings {
   static const String coupleModeNote      = '💡 ميزة الحساب المشترك على جهازين قادمة قريباً';
   static const String coupleExportHint    = 'شاركا هذا التقرير بينكما عبر واتساب';
 
+  // ══════════════════════════════════════════════════════
+  // FAMILY-SPECIFIC GOAL TYPES
+  // ══════════════════════════════════════════════════════
+
+  static const String goalUniversity      = 'الصندوق الجامعي للأبناء';
+  static const String goalChildWedding    = 'زواج الأبناء';
+  static const String goalHealthInsurance = 'التأمين الصحي العائلي';
+
+  // Hints for family goals
+  static const String hintUniversity      = 'تعليم جامعي لأبنائك';
+  static const String hintChildWedding    = 'تأمين زواج أبنائك مستقبلاً';
+  static const String hintHealthInsurance = 'تأمين صحي شامل للأسرة';
+
+  // ══════════════════════════════════════════════════════
+  // CHILDREN EXPENSE TRACKING
+  // ══════════════════════════════════════════════════════
+
+  static const String childrenTitle       = '👨‍👩‍👧‍👦 مصاريف الأبناء';
+  static const String addChildLabel       = 'إضافة طفل';
+  static const String childNameLabel      = 'اسم الطفل';
+  static const String childAllowanceLabel = 'مصروف الجيب الشهري';
+  static const String childSchoolLabel    = 'رسوم المدرسة السنوية';
+  static const String childMonthLabel     = 'الشهري';
+  static const String childTotalLabel     = 'إجمالي مصاريف الأبناء';
+  static const String childNoKids        = 'لم تضيفي أبناء بعد';
+  static const String childNoKidsBody    = 'أضيفي أبناءك لتتبع مصاريفهم بشكل منفصل';
+
+  // ══════════════════════════════════════════════════════
+  // SEASONAL BUDGET — مواسم الإنفاق
+  // ══════════════════════════════════════════════════════
+
+  static const String seasonTitle         = '📅 مواسم الإنفاق الكثيف';
+  static const String seasonEid           = '🌙 العيد';
+  static const String seasonRamadan       = '🕌 رمضان';
+  static const String seasonSchool        = '🎒 بداية المدارس';
+  static const String seasonEidBudget     = 'ميزانية العيد';
+  static const String seasonRamadanBudget = 'ميزانية رمضان';
+  static const String seasonSchoolBudget  = 'ميزانية المدارس';
+  static const String seasonSavingPre     = '💡 تحتاج توفير ';
+  static const String seasonSavingMid     = ' شهرياً قبل ';
+  static const String seasonSavingSuf     = ' لتغطية هذا الموسم';
+  static const String seasonAlertPre      = '⚠️ موسم ';
+  static const String seasonAlertSuf      = ' بعد أقل من شهرين — راجعي ميزانيتك';
+  static const String seasonNoData        = 'لا توجد مواسم مجدولة';
+
+  // ══════════════════════════════════════════════════════
+  // FAMILY SCENARIO — per-child tracking
+  // ══════════════════════════════════════════════════════
+
+  static const String childrenTitle        = 'مصاريف الأطفال';
+  static const String addChild             = 'إضافة طفل';
+  static const String addChildTitle        = 'اسم الطفل';
+  static const String childNameHint        = 'مثال: محمد';
+  static const String noChildrenYet        = 'أضف أطفالك لتتبع مصاريف كل واحد';
+  static const String childrenTotalMonthly = 'إجمالي مصاريف الأطفال شهرياً';
+  static const String childAllowance       = 'مصروف الجيب';
+  static const String childSchool          = 'مصاريف المدرسة';
+  static const String childMedical         = 'ميزانية طبية';
+
+  // Goal types for family
+  static const String hintUniversity       = 'صندوق الجامعة للأبناء';
+  static const String hintChildWedding     = 'زواج الأبناء (تخطيط طويل المدى)';
+  static const String hintHealthInsurance  = 'التأمين الصحي العائلي';
+
 }

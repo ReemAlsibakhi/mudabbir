@@ -15,6 +15,8 @@ import '../widgets/daily_header.dart';
 import '../widgets/quick_add_grid.dart';
 import '../widgets/streak_card.dart';
 import '../widgets/today_summary.dart';
+import '../widgets/seasonal_budget_card.dart';
+import '../widgets/children_expense_card.dart';
 
 class DailyScreen extends ConsumerWidget {
   const DailyScreen({super.key});
@@ -81,6 +83,18 @@ class DailyScreen extends ConsumerWidget {
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: const SliverToBoxAdapter(child: StreakCard()),
+            ),
+
+            // ── Seasonal Budget (family only) ─────────────
+            const SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverToBoxAdapter(child: SeasonalBudgetCard()),
+            ),
+
+            // ── Children Expenses (family only) ──────────────
+            const SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverToBoxAdapter(child: ChildrenExpenseCard()),
             ),
 
             // ── Quick Add ─────────────────────────────────

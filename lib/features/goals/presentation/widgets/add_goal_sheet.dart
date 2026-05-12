@@ -62,8 +62,9 @@ class _State extends State<AddGoalSheet> {
       GoalType.hajj, GoalType.gold, GoalType.other,
     ],
     LifeStage.family => [
-      GoalType.emergency, GoalType.education, GoalType.home,
-      GoalType.car, GoalType.hajj, GoalType.travel,
+      GoalType.emergency, GoalType.education, GoalType.university,
+      GoalType.home, GoalType.car, GoalType.healthInsurance,
+      GoalType.hajj, GoalType.childWedding, GoalType.travel,
       GoalType.business, GoalType.gold, GoalType.other,
     ],
   };
@@ -402,7 +403,10 @@ class _State extends State<AddGoalSheet> {
     GoalType.hajj      => AppStrings.hintHajj,
     GoalType.business  => AppStrings.hintBusiness,
     GoalType.gold      => AppStrings.hintGold,
-    GoalType.other     => AppStrings.hintOther,
+    GoalType.university     => AppStrings.hintUniversity,
+    GoalType.childWedding   => AppStrings.hintChildWedding,
+    GoalType.healthInsurance=> AppStrings.hintHealthInsurance,
+    GoalType.other          => AppStrings.hintOther,
   };
 
   String _monthLabel(int m) {

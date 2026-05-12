@@ -3,7 +3,12 @@ import '../../../../core/constants/app_strings.dart';
 
 enum GoalType {
   home, car, wedding, travel, education,
-  emergency, business, hajj, gold, other;
+  emergency, business, hajj, gold,
+  // Family-specific
+  university,     // الصندوق الجامعي للأبناء
+  childWedding,   // زواج الأبناء
+  healthInsurance,// التأمين الصحي العائلي
+  other;
 
   String get nameAr => switch (this) {
     GoalType.home      => AppStrings.goalHome,
@@ -14,8 +19,11 @@ enum GoalType {
     GoalType.emergency => AppStrings.goalEmergency,
     GoalType.business  => AppStrings.goalBusiness,
     GoalType.hajj      => AppStrings.goalHajj,
-    GoalType.gold      => AppStrings.goalGold,
-    GoalType.other     => AppStrings.goalOther,
+    GoalType.gold           => AppStrings.goalGold,
+    GoalType.university     => AppStrings.goalUniversity,
+    GoalType.childWedding   => AppStrings.goalChildWedding,
+    GoalType.healthInsurance=> AppStrings.goalHealthInsurance,
+    GoalType.other          => AppStrings.goalOther,
   };
 
   String get icon => switch (this) {
