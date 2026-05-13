@@ -112,9 +112,64 @@ class TodaySummary extends ConsumerWidget {
                               .copyWith(color: AppColors.error, fontSize: 20)),
                     ],
                   ),
+                  // ✅ Yesterday comparison
+                  _YesterdayComparison(date: date, todayTotal: todayTotal),
                 ]),
         ),
       ],
+    );
+  }
+}
+
+// ── Yesterday Comparison ─────────────────────────────────
+class _YesterdayComparison extends ConsumerWidget {
+  final DateTime date;
+  final double   todayTotal;
+  const _YesterdayComparison({required this.date, required this.todayTotal});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final yesterday    = date.subtract(const Duration(days: 1));
+    final expState     = ref.watch(
+        expensesNotifierProvider(yesterday.monthKey));
+
+    if (expState is! ExpensesLoaded) return const SizedBox.shrink();
+
+    final yesterdayKey   = yesterday.dateKey;
+    final yesterdayTotal = expState.expenses
+        .where((e) => e.date == yesterdayKey)
+        .fold(0.0, (s, e) => s + e.amount);
+
+    if (yesterdayTotal == 0 || todayTotal == 0) return const SizedBox.shrink();
+
+    final diff    = todayTotal - yesterdayTotal;
+    final pct     = (diff / yesterdayTotal * 100).abs().toStringAsFixed(0);
+    final better  = diff < 0;
+    final same    = diff.abs() < 1;
+
+    if (same) return const SizedBox.shrink();
+
+    return Container(
+      margin:  const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color:        (better ? AppColors.success : AppColors.warning)
+            .withOpacity(0.07),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            better
+                ? '✅ ${AppStrings.betterThanYesterday}$pct%'
+                : '⚠️ ${AppStrings.worseThanYesterday}$pct%',
+            style: AppTextStyles.caption.copyWith(
+              color: better ? AppColors.success : AppColors.warning,
+              fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
     );
   }
 }

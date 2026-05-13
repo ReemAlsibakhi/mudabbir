@@ -991,4 +991,65 @@ abstract final class AppStrings {
   static const String hintChildWedding     = 'زواج الأبناء (تخطيط طويل المدى)';
   static const String hintHealthInsurance  = 'التأمين الصحي العائلي';
 
+  // ══════════════════════════════════════════════════════
+  // DAILY SCREEN — question bar + voice
+  // ══════════════════════════════════════════════════════
+
+  static const String dailyQuestion       = 'صرفت اليوم؟';
+  static const String dailyQuestionHint   = 'مثال: 150 بقالة أو اضغط 🎤';
+  static const String dailySubtitle       = 'سجّل مصاريفك في 30 ثانية 👇';
+  static const String voiceNotSupported   = 'الإدخال الصوتي غير متاح على هذا الجهاز';
+  static const String voiceParseError     = 'لم أفهم المبلغ — حاول مرة أخرى';
+  static const String voiceAddedPre       = '✅ تم تسجيل ';
+  static const String voiceAddedMid       = ' ريال في ';
+  static const String andConnector        = 'و';
+
+  // ══════════════════════════════════════════════════════
+  // RECEIPT SCANNER — OCR
+  // ══════════════════════════════════════════════════════
+
+  static const String receiptScan         = 'تصوير الفاتورة';
+  static const String receiptScanning     = 'جاري القراءة...';
+  static const String receiptCamera       = 'التقاط صورة';
+  static const String receiptGallery      = 'اختيار من المعرض';
+  static const String receiptFound        = 'تم قراءة الفاتورة ✅';
+  static const String receiptConfirmSub   = 'راجع المبلغ والفئة ثم أضف';
+  static const String receiptNoAmount     = '⚠️ لم أجد مبلغاً في الصورة — حاول مرة أخرى';
+  static const String receiptError        = 'تعذّر قراءة الفاتورة';
+  static const String receiptAddBtn       = '✅ إضافة المصروف';
+  static const String receiptExpenseName  = 'مصروف من فاتورة';
+
+  // ══════════════════════════════════════════════════════
+  // STREAK CARD — rescue + milestones
+  // ══════════════════════════════════════════════════════
+
+  static const String streakAtRisk        = '⚠️ خطر انقطاع السلسلة — سجّل الآن';
+  static const String streakRescueBtn     = 'استخدم تذكرة الإنقاذ';
+  static const String streakTokensLeft    = 'متبقية';
+  static const String streakRescuedSuccess= 'تم إنقاذ السلسلة!';
+  static const String streakNoTokens      = 'لا تذاكر إنقاذ متبقية هذا الشهر';
+  static const String streakDaysSuffix    = ' أيام متواصلة 🔥';
+  static const String milestone7          = 'أسبوع كامل من الانضباط المالي!';
+  static const String milestone30         = 'شهر كامل! أنت من أفضل 5% من المستخدمين!';
+  static const String milestone100        = '100 يوم! أسطورة! هذه عادة مدى الحياة 👑';
+
+  // ══════════════════════════════════════════════════════
+  // YESTERDAY COMPARISON
+  // ══════════════════════════════════════════════════════
+
+  static const String betterThanYesterday = 'أحسن من أمس بنسبة ';
+  static const String worseThanYesterday  = 'أكثر من أمس بنسبة ';
+
+  // ══════════════════════════════════════════════════════
+  // GOAL ADDITIONAL (AppStrings already has yearLabel/twoYearsLabel)
+  // ══════════════════════════════════════════════════════
+
+  static const String yearLabel           = 'سنة واحدة';
+  static const String twoYearsLabel       = 'سنتان';
+  static const String descOptHint         = 'وصف (اختياري)';
+  static const String badgeLegendary      = '🏆 أسطوري';
+  static const String badgeExcellent      = '⭐ متميز';
+  static const String streakStart         = 'ابدأ تسجيل مصاريفك يومياً لبناء سلسلتك';
+  static const String streakBest          = 'واصل — أنت تسير بشكل رائع!';
+
 }

@@ -17,6 +17,8 @@ import '../widgets/streak_card.dart';
 import '../widgets/today_summary.dart';
 import '../widgets/seasonal_budget_card.dart';
 import '../widgets/children_expense_card.dart';
+import '../widgets/daily_question_bar.dart';
+import '../widgets/receipt_scanner.dart';
 
 class DailyScreen extends ConsumerWidget {
   const DailyScreen({super.key});
@@ -73,6 +75,13 @@ class DailyScreen extends ConsumerWidget {
               ),
             ),
 
+            // ── "صرفت اليوم؟" Question Bar (PRD 4.2 core UX)
+            SliverPadding(
+              padding: EdgeInsets.zero,
+              sliver: SliverToBoxAdapter(
+                child: DailyQuestionBar(month: now)),
+            ),
+
             // ── Balance Card ─────────────────────────────
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
@@ -108,6 +117,15 @@ class DailyScreen extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
                 child: _AddButton(month: now, ref: ref)),
+            ),
+
+            // ── Receipt Scanner (OCR) ────────────────────
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: ReceiptScanner(month: now))),
             ),
 
             // ── No Spend Button ───────────────────────────
