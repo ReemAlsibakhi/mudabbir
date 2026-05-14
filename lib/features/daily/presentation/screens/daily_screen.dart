@@ -18,6 +18,7 @@ import '../widgets/today_summary.dart';
 import '../widgets/seasonal_budget_card.dart';
 import '../widgets/children_expense_card.dart';
 import '../widgets/daily_question_bar.dart';
+import '../../../insights/presentation/widgets/insights_section.dart';
 import '../widgets/receipt_scanner.dart';
 
 class DailyScreen extends ConsumerWidget {
@@ -81,6 +82,9 @@ class DailyScreen extends ConsumerWidget {
               sliver: SliverToBoxAdapter(
                 child: DailyQuestionBar(month: now)),
             ),
+
+            // ── Insights Section (rule-based intelligence) ──
+            const InsightsSection(),
 
             // ── Balance Card ─────────────────────────────
             SliverPadding(

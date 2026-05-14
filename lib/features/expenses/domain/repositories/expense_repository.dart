@@ -7,6 +7,7 @@ abstract interface class ExpenseRepository {
   Future<Result<void>>       delete(String id);
   double                     totalByMonth(String monthKey);
   List<Expense>              getByDate(String monthKey, String date);
+  List<Expense>              getByMonth(String monthKey);
 
   Stream<List<FixedExpense>> watchFixed();
   Future<Result<void>>       addFixed(FixedExpense expense);

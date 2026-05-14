@@ -1052,4 +1052,10 @@ abstract final class AppStrings {
   static const String streakStart         = 'ابدأ تسجيل مصاريفك يومياً لبناء سلسلتك';
   static const String streakBest          = 'واصل — أنت تسير بشكل رائع!';
 
+  // ══════════════════════════════════════════════════════
+  // INSIGHTS ENGINE
+  // ══════════════════════════════════════════════════════
+
+  static const String insightsTitle = 'تنبيهات ذكية';
+
 }

@@ -79,6 +79,19 @@ final class ExpenseRepositoryImpl implements ExpenseRepository {
     }
   }
 
+  @override
+  List<Expense> getByMonth(String monthKey) {
+    try {
+      return _box.values
+          .where((m) => m.monthKey == monthKey)
+          .map(_fromModel)
+          .toList();
+    } catch (e) {
+      AppLogger.error(_tag, 'getByMonth error', e);
+      return [];
+    }
+  }
+
   // ── Fixed ─────────────────────────────────────────────
 
   @override
