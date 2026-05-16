@@ -15,7 +15,7 @@ import '../entities/insight.dart';
 abstract final class InsightRules {
   // Run all rules and return sorted, de-duplicated list
   static List<Insight> evaluate(InsightContext ctx, {int maxResults = 3}) {
-    final all = <Insight>[
+    final all = <Insight?>[
       _morningGreeting(ctx),
       _streakAtRisk(ctx),
       _streakMilestone(ctx),
