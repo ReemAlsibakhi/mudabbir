@@ -762,7 +762,6 @@ abstract final class AppStrings {
 
   static const String savingExcellentSuf   = '% نسبة ادخار ممتازة';
   static const String savingGoodPre        = 'نسبة ادخار جيدة ';
-  static const String savingRateLow        = 'ادخر أكثر لتحسين نسبتك';
 
   // ══════════════════════════════════════════════════════
   // NOTIFICATIONS — dynamic templates
@@ -976,7 +975,6 @@ abstract final class AppStrings {
   // FAMILY SCENARIO — per-child tracking
   // ══════════════════════════════════════════════════════
 
-  static const String childrenTitle        = 'مصاريف الأطفال';
   static const String addChild             = 'إضافة طفل';
   static const String addChildTitle        = 'اسم الطفل';
   static const String childNameHint        = 'مثال: محمد';
@@ -987,9 +985,6 @@ abstract final class AppStrings {
   static const String childMedical         = 'ميزانية طبية';
 
   // Goal types for family
-  static const String hintUniversity       = 'صندوق الجامعة للأبناء';
-  static const String hintChildWedding     = 'زواج الأبناء (تخطيط طويل المدى)';
-  static const String hintHealthInsurance  = 'التأمين الصحي العائلي';
 
   // ══════════════════════════════════════════════════════
   // DAILY SCREEN — question bar + voice
@@ -997,12 +992,10 @@ abstract final class AppStrings {
 
   static const String dailyQuestion       = 'صرفت اليوم؟';
   static const String dailyQuestionHint   = 'مثال: 150 بقالة أو اضغط 🎤';
-  static const String dailySubtitle       = 'سجّل مصاريفك في 30 ثانية 👇';
   static const String voiceNotSupported   = 'الإدخال الصوتي غير متاح على هذا الجهاز';
   static const String voiceParseError     = 'لم أفهم المبلغ — حاول مرة أخرى';
   static const String voiceAddedPre       = '✅ تم تسجيل ';
   static const String voiceAddedMid       = ' ريال في ';
-  static const String andConnector        = 'و';
 
   // ══════════════════════════════════════════════════════
   // RECEIPT SCANNER — OCR
@@ -1028,7 +1021,6 @@ abstract final class AppStrings {
   static const String streakTokensLeft    = 'متبقية';
   static const String streakRescuedSuccess= 'تم إنقاذ السلسلة!';
   static const String streakNoTokens      = 'لا تذاكر إنقاذ متبقية هذا الشهر';
-  static const String streakDaysSuffix    = ' أيام متواصلة 🔥';
   static const String milestone7          = 'أسبوع كامل من الانضباط المالي!';
   static const String milestone30         = 'شهر كامل! أنت من أفضل 5% من المستخدمين!';
   static const String milestone100        = '100 يوم! أسطورة! هذه عادة مدى الحياة 👑';
@@ -1044,13 +1036,6 @@ abstract final class AppStrings {
   // GOAL ADDITIONAL (AppStrings already has yearLabel/twoYearsLabel)
   // ══════════════════════════════════════════════════════
 
-  static const String yearLabel           = 'سنة واحدة';
-  static const String twoYearsLabel       = 'سنتان';
-  static const String descOptHint         = 'وصف (اختياري)';
-  static const String badgeLegendary      = '🏆 أسطوري';
-  static const String badgeExcellent      = '⭐ متميز';
-  static const String streakStart         = 'ابدأ تسجيل مصاريفك يومياً لبناء سلسلتك';
-  static const String streakBest          = 'واصل — أنت تسير بشكل رائع!';
 
   // ══════════════════════════════════════════════════════
   // INSIGHTS ENGINE
