@@ -136,7 +136,7 @@ class _State extends ConsumerState<ChildrenExpenseCard> {
                 });
                 _save();
               },
-              onChanged: (_) => setState(() {}),
+              onChanged: () => setState(() {}),
             )),
             const Divider(color: AppColors.border),
             const SizedBox(height: 6),
@@ -206,7 +206,7 @@ class _ChildRowState extends State<_ChildRow> {
     widget.data.monthlyAllowance = double.tryParse(_allowCtrl.text)  ?? 0;
     widget.data.schoolFees       = double.tryParse(_schoolCtrl.text) ?? 0;
     widget.data.medicalBudget    = double.tryParse(_medCtrl.text)    ?? 0;
-    widget.onChanged(null);
+    widget.onChanged();
   }
 
   @override
