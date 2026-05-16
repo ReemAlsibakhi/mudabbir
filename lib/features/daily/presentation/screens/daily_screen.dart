@@ -76,13 +76,6 @@ class DailyScreen extends ConsumerWidget {
               ),
             ),
 
-            // ── "صرفت اليوم؟" Question Bar (PRD 4.2 core UX)
-            SliverPadding(
-              padding: EdgeInsets.zero,
-              sliver: SliverToBoxAdapter(
-                child: DailyQuestionBar(month: now)),
-            ),
-
             // ── Insights Section (rule-based intelligence) ──
             const InsightsSection(),
 
@@ -116,20 +109,11 @@ class DailyScreen extends ConsumerWidget {
               sliver: SliverToBoxAdapter(child: QuickAddGrid(month: now)),
             ),
 
-            // ── Add Expense Button ────────────────────────
+            // ── Action buttons: manual + voice + camera ─
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
-                child: _AddButton(month: now, ref: ref)),
-            ),
-
-            // ── Receipt Scanner (OCR) ────────────────────
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              sliver: SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: ReceiptScanner(month: now))),
+                child: _ActionBar(month: now, ref: ref)),
             ),
 
             // ── No Spend Button ───────────────────────────
@@ -179,45 +163,155 @@ class _HeaderIcon extends StatelessWidget {
   );
 }
 
-// ── Add Button ────────────────────────────────────────────
-class _AddButton extends StatelessWidget {
+// ══════════════════════════════════════════════════════════
+// _ActionBar — 3 clear buttons: manual | voice | camera
+// ══════════════════════════════════════════════════════════
+class _ActionBar extends StatelessWidget {
   final DateTime month;
   final WidgetRef ref;
-  const _AddButton({required this.month, required this.ref});
+  const _ActionBar({required this.month, required this.ref});
+
+  @override
+  Widget build(BuildContext context) => Column(
+    children: [
+      // ── Row: Manual (large) + Voice (square) + Camera (square) ──
+      Row(
+        children: [
+          // Manual add — takes most space
+          Expanded(
+            flex: 3,
+            child: _ActionBtn(
+              gradient: AppColors.primary,
+              icon:     '✍️',
+              label:    AppStrings.addManuallyBtn,
+              onTap:    () => AddExpenseSheet.show(context, month, ref),
+            ),
+          ),
+          const SizedBox(width: 10),
+          // Voice add — square
+          _VoiceActionBtn(month: month),
+          const SizedBox(width: 10),
+          // Camera OCR — square
+          _CameraActionBtn(month: month),
+        ],
+      ),
+      const SizedBox(height: 8),
+    ],
+  );
+}
+
+// ── Manual button ─────────────────────────────────────────
+class _ActionBtn extends StatelessWidget {
+  final LinearGradient gradient;
+  final String icon, label;
+  final VoidCallback onTap;
+  const _ActionBtn({
+    required this.gradient, required this.icon,
+    required this.label, required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-    onTap: () => AddExpenseSheet.show(context, month, ref),
+    onTap: onTap,
     child: Container(
-      margin:  const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(vertical: 15),
+      height:  56,
       decoration: BoxDecoration(
-        gradient:     AppColors.primary,
+        gradient:     gradient,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [BoxShadow(
-          color:      AppColors.accent.withOpacity(0.3),
-          blurRadius: 16,
-          offset:     const Offset(0, 4),
-        )],
+          color:      AppColors.accent.withOpacity(0.25),
+          blurRadius: 14, offset: const Offset(0, 4))],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 26, height: 26,
-            decoration: BoxDecoration(
-              color:        Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Center(
-              child: Text('🎤', style: TextStyle(fontSize: 14))),
-          ),
-          const SizedBox(width: 10),
-          Text(AppStrings.addManually,
-            style: AppTextStyles.button.copyWith(fontSize: 14)),
+          Text(icon,  style: const TextStyle(fontSize: 18)),
+          const SizedBox(width: 8),
+          Text(label, style: AppTextStyles.button.copyWith(fontSize: 15)),
         ],
       ),
     ),
+  );
+}
+
+// ── Voice button — has its own state for speech ───────────
+class _VoiceActionBtn extends ConsumerStatefulWidget {
+  final DateTime month;
+  const _VoiceActionBtn({required this.month});
+
+  @override
+  ConsumerState<_VoiceActionBtn> createState() => _VoiceActionBtnState();
+}
+
+class _VoiceActionBtnState extends ConsumerState<_VoiceActionBtn> {
+  // Embed the DailyQuestionBar logic directly in this button
+  void _openVoice() {
+    showModalBottomSheet(
+      context:            context,
+      isScrollControlled: true,
+      backgroundColor:    Colors.transparent,
+      builder:            (_) => _VoiceInputSheet(month: widget.month),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: _openVoice,
+    child: Container(
+      width: 56, height: 56,
+      decoration: BoxDecoration(
+        color:        AppColors.surface2,
+        borderRadius: BorderRadius.circular(14),
+        border:       Border.all(color: AppColors.border),
+      ),
+      child: const Center(
+        child: Text('🎤', style: TextStyle(fontSize: 24))),
+    ),
+  );
+}
+
+// ── Camera button ─────────────────────────────────────────
+class _CameraActionBtn extends StatelessWidget {
+  final DateTime month;
+  const _CameraActionBtn({required this.month});
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: () => showModalBottomSheet(
+      context:            context,
+      isScrollControlled: true,
+      builder:            (_) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: ReceiptScanner(month: month))),
+    child: Container(
+      width: 56, height: 56,
+      decoration: BoxDecoration(
+        color:        AppColors.surface2,
+        borderRadius: BorderRadius.circular(14),
+        border:       Border.all(color: AppColors.border),
+      ),
+      child: const Center(
+        child: Text('📷', style: TextStyle(fontSize: 24))),
+    ),
+  );
+}
+
+// ── Voice input sheet — opens from bottom ─────────────────
+class _VoiceInputSheet extends StatelessWidget {
+  final DateTime month;
+  const _VoiceInputSheet({required this.month});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    decoration: const BoxDecoration(
+      color:        AppColors.surface1,
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    padding: EdgeInsets.only(
+      left: 0, right: 0, top: 0,
+      bottom: MediaQuery.of(context).viewInsets.bottom,
+    ),
+    child: DailyQuestionBar(month: month),
   );
 }
 
