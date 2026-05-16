@@ -1066,4 +1066,6 @@ abstract final class AppStrings {
   static const String voiceError             = 'خطأ في التعرف على الصوت';
   static const String fontSizeLabel = 'حجم الخط';
   static const String addManuallyBtn = 'إضافة يدوياً';
+  static const String voiceListening = '🎤 جاري الاستماع... تحدث الآن';
+
 }
