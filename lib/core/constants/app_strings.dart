@@ -1067,5 +1067,11 @@ abstract final class AppStrings {
   static const String fontSizeLabel = 'حجم الخط';
   static const String addManuallyBtn = 'إضافة يدوياً';
   static const String voiceListening = '🎤 جاري الاستماع... تحدث الآن';
+  // ── Voice sheet strings ─────────────────────────────
+  static const String voiceStop                 = 'إيقاف';
+  static const String voiceDetectedTitle        = 'سمعتك! ✅';
+  static const String voiceConfirmBtn           = '✅ إضافة المصروف';
+  static const String voiceRetry                = 'جرب مرة أخرى 🎤';
+  static const String voiceTryAgain             = 'حاول مرة أخرى';
 
 }

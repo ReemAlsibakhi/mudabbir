@@ -20,6 +20,7 @@ import '../widgets/children_expense_card.dart';
 import '../widgets/daily_question_bar.dart';
 import '../../../insights/presentation/widgets/insights_section.dart';
 import '../widgets/receipt_scanner.dart';
+import '../widgets/voice_add_sheet.dart';
 
 class DailyScreen extends ConsumerWidget {
   const DailyScreen({super.key});
@@ -245,14 +246,8 @@ class _VoiceActionBtn extends ConsumerStatefulWidget {
 
 class _VoiceActionBtnState extends ConsumerState<_VoiceActionBtn> {
   // Embed the DailyQuestionBar logic directly in this button
-  void _openVoice() {
-    showModalBottomSheet(
-      context:            context,
-      isScrollControlled: true,
-      backgroundColor:    Colors.transparent,
-      builder:            (_) => _VoiceInputSheet(month: widget.month),
-    );
-  }
+  void _openVoice() =>
+      VoiceAddSheet.show(context, widget.month);
 
   @override
   Widget build(BuildContext context) => GestureDetector(
