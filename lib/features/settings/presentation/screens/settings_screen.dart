@@ -9,6 +9,7 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/ui/widgets/mud_card.dart';
 import '../../../ai_chat/presentation/providers/chat_notifier.dart';
 import '../../../ai_chat/presentation/screens/api_key_setup_screen.dart';
+import '../../../../core/providers/font_scale_provider.dart';
 import '../../../couple/presentation/providers/couple_notifier.dart';
 import '../../../couple/presentation/screens/couple_setup_screen.dart';
 import '../../../freemium/domain/entities/subscription.dart';
@@ -198,6 +199,11 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                   ],
 
+                  // ── Font Size ──────────────────────────────────
+                  const MudSectionLabel(AppStrings.fontSizeLabel),
+                  _FontScaleSelector(),
+
+                  const SizedBox(height: 4),
                   const MudSectionLabel(AppStrings.privacy),
                   ...[
                     AppStrings.privacyLocal,
@@ -513,4 +519,76 @@ class _CoupleModeTeaser extends StatelessWidget {
       ],
     ),
   );
+}
+
+// ── Font Scale Selector ───────────────────────────────────
+class _FontScaleSelector extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final current = ref.watch(fontScaleProvider);
+
+    return Container(
+      margin:  const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color:        AppColors.surface2,
+        borderRadius: BorderRadius.circular(12),
+        border:       Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        children: FontScale.values.map((scale) {
+          final selected = current == scale;
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => ref.read(fontScaleProvider.notifier).set(scale),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color:        selected
+                      ? AppColors.surface3
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(9),
+                  border: selected
+                      ? Border.all(
+                          color: AppColors.accentAlt.withOpacity(0.4))
+                      : null,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Preview text at that scale
+                    Text(
+                      'أ',
+                      style: TextStyle(
+                        fontFamily:  'Cairo',
+                        fontSize:    14 * scale.factor,
+                        fontWeight:  FontWeight.w700,
+                        color: selected
+                            ? AppColors.accentAlt
+                            : AppColors.textTertiary,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      scale.label,
+                      style: TextStyle(
+                        fontFamily:  'Cairo',
+                        fontSize:    11,
+                        color: selected
+                            ? AppColors.accentAlt
+                            : AppColors.textTertiary,
+                        fontWeight: selected
+                            ? FontWeight.w700 : FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
 }

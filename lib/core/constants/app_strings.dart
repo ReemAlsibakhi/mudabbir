@@ -1064,5 +1064,6 @@ abstract final class AppStrings {
   static const String voicePermissionDenied  = 'تم رفض إذن الميكروفون — افتح الإعدادات وامنحه';
   static const String voiceOpenSettings      = 'افتح الإعدادات';
   static const String voiceError             = 'خطأ في التعرف على الصوت';
+  static const String fontSizeLabel = 'حجم الخط';
 
 }
