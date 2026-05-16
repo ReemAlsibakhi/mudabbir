@@ -1058,4 +1058,11 @@ abstract final class AppStrings {
 
   static const String insightsTitle = 'تنبيهات ذكية';
 
+  // ── Voice permission messages ──────────────────────────
+  static const String voicePermissionTitle   = 'إذن الميكروفون';
+  static const String voicePermissionBody    = 'مدبّر يحتاج إذن الميكروفون والتعرف على الصوت لتسجيل مصاريفك بصوتك. افتح الإعدادات وامنح الإذن.';
+  static const String voicePermissionDenied  = 'تم رفض إذن الميكروفون — افتح الإعدادات وامنحه';
+  static const String voiceOpenSettings      = 'افتح الإعدادات';
+  static const String voiceError             = 'خطأ في التعرف على الصوت';
+
 }
