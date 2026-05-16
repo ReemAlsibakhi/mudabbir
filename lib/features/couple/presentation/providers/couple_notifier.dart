@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/result.dart';
 import '../../../../core/utils/logger.dart';
@@ -27,10 +26,9 @@ final class CoupleError      extends CoupleState {
 }
 
 // ── Provider ──────────────────────────────────────────────
-final coupleRepoProvider = Provider<CoupleRepository>((ref) {
-  final client = Supabase.instance.client;
-  return SupabaseCoupleRepository(client);
-});
+final coupleRepoProvider = Provider<CoupleRepository>(
+  (_) => SupabaseCoupleRepository(),
+);
 
 final coupleNotifierProvider =
     StateNotifierProvider<CoupleNotifier, CoupleState>(
