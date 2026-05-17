@@ -135,18 +135,26 @@ class _IncomeContent extends StatelessWidget {
           ],
         ),
         actions: [
-          // ✅ Month navigation — prev/next
-          IconButton(
-            icon: const Icon(Icons.chevron_right_rounded,
-              color: AppColors.textSecondary),
-            tooltip: AppStrings.prevMonth,
-            onPressed: onPrev,
-          ),
-          IconButton(
-            icon: const Icon(Icons.chevron_left_rounded,
-              color: AppColors.textSecondary),
-            tooltip: AppStrings.nextMonth,
-            onPressed: onNext,
+          // ✅ Month navigation — LTR wrapper prevents RTL mirroring
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.chevron_left_rounded,
+                    color: AppColors.textSecondary),
+                  tooltip: AppStrings.prevMonth,
+                  onPressed: onPrev,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.chevron_right_rounded,
+                    color: AppColors.textSecondary),
+                  tooltip: AppStrings.nextMonth,
+                  onPressed: onNext,
+                ),
+              ],
+            ),
           ),
           if (state.isSaving)
             const Padding(
