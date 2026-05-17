@@ -30,7 +30,7 @@ class DailyScreen extends ConsumerWidget {
     final now = DateTime.now();
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),

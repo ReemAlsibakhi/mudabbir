@@ -51,7 +51,7 @@ class _State extends ConsumerState<ExpensesScreen>
     });
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -108,7 +108,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    color: AppColors.surface1,
+    color: Theme.of(context).colorScheme.surface,
     child: Column(
       children: [
         // Title + month navigation

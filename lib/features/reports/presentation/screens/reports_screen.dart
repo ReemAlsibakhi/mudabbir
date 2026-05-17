@@ -86,7 +86,7 @@ class _ReportsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    color: AppColors.surface1,
+    color: Theme.of(context).colorScheme.surface,
     child: Column(
       children: [
         Padding(
