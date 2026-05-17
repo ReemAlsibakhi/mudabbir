@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/categories.dart';
@@ -13,8 +11,8 @@ import '../providers/daily_notifier.dart';
 
 // ══════════════════════════════════════════════════════════
 // ReceiptScanner
-// OCR receipt scanning using google_mlkit_text_recognition
-// Reads Arabic & English amounts from photos automatically
+// User picks a photo → enters amount manually → saves expense
+// OCR removed: google_mlkit caused Swift linker errors on iOS
 // ══════════════════════════════════════════════════════════
 
 class ReceiptScanner extends ConsumerStatefulWidget {
@@ -26,13 +24,13 @@ class ReceiptScanner extends ConsumerStatefulWidget {
 }
 
 class _ReceiptScannerState extends ConsumerState<ReceiptScanner> {
-  final _picker = ImagePicker();
-  bool _loading = false;
+  final _picker  = ImagePicker();
+  bool  _loading = false;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _loading ? null : _pickAndScan,
+      onTap: _loading ? null : _pickImage,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 14),
         decoration: BoxDecoration(
@@ -63,48 +61,24 @@ class _ReceiptScannerState extends ConsumerState<ReceiptScanner> {
     );
   }
 
-  Future<void> _pickAndScan() async {
-    // 1. Let user choose source
+  Future<void> _pickImage() async {
     final source = await _showSourcePicker();
     if (source == null || !mounted) return;
 
-    // 2. Pick image
-    final picked = await _picker.pickImage(
-      source:       source,
-      imageQuality: 85,
-    );
-    if (picked == null || !mounted) return;
-
     setState(() => _loading = true);
+    final picked = await _picker.pickImage(source: source, imageQuality: 80);
+    if (!mounted) return;
+    setState(() => _loading = false);
 
-    try {
-      // 3. Run OCR
-      final amount = await _extractAmountFromImage(picked.path);
+    if (picked == null) return;
 
-      if (!mounted) return;
-      setState(() => _loading = false);
-
-      if (amount == null) {
-        context.showSnack(AppStrings.receiptNoAmount, color: AppColors.warning);
-        return;
-      }
-
-      // 4. Show confirmation
-      if (mounted) {
-        showModalBottomSheet(
-          context:            context,
-          isScrollControlled: true,
-          builder:            (_) => _ConfirmSheet(
-            amount: amount,
-            month:  widget.month,
-          ),
-        );
-      }
-    } catch (_) {
-      if (mounted) {
-        setState(() => _loading = false);
-        context.showSnack(AppStrings.receiptError, color: AppColors.error);
-      }
+    // Show manual entry sheet — user reads the amount themselves
+    if (mounted) {
+      showModalBottomSheet(
+        context:            context,
+        isScrollControlled: true,
+        builder:            (_) => _ManualEntrySheet(month: widget.month),
+      );
     }
   }
 
@@ -130,103 +104,56 @@ class _ReceiptScannerState extends ConsumerState<ReceiptScanner> {
       ),
     );
   }
-
-  Future<double?> _extractAmountFromImage(String imagePath) async {
-    final inputImage = InputImage.fromFile(File(imagePath));
-    final recognizer = TextRecognizer(script: TextRecognitionScript.latin);
-
-    try {
-      final result = await recognizer.processImage(inputImage);
-      return _parseAmount(result.text);
-    } finally {
-      await recognizer.close();
-    }
-  }
-
-  // Extracts the largest plausible total from OCR text
-  double? _parseAmount(String text) {
-    // Normalize Arabic-Indic digits → ASCII and Arabic decimal separator
-    final normalized = text
-        .replaceAllMapped(
-          RegExp(r'[٠-٩]'),
-          (m) => (m.group(0)!.codeUnitAt(0) - 0x0660).toString(),
-        )
-        .replaceAll('٫', '.');
-
-    // Match numbers: 150 / 150.00 / 1,500
-    final matches = RegExp(r'\d{1,7}(?:[.,]\d{1,3})*(?:\.\d{1,2})?')
-        .allMatches(normalized)
-        .map((m) {
-          final clean = m.group(0)!.replaceAll(',', '');
-          return double.tryParse(clean);
-        })
-        .where((n) => n != null && n >= 1 && n <= 99999)
-        .cast<double>()
-        .toList()
-      ..sort();
-
-    return matches.isEmpty ? null : matches.last;
-  }
 }
 
-// ── Confirmation sheet ────────────────────────────────────
-class _ConfirmSheet extends ConsumerStatefulWidget {
-  final double   amount;
+// ── Manual entry after photo ──────────────────────────────
+class _ManualEntrySheet extends ConsumerStatefulWidget {
   final DateTime month;
-  const _ConfirmSheet({required this.amount, required this.month});
+  const _ManualEntrySheet({required this.month});
 
   @override
-  ConsumerState<_ConfirmSheet> createState() => _ConfirmSheetState();
+  ConsumerState<_ManualEntrySheet> createState() => _ManualEntrySheetState();
 }
 
-class _ConfirmSheetState extends ConsumerState<_ConfirmSheet> {
-  late final TextEditingController _amtCtrl;
+class _ManualEntrySheetState extends ConsumerState<_ManualEntrySheet> {
+  final _amtCtrl = TextEditingController();
   String _catId  = 'food';
   bool   _saving = false;
 
   static const _cats = [
-    'food', 'restaurants', 'transport',
-    'shopping', 'health', 'other',
+    'food', 'restaurants', 'transport', 'health', 'shopping', 'other',
   ];
 
   @override
-  void initState() {
-    super.initState();
-    _amtCtrl = TextEditingController(
-      text: widget.amount.toStringAsFixed(2));
-  }
-
-  @override
-  void dispose() {
-    _amtCtrl.dispose();
-    super.dispose();
-  }
+  void dispose() { _amtCtrl.dispose(); super.dispose(); }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        left:   16, right: 16, top: 20,
+        left: 16, right: 16, top: 20,
         bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text('📷', style: TextStyle(fontSize: 40)),
+          Center(child: const Text('📷', style: TextStyle(fontSize: 40))),
           const SizedBox(height: 8),
-          Text(AppStrings.receiptFound, style: AppTextStyles.headline2),
+          Center(child: Text(AppStrings.receiptFound, style: AppTextStyles.headline2)),
           const SizedBox(height: 4),
-          Text(AppStrings.receiptConfirmSub, style: AppTextStyles.body),
+          Center(child: Text(AppStrings.receiptConfirmSub, style: AppTextStyles.body)),
           const SizedBox(height: 16),
 
-          // Editable amount
+          // Amount input
           TextField(
             controller:    _amtCtrl,
             textDirection: TextDirection.rtl,
             keyboardType:  TextInputType.number,
             textAlign:     TextAlign.center,
+            autofocus:     true,
             style: AppTextStyles.headline2.copyWith(
-              color: AppColors.accentAlt, fontSize: 28),
+              color: AppColors.accentAlt, fontSize: 32),
             decoration: InputDecoration(labelText: AppStrings.amountLabel),
           ),
           const SizedBox(height: 14),
@@ -234,32 +161,28 @@ class _ConfirmSheetState extends ConsumerState<_ConfirmSheet> {
           // Category chips
           Wrap(
             spacing: 8, runSpacing: 8,
+            alignment: WrapAlignment.center,
             children: _cats.map((id) {
               final cat = getCategoryById(id);
               final sel = _catId == id;
               return GestureDetector(
                 onTap: () => setState(() => _catId = id),
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 6),
+                  duration: const Duration(milliseconds: 150),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                   decoration: BoxDecoration(
-                    color:        sel
-                        ? AppColors.accent.withOpacity(0.12)
+                    color: sel
+                        ? AppColors.accent.withValues(alpha: 0.14)
                         : AppColors.surface2,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       color: sel ? AppColors.accent : AppColors.border,
-                      width: sel ? 1.5 : 1,
-                    ),
+                      width: sel ? 1.5 : 1),
                   ),
-                  child: Text(
-                    '${cat.icon} ${cat.nameAr}',
+                  child: Text('${cat.icon} ${cat.nameAr}',
                     style: AppTextStyles.caption.copyWith(
-                      color:      sel
-                          ? AppColors.accentAlt : AppColors.textSecondary,
-                      fontWeight: FontWeight.w700),
-                  ),
+                      color:      sel ? AppColors.accentAlt : AppColors.textSecondary,
+                      fontWeight: sel ? FontWeight.w700 : FontWeight.w400)),
                 ),
               );
             }).toList(),
@@ -270,12 +193,11 @@ class _ConfirmSheetState extends ConsumerState<_ConfirmSheet> {
           GestureDetector(
             onTap: _saving ? null : _save,
             child: Container(
-              width:   double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 14),
+              padding: const EdgeInsets.symmetric(vertical: 15),
               decoration: BoxDecoration(
                 gradient:     _saving ? null : AppColors.primary,
                 color:        _saving ? AppColors.surface3 : null,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(13),
               ),
               child: Center(
                 child: _saving
@@ -283,8 +205,7 @@ class _ConfirmSheetState extends ConsumerState<_ConfirmSheet> {
                         width: 20, height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2, color: Colors.white))
-                    : Text(AppStrings.receiptAddBtn,
-                        style: AppTextStyles.button),
+                    : Text(AppStrings.receiptAddBtn, style: AppTextStyles.button),
               ),
             ),
           ),
