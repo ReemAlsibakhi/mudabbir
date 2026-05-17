@@ -1,6 +1,7 @@
 import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/countries.dart';
 import '../../../../core/router/app_router.dart';
@@ -53,7 +54,7 @@ class SettingsScreen extends ConsumerWidget {
                     const MudSectionLabel(AppStrings.profile),
                     _ProfileHeader(profile: profile, country: country, sub: sub),
                     const Divider(color: AppColors.border, height: 20),
-                    _InfoRow(label: AppStrings.countryLabel, value: '\${country.flag} \${country.nameAr}'),
+                    _InfoRow(label: AppStrings.countryLabel, value: '${country.flag} ${country.nameAr}'),
                     _InfoRow(label: AppStrings.currencyLabel,       value: country.currency),
                     _LifeStageRow(profile: profile),
                   ],
@@ -165,15 +166,17 @@ class SettingsScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const MudSectionLabel(AppStrings.notifications),
-                  _SettingsTile(
-                    icon: '🔔', title: AppStrings.morningNotif,
+                  _NotifTile(
+                    icon: '🔔',
+                    title: AppStrings.morningNotif,
                     subtitle: AppStrings.morningNotifBody,
-                    trailing: _Switch(value: true, onChanged: (_) {}),
+                    hiveKey: 'notif_morning',
                   ),
-                  _SettingsTile(
-                    icon: '🌙', title: AppStrings.eveningNotif,
+                  _NotifTile(
+                    icon: '🌙',
+                    title: AppStrings.eveningNotif,
                     subtitle: AppStrings.eveningNotifBody,
-                    trailing: _Switch(value: true, onChanged: (_) {}),
+                    hiveKey: 'notif_evening',
                   ),
                 ],
               ),
@@ -593,4 +596,49 @@ class _FontScaleSelector extends ConsumerWidget {
       ),
     );
   }
+}
+
+// ── Notification Tile — reads/writes from Hive ────────────
+class _NotifTile extends StatefulWidget {
+  final String icon, title, subtitle, hiveKey;
+  const _NotifTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.hiveKey,
+  });
+  @override State<_NotifTile> createState() => _NotifTileState();
+}
+
+class _NotifTileState extends State<_NotifTile> {
+  late bool _enabled;
+
+  @override
+  void initState() {
+    super.initState();
+    // Default: enabled
+    _enabled = Hive.box(AppConstants.settingsBox)
+        .get(widget.hiveKey, defaultValue: true) as bool;
+  }
+
+  Future<void> _toggle(bool value) async {
+    setState(() => _enabled = value);
+    await Hive.box(AppConstants.settingsBox).put(widget.hiveKey, value);
+  }
+
+  @override
+  Widget build(BuildContext context) => _SettingsTile(
+    icon:     widget.icon,
+    title:    widget.title,
+    subtitle: widget.subtitle,
+    trailing: Switch(
+      value:           _enabled,
+      onChanged:       _toggle,
+      activeColor:     AppColors.accentAlt,
+      trackColor:      WidgetStateProperty.resolveWith((s) =>
+        s.contains(WidgetState.selected)
+          ? AppColors.accentAlt.withValues(alpha: 0.3)
+          : AppColors.surface3),
+    ),
+  );
 }

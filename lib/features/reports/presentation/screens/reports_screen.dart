@@ -97,8 +97,8 @@ class _ReportsHeader extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.arrow_forward_ios_rounded,
                   color: AppColors.textSecondary),
-                tooltip: AppStrings.prevMonth,
-                onPressed: onPrev,
+                tooltip: AppStrings.nextMonth,
+                onPressed: onNext,
               ),
               Column(
                 children: [
@@ -111,8 +111,8 @@ class _ReportsHeader extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.arrow_back_ios_rounded,
                   color: AppColors.textSecondary),
-                tooltip: AppStrings.nextMonth,
-                onPressed: onNext,
+                tooltip: AppStrings.prevMonth,
+                onPressed: onPrev,
               ),
             ],
           ),
