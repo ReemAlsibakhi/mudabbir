@@ -31,6 +31,16 @@ abstract final class AppColors {
     begin:  Alignment.centerRight,
     end:    Alignment.centerLeft,
   );
+  static const LinearGradient primaryDeep = LinearGradient(
+    colors: [Color(0xFF1D4ED8), Color(0xFF2563EB)],
+    begin:  Alignment.topLeft,
+    end:    Alignment.bottomRight,
+  );
+  static const LinearGradient goldGradient = LinearGradient(
+    colors: [Color(0xFFF59E0B), Color(0xFFFCD34D)],
+    begin:  Alignment.centerRight,
+    end:    Alignment.centerLeft,
+  );
   static const LinearGradient gold2 = LinearGradient(
     colors: [Color(0xFFF59E0B), Color(0xFFFCD34D)],
     begin:  Alignment.centerRight,
