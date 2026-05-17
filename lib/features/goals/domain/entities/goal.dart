@@ -35,8 +35,11 @@ enum GoalType {
     GoalType.emergency => '🛡️',
     GoalType.business  => '💼',
     GoalType.hajj      => '🕌',
-    GoalType.gold      => '💎',
-    GoalType.other     => '⭐',
+    GoalType.gold           => '💎',
+    GoalType.university     => '🎓',
+    GoalType.childWedding   => '👰',
+    GoalType.healthInsurance=> '🏥',
+    GoalType.other          => '⭐',
   };
 
   static GoalType fromString(String s) =>

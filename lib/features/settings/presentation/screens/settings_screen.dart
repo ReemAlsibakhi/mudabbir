@@ -27,6 +27,8 @@ class SettingsScreen extends ConsumerWidget {
     final profile      = ref.watch(onboardingRepoProvider).getSaved();
     final sub          = ref.watch(subscriptionProvider);
     final hasApiKey    = ref.watch(apiKeyProvider).isNotEmpty;
+    final coupleState  = ref.watch(coupleNotifierProvider);
+    final coupleActive = coupleState is CoupleActive;
     final country      = profile != null ? getCountryById(profile.countryId) : kCountries.first;
 
     return Scaffold(
