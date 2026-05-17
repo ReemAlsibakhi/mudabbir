@@ -43,7 +43,7 @@ class MonthlyReportTab extends ConsumerWidget {
         GridView.count(
           crossAxisCount: 2, shrinkWrap: true,
           physics:        const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 10, crossAxisSpacing: 10, childAspectRatio: 1.5,
+          mainAxisSpacing: 10, crossAxisSpacing: 10, childAspectRatio: 1.25,
           children: [
             MudStatCard(
               icon: '📥', label: AppStrings.reportIncome,

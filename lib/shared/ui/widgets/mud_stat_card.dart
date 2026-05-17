@@ -20,7 +20,7 @@ class MudStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(14),
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
     decoration: BoxDecoration(
       color:        AppColors.surface1,
       borderRadius: BorderRadius.circular(14),
@@ -28,17 +28,34 @@ class MudStatCard extends StatelessWidget {
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(icon, style: const TextStyle(fontSize: 18)),
-        const SizedBox(height: 6),
-        Text(label,
-          style: AppTextStyles.label.copyWith(color: AppColors.textTertiary)),
-        const SizedBox(height: 3),
-        Text(value,
-          style: AppTextStyles.amount.copyWith(
-            color: valueColor, fontSize: 19, letterSpacing: -0.5)),
+        Text(icon, style: const TextStyle(fontSize: 16)),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: AppTextStyles.label.copyWith(color: AppColors.textTertiary),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         const SizedBox(height: 2),
-        Text(sub, style: AppTextStyles.caption),
+        // FittedBox shrinks value text if it doesn't fit
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: AlignmentDirectional.centerStart,
+          child: Text(
+            value,
+            style: AppTextStyles.amountSmall.copyWith(
+              color: valueColor, fontSize: 20, letterSpacing: -0.5),
+          ),
+        ),
+        const SizedBox(height: 1),
+        Text(
+          sub,
+          style: AppTextStyles.caption.copyWith(fontSize: 11),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
       ],
     ),
   );
