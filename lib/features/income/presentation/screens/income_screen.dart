@@ -141,17 +141,19 @@ class _IncomeContent extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.chevron_right_rounded,
-                    color: AppColors.textSecondary),
-                  tooltip: AppStrings.prevMonth,
-                  onPressed: onPrev,
-                ),
+                // LEFT = التالي <
                 IconButton(
                   icon: const Icon(Icons.chevron_left_rounded,
                     color: AppColors.textSecondary),
                   tooltip: AppStrings.nextMonth,
                   onPressed: onNext,
+                ),
+                // RIGHT = السابق >
+                IconButton(
+                  icon: const Icon(Icons.chevron_right_rounded,
+                    color: AppColors.textSecondary),
+                  tooltip: AppStrings.prevMonth,
+                  onPressed: onPrev,
                 ),
               ],
             ),

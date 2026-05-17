@@ -96,11 +96,12 @@ class _ReportsHeader extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // LEFT = التالي <
                 IconButton(
-                  icon: const Icon(Icons.chevron_right_rounded,
+                  icon: const Icon(Icons.chevron_left_rounded,
                     color: AppColors.textSecondary, size: 28),
-                  tooltip: AppStrings.prevMonth,
-                  onPressed: onPrev,
+                  tooltip: AppStrings.nextMonth,
+                  onPressed: onNext,
                 ),
                 Directionality(
                   textDirection: TextDirection.rtl,
@@ -111,11 +112,12 @@ class _ReportsHeader extends StatelessWidget {
                         color: AppColors.accentAlt)),
                   ]),
                 ),
+                // RIGHT = السابق >
                 IconButton(
-                  icon: const Icon(Icons.chevron_left_rounded,
+                  icon: const Icon(Icons.chevron_right_rounded,
                     color: AppColors.textSecondary, size: 28),
-                  tooltip: AppStrings.nextMonth,
-                  onPressed: onNext,
+                  tooltip: AppStrings.prevMonth,
+                  onPressed: onPrev,
                 ),
               ],
             ),
