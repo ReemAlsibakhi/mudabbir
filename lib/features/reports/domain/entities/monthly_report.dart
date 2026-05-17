@@ -68,10 +68,10 @@ final class MonthlyReport extends Equatable {
     }
     if (savingRate >= 20) {
       return switch (stage) {
-        LifeStage.family  => '\$personaIcon \${AppStrings.personaHighFamily}',
-        LifeStage.married => '\$personaIcon \${AppStrings.personaHighMarried}',
-        LifeStage.engaged => '\$personaIcon \${AppStrings.personaHighEngaged}',
-        LifeStage.single  => '\$personaIcon \${AppStrings.personaHighSingle}',
+        LifeStage.family  => '$personaIcon ${AppStrings.personaHighFamily}',
+        LifeStage.married => '$personaIcon ${AppStrings.personaHighMarried}',
+        LifeStage.engaged => '$personaIcon ${AppStrings.personaHighEngaged}',
+        LifeStage.single  => '$personaIcon ${AppStrings.personaHighSingle}',
       };
     }
     return switch (stage) {
