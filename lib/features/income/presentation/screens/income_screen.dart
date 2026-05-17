@@ -135,20 +135,20 @@ class _IncomeContent extends StatelessWidget {
           ],
         ),
         actions: [
-          // ✅ Month navigation — LTR wrapper prevents RTL mirroring
+          // Month navigation: > = السابق, < = التالي
           Directionality(
             textDirection: TextDirection.ltr,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.chevron_left_rounded,
+                  icon: const Icon(Icons.chevron_right_rounded,
                     color: AppColors.textSecondary),
                   tooltip: AppStrings.prevMonth,
                   onPressed: onPrev,
                 ),
                 IconButton(
-                  icon: const Icon(Icons.chevron_right_rounded,
+                  icon: const Icon(Icons.chevron_left_rounded,
                     color: AppColors.textSecondary),
                   tooltip: AppStrings.nextMonth,
                   onPressed: onNext,

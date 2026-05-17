@@ -114,14 +114,12 @@ class _Header extends StatelessWidget {
         // Title + month navigation
         Padding(
           padding: const EdgeInsets.fromLTRB(8, 12, 8, 6),
-          // ✅ LTR wrapper — prevents RTL from mirroring chevron icons
           child: Directionality(
             textDirection: TextDirection.ltr,
             child: Row(
               children: [
-                // LEFT = Previous month
                 IconButton(
-                  icon: const Icon(Icons.chevron_left_rounded,
+                  icon: const Icon(Icons.chevron_right_rounded,
                     color: AppColors.textSecondary, size: 28),
                   tooltip: AppStrings.prevMonth,
                   onPressed: onPrev,
@@ -130,20 +128,17 @@ class _Header extends StatelessWidget {
                   child: Directionality(
                     textDirection: TextDirection.rtl,
                     child: Center(
-                      child: Column(
-                        children: [
-                          Text(AppStrings.expensesTitle, style: AppTextStyles.title),
-                          Text(month.monthAr,
-                            style: AppTextStyles.caption.copyWith(
-                              color: AppColors.accentAlt)),
-                        ],
-                      ),
+                      child: Column(children: [
+                        Text(AppStrings.expensesTitle, style: AppTextStyles.title),
+                        Text(month.monthAr,
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppColors.accentAlt)),
+                      ]),
                     ),
                   ),
                 ),
-                // RIGHT = Next month
                 IconButton(
-                  icon: const Icon(Icons.chevron_right_rounded,
+                  icon: const Icon(Icons.chevron_left_rounded,
                     color: AppColors.textSecondary, size: 28),
                   tooltip: AppStrings.nextMonth,
                   onPressed: onNext,

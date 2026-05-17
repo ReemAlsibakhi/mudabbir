@@ -91,34 +91,28 @@ class _ReportsHeader extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(8, 12, 8, 4),
-          // ✅ LTR wrapper prevents Flutter from auto-mirroring icons in RTL
           child: Directionality(
             textDirection: TextDirection.ltr,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // LEFT = Previous month (< icon, goes back in time)
                 IconButton(
-                  icon: const Icon(Icons.chevron_left_rounded,
+                  icon: const Icon(Icons.chevron_right_rounded,
                     color: AppColors.textSecondary, size: 28),
                   tooltip: AppStrings.prevMonth,
                   onPressed: onPrev,
                 ),
-                // Center = title + month
                 Directionality(
                   textDirection: TextDirection.rtl,
-                  child: Column(
-                    children: [
-                      Text(AppStrings.reportsTitle, style: AppTextStyles.title),
-                      Text(month.monthAr,
-                        style: AppTextStyles.caption.copyWith(
-                          color: AppColors.accentAlt)),
-                    ],
-                  ),
+                  child: Column(children: [
+                    Text(AppStrings.reportsTitle, style: AppTextStyles.title),
+                    Text(month.monthAr,
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.accentAlt)),
+                  ]),
                 ),
-                // RIGHT = Next month (> icon, goes forward in time)
                 IconButton(
-                  icon: const Icon(Icons.chevron_right_rounded,
+                  icon: const Icon(Icons.chevron_left_rounded,
                     color: AppColors.textSecondary, size: 28),
                   tooltip: AppStrings.nextMonth,
                   onPressed: onNext,
