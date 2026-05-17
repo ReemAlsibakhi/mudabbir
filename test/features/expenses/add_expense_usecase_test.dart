@@ -11,6 +11,7 @@ class _FakeRepo implements ExpenseRepository {
   @override double totalByMonth(String k)                  => added.fold(0, (s, e) => s + e.amount);
   @override Stream<List<Expense>> watchByMonth(String k)   => const Stream.empty();
   @override List<Expense> getByDate(String m, String d)    => [];
+  @override List<Expense> getByMonth(String k)             => [];
   @override Stream<List<FixedExpense>> watchFixed()        => const Stream.empty();
   @override Future<Result<void>> addFixed(FixedExpense e) async => const Success(null);
   @override Future<Result<void>> deleteFixed(String id) async   => const Success(null);
