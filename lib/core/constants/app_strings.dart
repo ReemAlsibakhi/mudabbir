@@ -1059,4 +1059,10 @@ abstract final class AppStrings {
   static const String voiceRetry                = 'جرب مرة أخرى 🎤';
   static const String voiceTryAgain             = 'حاول مرة أخرى';
 
+  // ── Theme / Appearance ─────────────────────────────────
+  static const String themeLabel   = 'مظهر التطبيق';
+  static const String themeDark    = 'داكن';
+  static const String themeLight   = 'فاتح';
+  static const String themeSystem  = 'تلقائي';
+
 }

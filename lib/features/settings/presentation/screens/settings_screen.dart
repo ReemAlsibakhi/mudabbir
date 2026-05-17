@@ -2,6 +2,7 @@ import '../../../../core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../../../../core/constants/app_constants.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/countries.dart';
 import '../../../../core/router/app_router.dart';
@@ -11,6 +12,7 @@ import '../../../../shared/ui/widgets/mud_card.dart';
 import '../../../ai_chat/presentation/providers/chat_notifier.dart';
 import '../../../ai_chat/presentation/screens/api_key_setup_screen.dart';
 import '../../../../core/providers/font_scale_provider.dart';
+import '../../../../core/providers/theme_provider.dart';
 import '../../../couple/presentation/providers/couple_notifier.dart';
 import '../../../couple/presentation/screens/couple_setup_screen.dart';
 import '../../../freemium/domain/entities/subscription.dart';
@@ -204,6 +206,11 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                   ],
 
+                  // ── Theme Mode ─────────────────────────────────
+                  const MudSectionLabel(AppStrings.themeLabel),
+                  _ThemeSelector(),
+
+                  const SizedBox(height: 4),
                   // ── Font Size ──────────────────────────────────
                   const MudSectionLabel(AppStrings.fontSizeLabel),
                   _FontScaleSelector(),
@@ -641,4 +648,66 @@ class _NotifTileState extends State<_NotifTile> {
           : AppColors.surface3),
     ),
   );
+}
+
+// ── Theme Selector ────────────────────────────────────────
+class _ThemeSelector extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final current = ref.watch(themeProvider);
+
+    final options = [
+      (mode: ThemeMode.dark,   icon: '🌙', label: AppStrings.themeDark),
+      (mode: ThemeMode.light,  icon: '☀️', label: AppStrings.themeLight),
+      (mode: ThemeMode.system, icon: '📱', label: AppStrings.themeSystem),
+    ];
+
+    return Container(
+      margin:  const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color:        AppColors.surface2,
+        borderRadius: BorderRadius.circular(12),
+        border:       Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        children: options.map((opt) {
+          final selected = current == opt.mode;
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => ref.read(themeProvider.notifier).set(opt.mode),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color:        selected ? AppColors.surface3 : Colors.transparent,
+                  borderRadius: BorderRadius.circular(9),
+                  border: selected
+                      ? Border.all(color: AppColors.accentAlt.withValues(alpha: 0.4))
+                      : null,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(opt.icon, style: const TextStyle(fontSize: 20)),
+                    const SizedBox(height: 3),
+                    Text(opt.label,
+                      style: TextStyle(
+                        fontFamily: 'Cairo',
+                        fontSize:   12,
+                        color:      selected
+                            ? AppColors.accentAlt
+                            : AppColors.textTertiary,
+                        fontWeight: selected
+                            ? FontWeight.w700 : FontWeight.w400,
+                      )),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
 }
